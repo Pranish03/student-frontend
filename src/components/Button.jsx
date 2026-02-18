@@ -1,4 +1,4 @@
-const Button = ({ children, type = "button", className = "" }) => {
+export const Button = ({ children, type = "button", className = "" }) => {
   return (
     <button
       type={type}
@@ -8,5 +8,3 @@ const Button = ({ children, type = "button", className = "" }) => {
     </button>
   );
 };
-
-export default Button;
