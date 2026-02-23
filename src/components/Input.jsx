@@ -2,7 +2,8 @@ export const Input = ({ className = "", errors, ...props }) => {
   return (
     <input
       className={` 
-        border-[1.5px] rounded-lg text-base py-1.5 px-2.5 focus:outline-3 placeholder:text-gray-400
+        border shadow-sm rounded-lg text-base py-1.5 px-2.5 focus:outline-3 
+        placeholder:text-gray-400
         ${
           errors
             ? "border-red-600 focus:border-red-600 focus:outline-red-200"

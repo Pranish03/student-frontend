@@ -50,6 +50,7 @@ export const Login = () => {
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
             >
               Email
+              <span className="text-red-600">*</span>
             </label>
             <Input
               className="w-full"
@@ -71,6 +72,7 @@ export const Login = () => {
                 className={`block max-w-fit ${errors.email ? "text-red-600" : "text-gray-900"}`}
               >
                 Password
+                <span className="text-red-600">*</span>
               </label>
 
               <Link

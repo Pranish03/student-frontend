@@ -50,6 +50,7 @@ export const ResetPassword = () => {
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.password ? "text-red-600" : "text-gray-900"}`}
             >
               Password
+              <span className="text-red-600">*</span>
             </label>
 
             <div className="relative flex items-center">
@@ -78,6 +79,7 @@ export const ResetPassword = () => {
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.confirm ? "text-red-600" : "text-gray-900"}`}
             >
               Confirm password
+              <span className="text-red-600">*</span>
             </label>
 
             <div className="relative flex items-center">
