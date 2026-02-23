@@ -10,7 +10,6 @@ import AddStudent from "./pages/teacher/managestudent/add-student.jsx";
 import ManageTeacher from "./pages/teacher/manageteacher/index.jsx";
 import AddTeacher from "./pages/teacher/manageteacher/add-teacher.jsx";
 
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
