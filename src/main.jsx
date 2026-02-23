@@ -13,7 +13,6 @@ import ResetPassword from "./pages/reset/index.jsx";
 import SendEmail from "./pages/reset/SendEmail.jsx";
 import CheckEmail from "./pages/reset/Verification.jsx";
 
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
