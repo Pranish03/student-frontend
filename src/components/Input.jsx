@@ -2,7 +2,7 @@ export const Input = ({ className = "", errors, ...props }) => {
   return (
     <input
       className={` 
-        border shadow rounded-lg text-base py-1.5 px-2.5 focus:outline-3 
+        border rounded-lg text-base py-1.5 px-2.5 focus:outline-3 
         placeholder:text-gray-400
         ${
           errors

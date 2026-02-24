@@ -6,15 +6,18 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { loginSchema } from "../../schemas/auth-schema";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "sonner";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  const { login } = useAuth();
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -24,10 +27,14 @@ export const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
-    setServerError("Invalid credentials");
+  const onSubmit = async (data) => {
+    const { success, message } = await login(data);
+
+    if (success) {
+      toast.success(message);
+    } else {
+      setLoginError(message);
+    }
   };
 
   return (
@@ -105,7 +112,7 @@ export const Login = () => {
             )}
           </div>
 
-          {serverError && <p className="text-red-600 mt-2">{serverError}</p>}
+          {loginError && <p className="text-red-600 mt-2">{loginError}</p>}
 
           <Button type="submit" className="w-full mt-1">
             Login
