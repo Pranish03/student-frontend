@@ -8,12 +8,13 @@ import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "sonner";
+import { ImSpinner8 } from "react-icons/im";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
 
-  const { login } = useAuth();
+  const { login, actionLoading: loading } = useAuth();
 
   const {
     register,
@@ -39,19 +40,19 @@ export const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="w-full max-w-100">
-        <h1 className="text-[28px] font-bold text-gray-900 text-center mb-1">
-          Login
+      <div className="w-full max-w-95">
+        <h1 className="text-2xl font-bold text-gray-900 text-center mb-1">
+          Welcome to SMS.
         </h1>
         <h2 className="text-base text-center text-gray-800 mb-4">
-          Get access to your account
+          Login to access your account
         </h2>
 
         <form
-          className="space-y-4 text-gray-800"
+          className="space-y-5 text-gray-800"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div>
+          <div className="mb-5">
             <label
               htmlFor="email"
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
@@ -59,6 +60,7 @@ export const Login = () => {
               Email
               <span className="text-red-600">*</span>
             </label>
+
             <Input
               className="w-full"
               type="email"
@@ -67,16 +69,17 @@ export const Login = () => {
               {...register("email")}
               errors={errors.email}
             />
+
             {errors.email && (
               <p className="text-red-600 mt-2">{errors.email.message}</p>
             )}
           </div>
 
-          <div>
+          <div className={`${loginError ? "mb-5" : "mb-7"}`}>
             <div className="flex items-center justify-between sm:text-base text-sm mb-2 font-medium ">
               <label
                 htmlFor="password"
-                className={`block max-w-fit ${errors.email ? "text-red-600" : "text-gray-900"}`}
+                className={`block max-w-fit ${errors.password ? "text-red-600" : "text-gray-900"}`}
               >
                 Password
                 <span className="text-red-600">*</span>
@@ -89,6 +92,7 @@ export const Login = () => {
                 Forgot password?
               </Link>
             </div>
+
             <div className="relative flex items-center">
               <Input
                 className="w-full"
@@ -107,16 +111,24 @@ export const Login = () => {
                 {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
               </button>
             </div>
+
             {errors.password && (
               <p className="text-red-600 mt-2">{errors.password.message}</p>
             )}
           </div>
 
-          {loginError && <p className="text-red-600 mt-2">{loginError}</p>}
+          {loginError && <p className="text-red-600 mt-0 mb-0">{loginError}</p>}
 
-          <Button type="submit" className="w-full mt-1">
-            Login
-          </Button>
+          <div className="w-full mt-5 mb-7">
+            <Button
+              type="submit"
+              className="w-full flex items-center justify-center gap-3"
+              loading={loading}
+            >
+              {loading && <ImSpinner8 className="animate-spin text-lg" />}
+              Login
+            </Button>
+          </div>
         </form>
       </div>
     </div>

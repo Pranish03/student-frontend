@@ -39,19 +39,16 @@ export const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="w-full max-w-100">
-        <h1 className="text-[28px] font-bold text-gray-900 text-center mb-1">
-          Forgot password
+      <div className="w-full max-w-95">
+        <h1 className="text-2xl font-bold text-gray-900 text-center mb-1">
+          Forgot password?
         </h1>
-        <p className="text-base text-center text-gray-800 mb-4">
+        <h2 className="text-base text-center text-gray-800 mb-4">
           Enter your email to send password reset link
-        </p>
+        </h2>
 
-        <form
-          className="space-y-4 text-gray-800"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div>
+        <form className="text-gray-800" onSubmit={handleSubmit(onSubmit)}>
+          <div className={`${error ? "mb-5" : "mb-7"}`}>
             <label
               htmlFor="email"
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
@@ -63,7 +60,7 @@ export const ForgotPassword = () => {
               className="w-full"
               type="email"
               id="email"
-              placeholder="Enter your email"
+              placeholder="m@example.com"
               {...register("email")}
               errors={errors.email}
             />
@@ -72,19 +69,21 @@ export const ForgotPassword = () => {
             )}
           </div>
 
-          {error && <p className="text-red-600 mt-2">{error}</p>}
+          {error && <p className="text-red-600 mt-0 mb-0">{error}</p>}
 
-          <Button
-            type="submit"
-            className="w-full mt-1 flex items-center justify-center gap-3"
-            loading={loading}
-          >
-            {loading && <ImSpinner8 className="animate-spin text-lg" />}
-            Send Email
-          </Button>
+          <div className="w-full mt-5 mb-7">
+            <Button
+              type="submit"
+              className="w-full flex items-center justify-center gap-3"
+              loading={loading}
+            >
+              {loading && <ImSpinner8 className="animate-spin text-lg" />}
+              Send Email
+            </Button>
+          </div>
 
-          <div className="text-center font-medium">
-            <Link className="hover:underline text-green-600" to="/">
+          <div className="text-center">
+            <Link to="/" className="font-medium hover:underline text-green-600">
               Back to login
             </Link>
           </div>

@@ -5,14 +5,13 @@ import { AuthContext } from "./AuthContext";
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const fetchUser = async () => {
     try {
-      setLoading(true);
       const res = await axios.get("/auth/me");
       setUser(res.data?.data);
-      setError("");
     } catch (error) {
       if (error.response?.status === 401) {
         setUser(null);
@@ -20,12 +19,13 @@ export const AuthProvider = ({ children }) => {
         setError(error.response?.data?.message || "internal server error");
       }
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
   };
 
   const login = async (data) => {
     try {
+      setActionLoading(true);
       const res = await axios.post("/auth/login", data);
       setUser(res.data?.data);
       setError("");
@@ -35,13 +35,21 @@ export const AuthProvider = ({ children }) => {
         success: false,
         message: error.response?.data?.message || "Something went wrong",
       };
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const logout = async () => {
-    await axios.get("/auth/logout");
-    setUser(null);
+    try {
+      await axios.get("/auth/logout");
+      setUser(null);
+    } finally {
+      setUser(null);
+    }
   };
+
+  const clearError = () => setError("");
 
   useEffect(() => {
     fetchUser();
@@ -49,7 +57,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, fetchUser, login, logout }}
+      value={{
+        user,
+        error,
+        fetchUser,
+        authLoading,
+        login,
+        actionLoading,
+        logout,
+        clearError,
+      }}
     >
       {children}
     </AuthContext.Provider>
