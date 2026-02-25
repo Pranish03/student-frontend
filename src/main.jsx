@@ -7,8 +7,9 @@ import { Login } from "./pages/login";
 import { ForgotPassword } from "./pages/forgot-password";
 import { CheckEmail } from "./pages/check-email";
 import { ResetPassword } from "./pages/reset-password";
+import { AdminDashboard } from "./pages/admin";
 
-import StudentDashboard from "./pages/student/index.jsx";
+import { StudentDashboard } from "./pages/student";
 import TeacherDashboard from "./pages/teacher/index.jsx";
 import ManageStudent from "./pages/teacher/managestudent/index.jsx";
 import AddStudent from "./pages/teacher/managestudent/add-student.jsx";
@@ -22,12 +23,13 @@ createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <Toaster richColors position="top-center" />
         <Routes>
-          <Route index element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/check-email" element={<CheckEmail />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route element={<Login />} index />
+          <Route element={<ForgotPassword />} path="/forgot-password" />
+          <Route element={<CheckEmail />} path="/check-email" />
+          <Route element={<ResetPassword />} path="/reset-password/:token" />
+          <Route element={<StudentDashboard />} path="/student" />
+          <Route element={<AdminDashboard />} path="/admin" />
 
-          <Route path="/student-dashboard" element={<StudentDashboard />} />
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
           <Route path="/manage-student" element={<ManageStudent />} />
           <Route path="/manage-teacher" element={<ManageTeacher />} />

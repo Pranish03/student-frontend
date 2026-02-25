@@ -1,12 +1,10 @@
-import React from "react";
-
-export default function StudentDashboard() {
+export const StudentDashboard = () => {
   return (
     <div className="flex min-h-screen">
       <aside className="w-70 bg-white text-gray-800 p-4 border-r border-gray-200">
         <div className="mb-6">
-          <h1 className="text-4xl text-green-600 font-black tracking-wide pl-4 mb-20">
-            S.M.S
+          <h1 className="text-2xl text-gray-900 font-black tracking-wide pl-4 mb-20">
+            SMS.
           </h1>
         </div>
 
@@ -44,4 +42,4 @@ export default function StudentDashboard() {
       </div>
     </div>
   );
-}
+};
