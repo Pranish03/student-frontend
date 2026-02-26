@@ -121,9 +121,9 @@ export const Login = () => {
 
           <div className="w-full mt-5 mb-7">
             <Button
-              type="submit"
               className="w-full flex items-center justify-center gap-3"
-              loading={loading}
+              type="submit"
+              disabled={loading}
             >
               {loading && <ImSpinner8 className="animate-spin text-lg" />}
               Login

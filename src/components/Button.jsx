@@ -1,17 +1,9 @@
-export const Button = ({
-  children,
-  type = "button",
-  className = "",
-  loading = false,
-  ...props
-}) => {
+export const Button = ({ className = "", children, ...props }) => {
   return (
     <button
-      type={type}
-      disabled={loading}
       className={`
-        px-3 py-1.5 rounded-lg text-base transition-colors ease-linear bg-green-600 text-white font-semibold
-        ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-green-600/90 cursor-pointer"}
+        px-3 py-1.5 rounded-lg font-semibold text-base text-white bg-green-600 hover:bg-green-600/90 cursor-pointer 
+        transition-colors ease-linear disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:opacity-70
         ${className}
       `}
       {...props}

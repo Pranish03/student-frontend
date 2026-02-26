@@ -1,18 +1,28 @@
 import { useState } from "react";
 import { LuEllipsis } from "react-icons/lu";
-import { IoCheckmarkCircle, IoCloseCircleSharp } from "react-icons/io5";
+import { IoCheckmarkCircle, IoCloseCircle, IoAddCircle } from "react-icons/io5";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatDate } from "../../../utils/formatDate";
 import { Pagination } from "../../../components/Pagination";
+import { Button } from "../../../components/Button";
 
 export const ManageStudents = () => {
   const [page, setPage] = useState(1);
 
-  const { data } = useFetch(`/users?role=student&page=${page}&limit=1`);
+  const limit = 4;
+
+  const { data } = useFetch(`/users?page=${page}&limit=${limit}`);
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-4">Students</h2>
+
+      <div className=" flex justify-end mb-4">
+        <Button className="flex items-center gap-2">
+          <IoAddCircle size={22} />
+          Add Student
+        </Button>
+      </div>
 
       <div className="mx-auto">
         <div className="overflow-x-auto rounded-lg border border-gray-200">
@@ -36,7 +46,9 @@ export const ManageStudents = () => {
             <tbody className="divide-y divide-gray-200 text-gray-800">
               {data?.data?.map((student, index) => (
                 <tr key={student._id}>
-                  <td className="px-3 py-2">{++index}</td>
+                  <td className="px-3 py-2">
+                    {(page - 1) * limit + index + 1}
+                  </td>
                   <td className="px-3 py-2">{student.name}</td>
                   <td className="px-3 py-2">{student.email}</td>
                   <td className="px-3 py-2">
@@ -50,10 +62,7 @@ export const ManageStudents = () => {
                       </span>
                     ) : (
                       <span className="py-0.5 px-2 rounded-full border border-gray-200 text-gray-500 text-sm flex items-center gap-1 max-w-min">
-                        <IoCloseCircleSharp
-                          size={14}
-                          className="text-red-600"
-                        />
+                        <IoCloseCircle size={14} className="text-red-600" />
                         Deactive
                       </span>
                     )}
