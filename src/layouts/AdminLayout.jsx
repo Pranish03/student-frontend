@@ -27,7 +27,7 @@ export const AdminLayout = () => {
             icon={LuGraduationCap}
             size={21}
             label="Academics"
-            defaultOpen={false}
+            defaultOpen={true}
           >
             <NavButton to="/admin/manage-batch">Batch</NavButton>
             <NavButton to="/admin/manage-classes">Classes</NavButton>
