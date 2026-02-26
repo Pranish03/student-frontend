@@ -193,7 +193,7 @@ export const ManageStudents = () => {
             {error && <p className="text-red-600 mt-0 mb-0">{error}</p>}
 
             <Button
-              className="w-full flex items-center justify-center gap-3"
+              className="flex items-center justify-center gap-3 float-end"
               type="submit"
               disabled={loading}
             >
