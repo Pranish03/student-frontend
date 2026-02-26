@@ -13,7 +13,7 @@ export const AdminLayout = () => {
           </h1>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 text-gray-900">
           <div>
             <NavButton to="/admin">
               <span className="flex items-center gap-3">

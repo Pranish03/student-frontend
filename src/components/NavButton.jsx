@@ -6,7 +6,7 @@ export const NavButton = ({ to, className = "", children, ...props }) => {
       to={to}
       end
       className={({ isActive }) =>
-        isActive ? "text-green-600" : "text-gray-600"
+        isActive ? "text-green-600" : "text-gray-900"
       }
     >
       <button
