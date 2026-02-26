@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { LuUsers, LuGraduationCap, LuChartColumnBig } from "react-icons/lu";
 import { CollapsibleMenu } from "../components/CollapsibleMenu";
 import { NavButton } from "../components/NavButton";
@@ -15,20 +15,12 @@ export const AdminLayout = () => {
 
         <div className="space-y-2">
           <div>
-            <NavLink
-              to="/admin"
-              end
-              className={({ isActive }) =>
-                isActive ? "text-green-600" : "text-gray-800"
-              }
-            >
-              <NavButton>
-                <span className="flex items-center gap-3">
-                  <LuChartColumnBig size={20} />
-                  Dashboard
-                </span>
-              </NavButton>
-            </NavLink>
+            <NavButton to="/admin">
+              <span className="flex items-center gap-3">
+                <LuChartColumnBig size={20} />
+                Dashboard
+              </span>
+            </NavButton>
           </div>
 
           <CollapsibleMenu
@@ -37,46 +29,20 @@ export const AdminLayout = () => {
             label="Academics"
             defaultOpen={false}
           >
-            <NavButton>Batch</NavButton>
-            <NavButton>Classes</NavButton>
-            <NavButton>Courses</NavButton>
+            <NavButton to="/admin/manage-batch">Batch</NavButton>
+            <NavButton to="/admin/manage-classes">Classes</NavButton>
+            <NavButton to="/admin/manage-courses">Courses</NavButton>
           </CollapsibleMenu>
 
           <CollapsibleMenu
             icon={LuUsers}
             size={19}
             label="Manage Users"
-            defaultOpen={false}
+            defaultOpen={true}
           >
-            <NavLink
-              to="/admin/manage-student"
-              end
-              className={({ isActive }) =>
-                isActive ? "text-green-600" : "text-gray-800"
-              }
-            >
-              <NavButton>Students</NavButton>
-            </NavLink>
-
-            <NavLink
-              to="/admin/manage-teacher"
-              end
-              className={({ isActive }) =>
-                isActive ? "text-green-600" : "text-gray-800"
-              }
-            >
-              <NavButton>Teachers</NavButton>
-            </NavLink>
-
-            <NavLink
-              to="/admin/manage-admin"
-              end
-              className={({ isActive }) =>
-                isActive ? "text-green-600" : "text-gray-800"
-              }
-            >
-              <NavButton>Admins</NavButton>
-            </NavLink>
+            <NavButton to="/admin/manage-students">Students</NavButton>
+            <NavButton to="/admin/manage-teachers">Teachers</NavButton>
+            <NavButton to="/admin/manage-admins">Admins</NavButton>
           </CollapsibleMenu>
         </div>
       </aside>

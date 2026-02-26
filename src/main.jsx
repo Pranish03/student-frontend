@@ -10,12 +10,15 @@ import { Login } from "./pages/login";
 import { ForgotPassword } from "./pages/forgot-password";
 import { CheckEmail } from "./pages/check-email";
 import { ResetPassword } from "./pages/reset-password";
-import { AdminDashboard } from "./pages/admin";
 
 import { AdminLayout } from "./layouts/AdminLayout.jsx";
-import { ManageStudent } from "./pages/admin/manage-user/student.jsx";
-import { ManageTeacher } from "./pages/admin/manage-user/teacher.jsx";
-import { ManageAdmin } from "./pages/admin/manage-user/admin.jsx";
+import { AdminDashboard } from "./pages/admin/dashboard";
+import { ManageBatch } from "./pages/admin/manage-batch";
+import { ManageClasses } from "./pages/admin/manage-classes";
+import { ManageCourses } from "./pages/admin/manage-courses";
+import { ManageStudents } from "./pages/admin/manage-students";
+import { ManageTeachers } from "./pages/admin/manage-teachers";
+import { ManageAdmins } from "./pages/admin/manage-admins";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -30,9 +33,12 @@ createRoot(document.getElementById("root")).render(
 
           <Route element={<AdminLayout />} path="/admin">
             <Route element={<AdminDashboard />} index />
-            <Route element={<ManageStudent />} path="manage-student" />
-            <Route element={<ManageTeacher />} path="manage-teacher" />
-            <Route element={<ManageAdmin />} path="manage-admin" />
+            <Route element={<ManageBatch />} path="manage-batch" />
+            <Route element={<ManageClasses />} path="manage-classes" />
+            <Route element={<ManageCourses />} path="manage-courses" />
+            <Route element={<ManageStudents />} path="manage-students" />
+            <Route element={<ManageTeachers />} path="manage-teachers" />
+            <Route element={<ManageAdmins />} path="manage-admins" />
           </Route>
         </Routes>
       </BrowserRouter>
