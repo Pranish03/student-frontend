@@ -3,17 +3,18 @@ export const Button = ({
   type = "button",
   className = "",
   loading = false,
+  ...props
 }) => {
   return (
     <button
       type={type}
       disabled={loading}
       className={`
-        bg-green-600 shadow text-white font-semibold text-base px-3 py-1.5 
-        rounded-lg transition-colors ease-linear 
+        px-3 py-1.5 rounded-lg text-base transition-colors ease-linear bg-green-600 text-white font-semibold
         ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-green-600/90 cursor-pointer"}
         ${className}
       `}
+      {...props}
     >
       {children}
     </button>
