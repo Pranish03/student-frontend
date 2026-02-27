@@ -11,7 +11,7 @@ export const ManageStudents = () => {
   const [page, setPage] = useState(1);
   const [showAddDialog, setShowAddDialog] = useState(false);
 
-  const limit = 10;
+  const limit = 15;
 
   const { data, reFetch } = useFetch(`/users?page=${page}&limit=${limit}`);
 

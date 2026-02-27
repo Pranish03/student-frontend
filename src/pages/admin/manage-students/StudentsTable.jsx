@@ -20,13 +20,15 @@ export const StudentsTable = ({ students, page, limit }) => {
     setMenu({
       id: studentId,
       top: rect.bottom + 4,
-      left: rect.left,
+      right: window.innerWidth - rect.right,
     });
   };
 
   const closeMenu = () => setMenu(null);
 
   useEffect(() => {
+    if (!menu) return;
+
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         closeMenu();
@@ -35,7 +37,7 @@ export const StudentsTable = ({ students, page, limit }) => {
 
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+  }, [menu]);
 
   return (
     <>
@@ -90,7 +92,7 @@ export const StudentsTable = ({ students, page, limit }) => {
       {menu && (
         <div
           ref={menuRef}
-          style={{ top: menu.top, left: menu.left }}
+          style={{ top: menu.top, right: menu.right }}
           className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
         >
           <button
