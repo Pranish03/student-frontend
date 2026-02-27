@@ -12,7 +12,7 @@ export const Button = ({
         ${variant === "primary" && "font-semibold text-white bg-green-600 hover:bg-green-600/90"}
         ${variant === "secondary" && "font-medium text-gray-800 bg-white hover:bg-black/5 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]"}
         ${variant === "danger" && "font-semibold text-white bg-red-600 hover:bg-red-600/90"}
-        ${variant === "ghost" && "font-medium text-gray-900 bg-white hover:bg-black/5"}
+        ${variant === "ghost" && "font-medium bg-white hover:bg-black/5"}
         ${variant === "ghost-danger" && "font-medium text-red-600 bg-white hover:bg-red-600/10"}
         ${className}
       `}

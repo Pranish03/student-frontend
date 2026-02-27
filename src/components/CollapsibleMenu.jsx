@@ -17,7 +17,7 @@ export const CollapsibleMenu = ({
     <div className={className}>
       <Button
         variant="ghost"
-        className="w-full flex justify-between items-center"
+        className="w-full flex justify-between items-center text-gray-900"
         onClick={() => setOpen((prev) => !prev)}
       >
         <span className="flex items-center gap-3">
