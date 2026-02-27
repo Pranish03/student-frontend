@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoChevronForward } from "react-icons/io5";
+import { Button } from "./Button";
 
 export const CollapsibleMenu = ({
   icon: Icon,
@@ -14,8 +15,9 @@ export const CollapsibleMenu = ({
 
   return (
     <div className={className}>
-      <button
-        className="font-medium text-base px-3 py-1.5 rounded-[10px] transition-colors ease-linear cursor-pointer w-full hover:bg-black/5 flex justify-between items-center"
+      <Button
+        variant="ghost"
+        className="w-full flex justify-between items-center"
         onClick={() => setOpen((prev) => !prev)}
       >
         <span className="flex items-center gap-3">
@@ -26,7 +28,7 @@ export const CollapsibleMenu = ({
         <motion.span animate={{ rotate: open ? 90 : 0 }}>
           <IoChevronForward size={18} />
         </motion.span>
-      </button>
+      </Button>
 
       <AnimatePresence>
         {open && (
@@ -35,7 +37,7 @@ export const CollapsibleMenu = ({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.1, ease: "easeInOut" }}
-            className="space-y-1 border-l border-gray-200 ml-4.5 pl-3"
+            className="border-l border-gray-200 ml-4.5 pl-3"
           >
             {children}
           </motion.div>

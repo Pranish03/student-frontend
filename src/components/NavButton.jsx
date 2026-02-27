@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { Button } from "./Button";
 
 export const NavButton = ({ to, className = "", children, ...props }) => {
   return (
@@ -9,16 +10,13 @@ export const NavButton = ({ to, className = "", children, ...props }) => {
         isActive ? "text-green-600" : "text-gray-900"
       }
     >
-      <button
-        className={`
-        font-medium text-base px-3 py-1.5 rounded-lg transition-colors ease-linear
-        cursor-pointer w-full flex items-center hover:bg-black/5
-        ${className}
-      `}
+      <Button
+        variant="ghost"
+        className={`w-full flex items-center ${className}`}
         {...props}
       >
         {children}
-      </button>
+      </Button>
     </NavLink>
   );
 };

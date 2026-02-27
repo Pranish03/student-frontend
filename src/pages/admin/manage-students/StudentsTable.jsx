@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { LuEllipsis } from "react-icons/lu";
 import { formatDate } from "../../../utils/formatDate";
 import { StatusBadge } from "../../../components/StatusBadge";
+import { Button } from "../../../components/Button";
 
 export const StudentsTable = ({ students, page, limit }) => {
   const [menu, setMenu] = useState(null);
@@ -95,24 +96,19 @@ export const StudentsTable = ({ students, page, limit }) => {
           style={{ top: menu.top, right: menu.right }}
           className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
         >
-          <button
-            onClick={closeMenu}
-            className="px-3 py-1.5 hover:bg-black/5 text-left rounded-lg cursor-pointer"
-          >
+          <Button variant="ghost" className="text-left" onClick={closeMenu}>
             Edit
-          </button>
-          <button
+          </Button>
+          <Button variant="ghost" className="text-left" onClick={closeMenu}>
+            Toggle Status
+          </Button>
+          <Button
+            variant="ghost-danger"
+            className="text-left"
             onClick={closeMenu}
-            className="px-3 py-1.5 hover:bg-black/5 text-left rounded-lg cursor-pointer"
-          >
-            Deactivate
-          </button>
-          <button
-            onClick={closeMenu}
-            className="px-3 py-1.5 hover:bg-red-600/10 text-left rounded-lg cursor-pointer text-red-600"
           >
             Delete
-          </button>
+          </Button>
         </div>
       )}
     </>
