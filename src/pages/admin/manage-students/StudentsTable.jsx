@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { LuEllipsis } from "react-icons/lu";
-import { formatDate } from "../../../utils/formatDate";
-import { StatusBadge } from "../../../components/StatusBadge";
-import { Button } from "../../../components/Button";
+import { TableRow } from "./TableRow";
+import { ActionMenu } from "./ActionMenu";
 
 export const StudentsTable = ({ students, page, limit }) => {
   const [menu, setMenu] = useState(null);
@@ -40,6 +38,16 @@ export const StudentsTable = ({ students, page, limit }) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [menu]);
 
+  const tableHeading = [
+    "SN",
+    "Name",
+    "Email",
+    "Status",
+    "Created at",
+    "Updated at",
+    "Actions",
+  ];
+
   return (
     <>
       <div className="rounded-[10px] border border-black/20 overflow-hidden">
@@ -47,70 +55,31 @@ export const StudentsTable = ({ students, page, limit }) => {
           <table className="min-w-full">
             <thead className="bg-black/5 text-gray-900">
               <tr>
-                <th className="px-3 py-2 text-left font-semibold">SN</th>
-                <th className="px-3 py-2 text-left font-semibold">Name</th>
-                <th className="px-3 py-2 text-left font-semibold">Email</th>
-                <th className="px-3 py-2 text-left font-semibold">Status</th>
-                <th className="px-3 py-2 text-left font-semibold">
-                  Created at
-                </th>
-                <th className="px-3 py-2 text-left font-semibold">
-                  Updated at
-                </th>
-                <th className="px-3 py-2 text-left font-semibold">Actions</th>
+                {tableHeading.map((heading, index) => (
+                  <th key={index} className="px-3 py-2 text-left font-semibold">
+                    {heading}
+                  </th>
+                ))}
               </tr>
             </thead>
 
             <tbody className="divide-y divide-black/20 border-t border-black/20 text-gray-800">
               {students?.map((student, index) => (
-                <tr key={student._id}>
-                  <td className="px-3 py-2">
-                    {(page - 1) * limit + index + 1}
-                  </td>
-                  <td className="px-3 py-2">{student.name}</td>
-                  <td className="px-3 py-2">{student.email}</td>
-                  <td className="px-3 py-2">
-                    <StatusBadge active={student.isActive} />
-                  </td>
-                  <td className="px-3 py-2">{formatDate(student.createdAt)}</td>
-                  <td className="px-3 py-2">{formatDate(student.updatedAt)}</td>
-
-                  <td className="px-3 py-2">
-                    <button
-                      onClick={(e) => openMenu(e, student._id)}
-                      className="p-1.5 hover:bg-gray-100 rounded-[10px] cursor-pointer"
-                    >
-                      <LuEllipsis size={18} />
-                    </button>
-                  </td>
-                </tr>
+                <TableRow
+                  key={student._id}
+                  student={student}
+                  index={index}
+                  page={page}
+                  limit={limit}
+                  onMenuOpen={openMenu}
+                />
               ))}
             </tbody>
           </table>
         </div>
       </div>
 
-      {menu && (
-        <div
-          ref={menuRef}
-          style={{ top: menu.top, right: menu.right }}
-          className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
-        >
-          <Button variant="ghost" className="text-left" onClick={closeMenu}>
-            Edit
-          </Button>
-          <Button variant="ghost" className="text-left" onClick={closeMenu}>
-            Toggle Status
-          </Button>
-          <Button
-            variant="ghost-danger"
-            className="text-left"
-            onClick={closeMenu}
-          >
-            Delete
-          </Button>
-        </div>
-      )}
+      <ActionMenu menu={menu} menuRef={menuRef} onClose={() => setMenu(null)} />
     </>
   );
 };
