@@ -1,8 +1,8 @@
 import { LuEllipsis } from "react-icons/lu";
-import { IoCheckmarkCircle, IoCloseCircle } from "react-icons/io5";
 import { formatDate } from "../../../utils/formatDate";
+import { StatusBadge } from "../../../components/StatusBadge";
 
-export const StudentTable = ({ students, page, limit }) => {
+export const StudentsTable = ({ students, page, limit }) => {
   return (
     <div className="overflow-x-auto rounded-lg border border-gray-200">
       <table className="min-w-full">
@@ -19,23 +19,13 @@ export const StudentTable = ({ students, page, limit }) => {
         </thead>
 
         <tbody className="divide-y divide-gray-200 text-gray-800">
-          {students.map((student, index) => (
+          {students?.map((student, index) => (
             <tr key={student._id}>
               <td className="px-3 py-2">{(page - 1) * limit + index + 1}</td>
               <td className="px-3 py-2">{student.name}</td>
               <td className="px-3 py-2">{student.email}</td>
               <td className="px-3 py-2">
-                {student.isActive ? (
-                  <span className="py-0.5 px-2 rounded-full border border-gray-200 text-gray-500 text-sm flex items-center gap-1 max-w-min">
-                    <IoCheckmarkCircle size={14} className="text-green-500" />
-                    Active
-                  </span>
-                ) : (
-                  <span className="py-0.5 px-2 rounded-full border border-gray-200 text-gray-500 text-sm flex items-center gap-1 max-w-min">
-                    <IoCloseCircle size={14} className="text-red-600" />
-                    Deactive
-                  </span>
-                )}
+                <StatusBadge active={student.isActive} />
               </td>
               <td className="px-3 py-2">{formatDate(student.createdAt)}</td>
               <td className="px-3 py-2">{formatDate(student.updatedAt)}</td>

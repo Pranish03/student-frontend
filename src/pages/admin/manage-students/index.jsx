@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoAddCircle } from "react-icons/io5";
 import { useFetch } from "../../../hooks/useFetch";
-import { StudentTable } from "./StudentTable";
+import { StudentsTable } from "./StudentsTable";
 import { AddStudentDialog } from "./AddStudentDialog";
 import { Pagination } from "../../../components/Pagination";
 import { Button } from "../../../components/Button";
@@ -29,7 +29,7 @@ export const ManageStudents = () => {
           </Button>
         </div>
 
-        <StudentTable students={data?.data} page={page} limit={limit} />
+        <StudentsTable students={data?.data} page={page} limit={limit} />
 
         <Pagination
           page={page}
