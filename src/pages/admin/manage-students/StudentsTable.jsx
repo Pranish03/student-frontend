@@ -4,7 +4,7 @@ import { StatusBadge } from "../../../components/StatusBadge";
 
 export const StudentsTable = ({ students, page, limit }) => {
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
+    <div className="overflow-x-auto rounded-[10px] border border-gray-200">
       <table className="min-w-full">
         <thead className="bg-gray-100 border-b border-gray-200 text-gray-900">
           <tr>

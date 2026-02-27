@@ -47,7 +47,7 @@ export const Pagination = ({ page, totalPages, onPageChange }) => {
 const PaginationButton = ({ children, ...props }) => {
   return (
     <button
-      className="p-1 border border-gray-200 rounded-lg text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 disabled:hover:bg-transparent"
+      className="p-1 border border-gray-200 rounded-[10px] text-gray-800 cursor-pointer hover:bg-black/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
       {...props}
     >
       {children}

@@ -12,7 +12,7 @@ export const NavButton = ({ to, className = "", children, ...props }) => {
       <button
         className={`
         font-medium text-base px-3 py-1.5 rounded-lg transition-colors ease-linear
-        cursor-pointer w-full flex items-center hover:bg-green-700/5
+        cursor-pointer w-full flex items-center hover:bg-black/5
         ${className}
       `}
         {...props}

@@ -15,8 +15,7 @@ export const CollapsibleMenu = ({
   return (
     <div className={className}>
       <button
-        className="font-medium text-base px-3 py-1.5 rounded-lg transition-colors 
-        ease-linear cursor-pointer w-full hover:bg-green-700/5 flex justify-between items-center"
+        className="font-medium text-base px-3 py-1.5 rounded-[10px] transition-colors ease-linear cursor-pointer w-full hover:bg-black/5 flex justify-between items-center"
         onClick={() => setOpen((prev) => !prev)}
       >
         <span className="flex items-center gap-3">
