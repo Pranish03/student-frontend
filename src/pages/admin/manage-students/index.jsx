@@ -1,57 +1,19 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { LuEllipsis } from "react-icons/lu";
 import { IoCheckmarkCircle, IoCloseCircle, IoAddCircle } from "react-icons/io5";
-import { ImSpinner8 } from "react-icons/im";
-import { toast } from "sonner";
-import { axios } from "../../../lib/axios";
-import { createStudentSchema } from "../../../schemas/userSchema";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatDate } from "../../../utils/formatDate";
 import { Pagination } from "../../../components/Pagination";
 import { Button } from "../../../components/Button";
-import { Dialog } from "../../../components/Dialog";
-import { Input } from "../../../components/Input";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { AddStudentDialog } from "./AddStudentDialog";
 
 export const ManageStudents = () => {
   const [page, setPage] = useState(1);
   const [showDialog, setShowDialog] = useState(false);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-    },
-    resolver: zodResolver(createStudentSchema),
-  });
 
   const limit = 10;
 
   const { data, reFetch } = useFetch(`/users?page=${page}&limit=${limit}`);
-
-  const onSubmit = async (data) => {
-    try {
-      setLoading(true);
-      const res = await axios.post("/users", data);
-
-      toast.success(res?.data?.message);
-      reFetch();
-      setShowDialog(false);
-      reset();
-    } catch (err) {
-      setError(err?.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>
@@ -132,70 +94,10 @@ export const ManageStudents = () => {
       </div>
 
       {showDialog && (
-        <Dialog
-          heading="Add Student"
-          desc="Enter student information below to create a new student."
+        <AddStudentDialog
           close={() => setShowDialog(false)}
-        >
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-5">
-              <label
-                htmlFor="name"
-                className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.name ? "text-red-600" : "text-gray-900"}`}
-              >
-                Name
-                <span className="text-red-600">*</span>
-              </label>
-
-              <Input
-                className="w-full"
-                type="text"
-                id="name"
-                placeholder="John Doe"
-                {...register("name")}
-                errors={errors.name}
-              />
-
-              {errors.name && (
-                <p className="text-red-600 mt-2">{errors.name.message}</p>
-              )}
-            </div>
-
-            <div className={`${error ? "mb-5" : "mb-7"}`}>
-              <label
-                htmlFor="email"
-                className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
-              >
-                Email
-                <span className="text-red-600">*</span>
-              </label>
-
-              <Input
-                className="w-full"
-                type="email"
-                id="email"
-                placeholder="m@example.com"
-                {...register("email")}
-                errors={errors.email}
-              />
-
-              {errors.email && (
-                <p className="text-red-600 mt-2">{errors.email.message}</p>
-              )}
-            </div>
-
-            {error && <p className="text-red-600 mt-0 mb-0">{error}</p>}
-
-            <Button
-              className="flex items-center justify-center gap-3 float-end"
-              type="submit"
-              disabled={loading}
-            >
-              {loading && <ImSpinner8 className="animate-spin text-lg" />}
-              Add Student
-            </Button>
-          </form>
-        </Dialog>
+          onSuccess={reFetch}
+        />
       )}
     </>
   );
