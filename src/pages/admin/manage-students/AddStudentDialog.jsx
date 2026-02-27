@@ -13,6 +13,11 @@ export const AddStudentDialog = ({ close, onSuccess }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const defaultValues = {
+    name: "",
+    email: "",
+  };
+
   useEffect(() => {
     setError(null);
   }, []);
@@ -23,10 +28,7 @@ export const AddStudentDialog = ({ close, onSuccess }) => {
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-    },
+    defaultValues: defaultValues,
     resolver: zodResolver(createStudentSchema),
   });
 
@@ -101,14 +103,23 @@ export const AddStudentDialog = ({ close, onSuccess }) => {
 
         {error && <p className="text-red-600 mt-0 mb-0">{error}</p>}
 
-        <Button
-          className="flex items-center justify-center gap-3 float-end"
-          type="submit"
-          disabled={loading}
-        >
-          {loading && <ImSpinner8 className="animate-spin text-lg" />}
-          Add Student
-        </Button>
+        <div className="flex items-center gap-4 justify-end">
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => reset(defaultValues)}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="flex items-center justify-center gap-3"
+            type="submit"
+            disabled={loading}
+          >
+            {loading && <ImSpinner8 className="animate-spin text-lg" />}
+            Add Student
+          </Button>
+        </div>
       </form>
     </Dialog>
   );

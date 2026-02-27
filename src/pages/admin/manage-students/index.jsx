@@ -5,6 +5,7 @@ import { StudentsTable } from "./StudentsTable";
 import { AddStudentDialog } from "./AddStudentDialog";
 import { Pagination } from "../../../components/Pagination";
 import { Button } from "../../../components/Button";
+import { AnimatePresence } from "framer-motion";
 
 export const ManageStudents = () => {
   const [page, setPage] = useState(1);
@@ -38,12 +39,14 @@ export const ManageStudents = () => {
         />
       </div>
 
-      {showAddDialog && (
-        <AddStudentDialog
-          close={() => setShowAddDialog(false)}
-          onSuccess={reFetch}
-        />
-      )}
+      <AnimatePresence>
+        {showAddDialog && (
+          <AddStudentDialog
+            close={() => setShowAddDialog(false)}
+            onSuccess={reFetch}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };
