@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImSpinner8 } from "react-icons/im";
-import { axios } from "../../lib/axios";
-import { forgotPasswordSchema } from "../../schemas/auth-schema";
-import { Button } from "../../components/Button";
-import { Input } from "../../components/Input";
+import { axios } from "../../../lib/axios";
+import { forgotPasswordSchema } from "../../../schemas/authSchema";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
 
 export const ForgotPassword = () => {
   const [error, setError] = useState("");

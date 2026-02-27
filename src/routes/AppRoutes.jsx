@@ -1,7 +1,7 @@
 import { useRoutes } from "react-router-dom";
-import { AuthRoutes } from "./AuthRoutes";
+import { GuestRoutes } from "./GuestRoutes";
 import { AdminRoutes } from "./AdminRoutes";
 
 export const AppRoutes = () => {
-  return useRoutes([...AuthRoutes, AdminRoutes]);
+  return useRoutes([...GuestRoutes, AdminRoutes]);
 };

@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuEllipsis } from "react-icons/lu";
 import { IoCheckmarkCircle, IoCloseCircle, IoAddCircle } from "react-icons/io5";
-import { createStudentSchema } from "../../../schemas/user-schema";
+import { ImSpinner8 } from "react-icons/im";
+import { toast } from "sonner";
+import { axios } from "../../../lib/axios";
+import { createStudentSchema } from "../../../schemas/userSchema";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatDate } from "../../../utils/formatDate";
 import { Pagination } from "../../../components/Pagination";
@@ -10,9 +13,6 @@ import { Button } from "../../../components/Button";
 import { Dialog } from "../../../components/Dialog";
 import { Input } from "../../../components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { axios } from "../../../lib/axios";
-import { toast } from "sonner";
-import { ImSpinner8 } from "react-icons/im";
 
 export const ManageStudents = () => {
   const [page, setPage] = useState(1);

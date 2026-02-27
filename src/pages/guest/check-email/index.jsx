@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiMail } from "react-icons/fi";
-import { Button } from "../../components/Button";
+import { Button } from "../../../components/Button";
 
 export const CheckEmail = () => {
   return (

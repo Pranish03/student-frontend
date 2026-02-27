@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "../../components/Button";
-import { Input } from "../../components/Input";
-import { resetPasswordSchema } from "../../schemas/auth-schema";
-import { axios } from "../../lib/axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
+import { resetPasswordSchema } from "../../../schemas/authSchema";
+import { axios } from "../../../lib/axios";
+import { toast } from "sonner";
 
 export const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import { loginSchema } from "../../schemas/auth-schema";
-import { Button } from "../../components/Button";
-import { Input } from "../../components/Input";
-import { useAuth } from "../../hooks/useAuth";
 import { toast } from "sonner";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
+import { useAuth } from "../../../hooks/useAuth";
+import { loginSchema } from "../../../schemas/authSchema";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
