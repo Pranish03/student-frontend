@@ -1,74 +1,24 @@
-import { useEffect, useState } from "react";
-import { axios } from "../../lib/axios";
+import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "./AuthContext";
+import { getMe } from "../../api/auth";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
-  const [authLoading, setAuthLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+    retry: false,
+  });
 
-  const fetchUser = async () => {
-    try {
-      const res = await axios.get("/auth/me");
-      setUser(res.data?.data);
-    } catch (error) {
-      if (error.response?.status === 401) {
-        setUser(null);
-      } else {
-        setError(error.response?.data?.message || "internal server error");
-      }
-    } finally {
-      setAuthLoading(false);
-    }
+  const user = data?.data ?? null;
+
+  const value = {
+    user,
+    isLoading,
+    error,
+    refetch,
+    isAuthenticated: !!data?.data,
+    role: user?.role ?? null,
   };
 
-  const login = async (data) => {
-    try {
-      setActionLoading(true);
-      const res = await axios.post("/auth/login", data);
-      setUser(res.data?.data);
-      setError("");
-      return { success: true, message: res.data?.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "Something went wrong",
-      };
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await axios.get("/auth/logout");
-      setUser(null);
-    } finally {
-      setUser(null);
-    }
-  };
-
-  const clearError = () => setError("");
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        error,
-        fetchUser,
-        authLoading,
-        login,
-        actionLoading,
-        logout,
-        clearError,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
