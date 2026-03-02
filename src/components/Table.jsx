@@ -20,7 +20,7 @@ import {
 } from "react-icons/lu";
 import { Input } from "./Input";
 
-export const Table = ({ data, columns }) => {
+export const Table = ({ data, columns, globalFilterFn }) => {
   const [sorted, setSorted] = useState();
   const [filtered, setFiltered] = useState();
 
@@ -39,6 +39,7 @@ export const Table = ({ data, columns }) => {
     },
     onSortingChange: setSorted,
     onGlobalFilterChange: setFiltered,
+    globalFilterFn,
   });
 
   return (
