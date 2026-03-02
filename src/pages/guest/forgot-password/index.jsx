@@ -1,17 +1,14 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImSpinner8 } from "react-icons/im";
-import { axios } from "../../../lib/axios";
 import { forgotPasswordSchema } from "../../../schemas/authSchema";
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
+import { forgotPassword } from "../../../api/auth";
 
 export const ForgotPassword = () => {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
   const {
@@ -25,17 +22,14 @@ export const ForgotPassword = () => {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const onSubmit = async (data) => {
-    try {
-      setLoading(true);
-      await axios.post("/auth/forgot-password", data);
+  const mutation = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: () => {
       navigate("/check-email");
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
+
+  const onSubmit = (data) => mutation.mutate(data);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -48,7 +42,7 @@ export const ForgotPassword = () => {
         </h2>
 
         <form className="text-gray-800" onSubmit={handleSubmit(onSubmit)}>
-          <div className={`${error ? "mb-5" : "mb-7"}`}>
+          <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
             <label
               htmlFor="email"
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
@@ -69,15 +63,24 @@ export const ForgotPassword = () => {
             )}
           </div>
 
-          {error && <p className="text-red-600 mt-0 mb-0">{error}</p>}
+          {mutation?.isError && (
+            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-base">
+                {mutation?.error?.response?.data?.message ||
+                  "Something went wrong"}
+              </p>
+            </div>
+          )}
 
           <div className="w-full mt-5 mb-7">
             <Button
               className="w-full flex items-center justify-center gap-3"
               type="submit"
-              disabled={loading}
+              disabled={mutation?.isPending}
             >
-              {loading && <ImSpinner8 className="animate-spin text-lg" />}
+              {mutation?.isPending && (
+                <ImSpinner8 className="animate-spin text-lg" />
+              )}
               Send Email
             </Button>
           </div>

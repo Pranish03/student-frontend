@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
-import { useAuth } from "../../../hooks/useAuth";
+import { login } from "../../../api/auth";
 import { loginSchema } from "../../../schemas/authSchema";
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState("");
-
-  const { login, actionLoading: loading } = useAuth();
 
   const {
     register,
@@ -28,15 +26,14 @@ export const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data) => {
-    const { success, message } = await login(data);
+  const mutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      toast.success(data?.message);
+    },
+  });
 
-    if (success) {
-      toast.success(message);
-    } else {
-      setLoginError(message);
-    }
-  };
+  const onSubmit = async (data) => mutation.mutate(data);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -75,7 +72,7 @@ export const Login = () => {
             )}
           </div>
 
-          <div className={`${loginError ? "mb-5" : "mb-7"}`}>
+          <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
             <div className="flex items-center justify-between sm:text-base text-sm mb-2 font-medium ">
               <label
                 htmlFor="password"
@@ -117,15 +114,24 @@ export const Login = () => {
             )}
           </div>
 
-          {loginError && <p className="text-red-600 mt-0 mb-0">{loginError}</p>}
+          {mutation?.isError && (
+            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-base">
+                {mutation?.error?.response?.data?.message ||
+                  "Something went wrong"}
+              </p>
+            </div>
+          )}
 
           <div className="w-full mt-5 mb-7">
             <Button
               className="w-full flex items-center justify-center gap-3"
               type="submit"
-              disabled={loading}
+              disabled={mutation?.isPending}
             >
-              {loading && <ImSpinner8 className="animate-spin text-lg" />}
+              {mutation?.isPending && (
+                <ImSpinner8 className="animate-spin text-lg" />
+              )}
               Login
             </Button>
           </div>

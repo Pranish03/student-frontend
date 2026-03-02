@@ -1,20 +1,19 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
+import { resetPassword } from "../../../api/auth";
+import { resetPasswordSchema } from "../../../schemas/authSchema";
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
-import { resetPasswordSchema } from "../../../schemas/authSchema";
-import { axios } from "../../../lib/axios";
-import { toast } from "sonner";
 
 export const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const { token } = useParams();
 
@@ -32,18 +31,15 @@ export const ResetPassword = () => {
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmit = async (data) => {
-    try {
-      setLoading(true);
-      const res = await axios.post(`/auth/reset-password/${token}`, data);
-      toast.success(res.data?.message);
+  const mutation = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: (data) => {
+      toast.success(data?.message);
       navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
+
+  const onSubmit = async (data) => mutation.mutate({ data, token });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -85,7 +81,7 @@ export const ResetPassword = () => {
             </div>
           </div>
 
-          <div className={`${error ? "mb-5" : "mb-7"}`}>
+          <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
             <label
               htmlFor="confirm"
               className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.confirm ? "text-red-600" : "text-gray-900"}`}
@@ -117,15 +113,24 @@ export const ResetPassword = () => {
             )}
           </div>
 
-          {error && <p className="text-red-600 mt-0 mb-0">{error}</p>}
+          {mutation?.isError && (
+            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-base">
+                {mutation?.error?.response?.data?.message ||
+                  "Something went wrong"}
+              </p>
+            </div>
+          )}
 
           <div className="w-full mt-5 mb-7">
             <Button
               className="w-full flex items-center justify-center gap-3"
               type="submit"
-              disabled={loading}
+              disabled={mutation?.isPending}
             >
-              {loading && <ImSpinner8 className="animate-spin text-lg" />}
+              {mutation?.isPending && (
+                <ImSpinner8 className="animate-spin text-lg" />
+              )}
               Reset Password
             </Button>
           </div>
