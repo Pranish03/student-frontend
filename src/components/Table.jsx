@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library */
 import { useState } from "react";
 import {
   useReactTable,
@@ -5,7 +6,7 @@ import {
   flexRender,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { LuChevronsUpDown } from "react-icons/lu";
+import { LuChevronDown, LuChevronsUpDown, LuChevronUp } from "react-icons/lu";
 
 export const Table = ({ data, columns }) => {
   const [sorted, setSorted] = useState();
@@ -41,12 +42,19 @@ export const Table = ({ data, columns }) => {
                         header.getContext(),
                       )}
 
-                      <button
-                        className="p-1 border border-black/10 rounded-[10px] bg-white text-gray-800 cursor-pointer hover:bg-black/5"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        <LuChevronsUpDown />
-                      </button>
+                      {header.column.columnDef.header !== "SN" && (
+                        <button
+                          className="p-1 border border-black/10 bg-black/1 rounded-[10px] text-gray-800 cursor-pointer hover:bg-white"
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {{
+                            asc: <LuChevronDown />,
+                            desc: <LuChevronUp />,
+                          }[header.column.getIsSorted()] || (
+                            <LuChevronsUpDown />
+                          )}
+                        </button>
+                      )}
                     </div>
                   </th>
                 ))}
