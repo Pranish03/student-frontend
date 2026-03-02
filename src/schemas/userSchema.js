@@ -9,13 +9,22 @@ export const createStudentSchema = z.object({
   role: z.string().default("student"),
 });
 
-// Create student validation schema
+// Create teacher validation schema
 export const createTeacherSchema = z.object({
   name: z
     .string("Name is required")
     .min(3, "Name must have at least 3 characters"),
   email: z.email("Invalid email address"),
   role: z.string().default("teacher"),
+});
+
+// Create admin validation schema
+export const createAdminSchema = z.object({
+  name: z
+    .string("Name is required")
+    .min(3, "Name must have at least 3 characters"),
+  email: z.email("Invalid email address"),
+  role: z.string().default("admin"),
 });
 
 // Update student validation schema

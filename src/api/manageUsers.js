@@ -10,6 +10,11 @@ export const fetchAllTeachers = async () => {
   return data;
 };
 
+export const fetchAllAdmins = async () => {
+  const { data } = await axios.get("/users?role=admin");
+  return data;
+};
+
 export const fetchUser = async (id) => {
   const { data } = await axios.get(`/users/${id}`);
   return data;
