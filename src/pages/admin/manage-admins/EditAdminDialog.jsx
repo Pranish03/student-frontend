@@ -7,17 +7,14 @@ import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 import { ImSpinner8 } from "react-icons/im";
 import { updateStudentSchema } from "../../../schemas/userSchema";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { editUser, fetchUser } from "../../../api/manageUsers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { editUser } from "../../../api/manageUsers";
+import { useUser } from "../../../hooks/useUser";
 
 export const EditAdminDialog = ({ id, close }) => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["user", id],
-    queryFn: () => fetchUser(id),
-    enabled: !!id,
-  });
+  const { data, isLoading, isError } = useUser(id);
 
   const {
     register,

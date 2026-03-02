@@ -1,18 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ImSpinner8 } from "react-icons/im";
 import { Dialog } from "../../../components/Dialog";
-import { fetchUser, toggleUser } from "../../../api/manageUsers";
+import { toggleUser } from "../../../api/manageUsers";
 import { Button } from "../../../components/Button";
+import { useUser } from "../../../hooks/useUser";
 
 export const ToggleStudentDialog = ({ id, close }) => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["user", id],
-    queryFn: () => fetchUser(id),
-    enabled: !!id,
-  });
+  const { data, isLoading, isError } = useUser(id);
 
   console.log(data);
 

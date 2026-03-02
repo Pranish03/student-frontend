@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import { fetchUser } from "../api/manageUsers";
 
-export const useUsers = () => {
-  return useQuery({});
+export const useUser = (id) => {
+  return useQuery({
+    queryKey: ["user", id],
+    queryFn: () => fetchUser(id),
+    enabled: !!id,
+  });
 };
