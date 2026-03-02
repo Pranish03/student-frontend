@@ -6,6 +6,7 @@ import {
   flexRender,
   getSortedRowModel,
   getPaginationRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import {
   LuChevronDown,
@@ -15,10 +16,13 @@ import {
   LuChevronsRight,
   LuChevronsUpDown,
   LuChevronUp,
+  LuSearch,
 } from "react-icons/lu";
+import { Input } from "./Input";
 
 export const Table = ({ data, columns }) => {
   const [sorted, setSorted] = useState();
+  const [filtered, setFiltered] = useState();
 
   const tableData = data || [];
 
@@ -28,14 +32,28 @@ export const Table = ({ data, columns }) => {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting: sorted,
+      globalFilter: filtered,
     },
     onSortingChange: setSorted,
+    onGlobalFilterChange: setFiltered,
   });
 
   return (
     <div>
+      <div className=" flex justify-between mb-4">
+        <div className="relative flex items-center">
+          <Input
+            className="pl-10"
+            placeholder="Search"
+            value={filtered}
+            onChange={(e) => setFiltered(e.target.value)}
+          />
+          <LuSearch size={18} className="absolute left-3 text-gray-500" />
+        </div>
+      </div>
       <div className="rounded-[10px] border border-black/20 overflow-hidden">
         <table className="min-w-full">
           <thead className="bg-black/5 text-gray-900">
