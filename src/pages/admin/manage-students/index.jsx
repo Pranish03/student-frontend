@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LuChevronRight } from "react-icons/lu";
 import { DateTime } from "luxon";
 import { fetchAllStudents } from "../../../api/manageStudents";
-import { Table } from "../../../components/Table";
+import { Table } from "../../../components/table/Table";
 import { StatusBadge } from "../../../components/StatusBadge";
 
 export const ManageStudents = () => {
