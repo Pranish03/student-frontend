@@ -1,3 +1,4 @@
+import { RequireAuth } from "../components/auth/RequireAuth.jsx";
 import { AdminLayout } from "../layouts/AdminLayout.jsx";
 import { AdminDashboard } from "../pages/admin/dashboard";
 import { ManageBatch } from "../pages/admin/manage-batch";
@@ -6,7 +7,6 @@ import { ManageCourses } from "../pages/admin/manage-courses";
 import { ManageStudents } from "../pages/admin/manage-students";
 import { ManageTeachers } from "../pages/admin/manage-teachers";
 import { ManageAdmins } from "../pages/admin/manage-admins";
-import { RequireAuth } from "../components/auth/requireAuth.jsx";
 
 export const AdminRoutes = {
   path: "/admin",

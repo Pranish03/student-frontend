@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 export const RequireAuth = ({ allowedRoles }) => {
   const { isAuthenticated, role, isLoading } = useAuth();
 
-  if (isLoading) return null;
+  if (isLoading) return null; // Loading
 
   if (!isAuthenticated) return <Navigate to="/" replace />;
 

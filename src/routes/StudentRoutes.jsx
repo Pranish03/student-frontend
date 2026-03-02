@@ -1,4 +1,4 @@
-import { RequireAuth } from "../components/auth/requireAuth";
+import { RequireAuth } from "../components/auth/RequireAuth";
 import { StudentDashboard } from "../pages/student/dashboard";
 
 export const StudentRoutes = {
