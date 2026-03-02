@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DateTime } from "luxon";
 import { LuChevronRight, LuEllipsis } from "react-icons/lu";
 import { IoAddCircle } from "react-icons/io5";
-import { fetchAllStudents } from "../../../api/manageStudents";
+import { fetchAllStudents } from "../../../api/manageUsers";
 import { Table } from "../../../components/table/Table";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { Button } from "../../../components/Button";

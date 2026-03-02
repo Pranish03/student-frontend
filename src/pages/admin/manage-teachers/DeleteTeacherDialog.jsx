@@ -5,15 +5,15 @@ import { Dialog } from "../../../components/Dialog";
 import { deleteUser } from "../../../api/manageUsers";
 import { Button } from "../../../components/Button";
 
-export const DeleteStudentDialog = ({ id, close }) => {
+export const DeleteTeacherDialog = ({ id, close }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: (data) => {
-      toast.success(data?.message || "Student deleted successfully");
+      toast.success(data?.message || "Teacher deleted successfully");
 
-      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
 
       close();
     },
@@ -23,8 +23,8 @@ export const DeleteStudentDialog = ({ id, close }) => {
 
   return (
     <Dialog
-      heading="Delete Student"
-      desc="Are you sure you want to delete this student?"
+      heading="Delete Teacher"
+      desc="Are you sure you want to delete this teacher?"
       close={close}
     >
       {mutation?.isError && (
@@ -59,7 +59,7 @@ export const DeleteStudentDialog = ({ id, close }) => {
               <span>Delete...</span>
             </>
           ) : (
-            "Delete Student"
+            "Delete Teacher"
           )}
         </Button>
       </div>

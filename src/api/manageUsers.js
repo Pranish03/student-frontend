@@ -5,6 +5,11 @@ export const fetchAllStudents = async () => {
   return data;
 };
 
+export const fetchAllTeachers = async () => {
+  const { data } = await axios.get("/users?role=teacher");
+  return data;
+};
+
 export const fetchUser = async (id) => {
   const { data } = await axios.get(`/users/${id}`);
   return data;

@@ -10,7 +10,7 @@ import { updateStudentSchema } from "../../../schemas/userSchema";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { editUser, fetchUser } from "../../../api/manageUsers";
 
-export const EditStudentDialog = ({ id, close }) => {
+export const EditTeacherDialog = ({ id, close }) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
@@ -44,9 +44,9 @@ export const EditStudentDialog = ({ id, close }) => {
   const mutation = useMutation({
     mutationFn: editUser,
     onSuccess: (data) => {
-      toast.success(data?.message || "Student updated successfully");
+      toast.success(data?.message || "Teacher updated successfully");
 
-      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
       queryClient.invalidateQueries({ queryKey: ["user", id] });
 
       close();
@@ -58,8 +58,8 @@ export const EditStudentDialog = ({ id, close }) => {
   if (isLoading) {
     return (
       <Dialog
-        heading="Edit Student"
-        desc="Loading student information..."
+        heading="Edit Teacher"
+        desc="Loading teacher information..."
         close={close}
       >
         <div className="flex justify-center items-center py-8">
@@ -77,7 +77,7 @@ export const EditStudentDialog = ({ id, close }) => {
         close={close}
       >
         <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Could not load student data</p>
+          <p className="text-red-600 mb-4">Could not load teacher data</p>
           <Button variant="secondary" onClick={close}>
             Close
           </Button>
@@ -179,7 +179,7 @@ export const EditStudentDialog = ({ id, close }) => {
                 <span>Updating...</span>
               </>
             ) : (
-              "Update Student"
+              "Update Teacher"
             )}
           </Button>
         </div>

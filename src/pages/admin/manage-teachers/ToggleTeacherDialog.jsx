@@ -5,7 +5,7 @@ import { Dialog } from "../../../components/Dialog";
 import { fetchUser, toggleUser } from "../../../api/manageUsers";
 import { Button } from "../../../components/Button";
 
-export const ToggleStudentDialog = ({ id, close }) => {
+export const ToggleTeacherDialog = ({ id, close }) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
@@ -19,9 +19,9 @@ export const ToggleStudentDialog = ({ id, close }) => {
   const mutation = useMutation({
     mutationFn: toggleUser,
     onSuccess: (data) => {
-      toast.success(data?.message || "Student status changed successfully");
+      toast.success(data?.message || "Teacher status changed successfully");
 
-      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
       queryClient.invalidateQueries({ queryKey: ["user", id] });
 
       close();
@@ -33,8 +33,8 @@ export const ToggleStudentDialog = ({ id, close }) => {
   if (isLoading) {
     return (
       <Dialog
-        heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Student`}
-        desc="Loading student information..."
+        heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Teacher`}
+        desc="Loading teacher information..."
         close={close}
       >
         <div className="flex justify-center items-center py-8">
@@ -47,12 +47,12 @@ export const ToggleStudentDialog = ({ id, close }) => {
   if (isError) {
     return (
       <Dialog
-        heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Student`}
-        desc="Failed to load student information"
+        heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Teacher`}
+        desc="Failed to load teacher information"
         close={close}
       >
         <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Could not load student data</p>
+          <p className="text-red-600 mb-4">Could not load teacher data</p>
           <Button variant="secondary" onClick={close}>
             Close
           </Button>
@@ -63,8 +63,8 @@ export const ToggleStudentDialog = ({ id, close }) => {
 
   return (
     <Dialog
-      heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Student`}
-      desc={`Are you sure you want to ${data?.data?.isActive ? "deactivate" : "activate"} this student?`}
+      heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Teacher`}
+      desc={`Are you sure you want to ${data?.data?.isActive ? "deactivate" : "activate"} this teacher?`}
       close={close}
     >
       {mutation?.isError && (

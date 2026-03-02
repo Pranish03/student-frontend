@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createStudentSchema } from "../../../schemas/userSchema";
+import { createTeacherSchema } from "../../../schemas/userSchema";
 import { toast } from "sonner";
 import { Dialog } from "../../../components/Dialog";
 import { Input } from "../../../components/Input";
@@ -9,7 +9,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser } from "../../../api/manageUsers";
 
-export const AddStudentDialog = ({ close }) => {
+export const AddTeacherDialog = ({ close }) => {
   const queryClient = useQueryClient();
 
   const {
@@ -22,7 +22,7 @@ export const AddStudentDialog = ({ close }) => {
       name: "",
       email: "",
     },
-    resolver: zodResolver(createStudentSchema),
+    resolver: zodResolver(createTeacherSchema),
   });
 
   const mutation = useMutation({
@@ -30,7 +30,7 @@ export const AddStudentDialog = ({ close }) => {
     onSuccess: (data) => {
       toast.success(data?.message);
 
-      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
 
       close();
       reset();
@@ -41,8 +41,8 @@ export const AddStudentDialog = ({ close }) => {
 
   return (
     <Dialog
-      heading="Add Student"
-      desc="Enter student information below to create a new student."
+      heading="Add Teacher"
+      desc="Enter teacher information below to create a new teacher."
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -125,7 +125,7 @@ export const AddStudentDialog = ({ close }) => {
                 <span>Adding...</span>
               </>
             ) : (
-              "Add Student"
+              "Add Teacher"
             )}
           </Button>
         </div>
