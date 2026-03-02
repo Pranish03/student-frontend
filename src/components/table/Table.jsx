@@ -59,29 +59,27 @@ export const Table = ({ data, columns }) => {
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="px-3 py-2.5 text-left font-semibold"
-                  >
+                  <th key={header.id} className="px-3 py-2.5 font-semibold">
                     <div className="flex items-center gap-4">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
 
-                      {header.column.columnDef.header !== "SN" && (
-                        <button
-                          className="p-1 border border-black/10 bg-black/1 rounded-[10px] text-gray-800 cursor-pointer hover:bg-white"
-                          onClick={header.column.getToggleSortingHandler()}
-                        >
-                          {{
-                            asc: <LuChevronDown />,
-                            desc: <LuChevronUp />,
-                          }[header.column.getIsSorted()] || (
-                            <LuChevronsUpDown />
-                          )}
-                        </button>
-                      )}
+                      {header.column.columnDef.header !== "SN" &&
+                        header.column.columnDef.header !== "Action" && (
+                          <button
+                            className="p-1 border border-black/10 bg-black/1 rounded-[10px] text-gray-800 cursor-pointer hover:bg-white"
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {{
+                              asc: <LuChevronDown />,
+                              desc: <LuChevronUp />,
+                            }[header.column.getIsSorted()] || (
+                              <LuChevronsUpDown />
+                            )}
+                          </button>
+                        )}
                     </div>
                   </th>
                 ))}
