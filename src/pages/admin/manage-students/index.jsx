@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { LuChevronRight, LuEllipsis } from "react-icons/lu";
+import { motion, AnimatePresence } from "framer-motion";
 import { DateTime } from "luxon";
+import { LuChevronRight, LuEllipsis } from "react-icons/lu";
+import { IoAddCircle } from "react-icons/io5";
 import { fetchAllStudents } from "../../../api/manageStudents";
 import { Table } from "../../../components/table/Table";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { Button } from "../../../components/Button";
-import { IoAddCircle } from "react-icons/io5";
-import { AnimatePresence } from "framer-motion";
 import { AddStudentDialog } from "./AddStudentDialog";
 import { EditStudentDialog } from "./EditStudentDialog";
 import { DeleteStudentDialog } from "./DeleteStudentDialog";
@@ -128,40 +129,56 @@ export const ManageStudents = () => {
         <Table data={data?.data} columns={columns} />
       </div>
 
-      {selectedId && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={handleCloseDropdown} />
-          <div
-            className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
-            style={{
-              top: dropdownPosition.top,
-              left: dropdownPosition.left,
-            }}
-          >
-            <Button
-              variant="ghost"
-              className="text-left text-gray-900"
-              onClick={handleEditClick}
+      <AnimatePresence>
+        {selectedId && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-40"
+              onClick={handleCloseDropdown}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            />
+            <motion.div
+              className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
+              style={{
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+              }}
+              initial={{ opacity: 0, scale: 0.95, y: -8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -8 }}
+              transition={{
+                duration: 0.18,
+                ease: "easeOut",
+              }}
             >
-              Edit
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-left text-gray-900"
-              onClick={handleToggleClick}
-            >
-              Toggle Status
-            </Button>
-            <Button
-              variant="ghost-danger"
-              className="text-left text-gray-900"
-              onClick={handleDeleteClick}
-            >
-              Delete
-            </Button>
-          </div>
-        </>
-      )}
+              <Button
+                variant="ghost"
+                className="text-left text-gray-900"
+                onClick={handleEditClick}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-left text-gray-900"
+                onClick={handleToggleClick}
+              >
+                Toggle Status
+              </Button>
+              <Button
+                variant="ghost-danger"
+                className="text-left text-gray-900"
+                onClick={handleDeleteClick}
+              >
+                Delete
+              </Button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showAddDialog && (
