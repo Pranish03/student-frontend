@@ -20,7 +20,7 @@ export const editUser = async ({ data, id }) => {
   return res.data;
 };
 
-export const deleteUser = async ({ id }) => {
+export const deleteUser = async (id) => {
   const { data } = await axios.delete(`users/${id}`);
   return data;
 };

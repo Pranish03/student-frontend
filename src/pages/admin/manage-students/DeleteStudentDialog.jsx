@@ -19,7 +19,7 @@ export const DeleteStudentDialog = ({ id, close }) => {
     },
   });
 
-  const handleDelete = () => mutation.mutate({ id });
+  const handleDelete = () => mutation.mutate(id);
 
   return (
     <Dialog
