@@ -33,19 +33,6 @@ export const ManageStudents = () => {
     },
   ];
 
-  const globalFilterFn = (row, _, filterValue) => {
-    const searchableColumns = ["name", "email"];
-
-    return searchableColumns.some((columnId) => {
-      const value = row.getValue(columnId);
-      if (value == null) return false;
-
-      return String(value)
-        .toLowerCase()
-        .includes(String(filterValue).toLowerCase());
-    });
-  };
-
   return (
     <>
       <div>
@@ -61,11 +48,7 @@ export const ManageStudents = () => {
 
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Students</h2>
 
-        <Table
-          data={data?.data}
-          columns={columns}
-          globalFilterFn={globalFilterFn}
-        />
+        <Table data={data?.data} columns={columns} />
       </div>
     </>
   );

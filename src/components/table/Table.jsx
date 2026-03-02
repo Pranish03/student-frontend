@@ -16,8 +16,9 @@ import {
 } from "react-icons/lu";
 import { Input } from "../Input";
 import { Pagination } from "./Pagination";
+import { filterSpecificColumns } from "../../utils/tableFilters";
 
-export const Table = ({ data, columns, globalFilterFn }) => {
+export const Table = ({ data, columns }) => {
   const [sorted, setSorted] = useState();
   const [filtered, setFiltered] = useState();
 
@@ -36,7 +37,7 @@ export const Table = ({ data, columns, globalFilterFn }) => {
     },
     onSortingChange: setSorted,
     onGlobalFilterChange: setFiltered,
-    globalFilterFn,
+    globalFilterFn: filterSpecificColumns("name", "email"),
   });
 
   return (
