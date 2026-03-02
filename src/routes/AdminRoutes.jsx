@@ -6,17 +6,23 @@ import { ManageCourses } from "../pages/admin/manage-courses";
 import { ManageStudents } from "../pages/admin/manage-students";
 import { ManageTeachers } from "../pages/admin/manage-teachers";
 import { ManageAdmins } from "../pages/admin/manage-admins";
+import { RequireAuth } from "../components/auth/requireAuth.jsx";
 
 export const AdminRoutes = {
   path: "/admin",
-  element: <AdminLayout />,
+  element: <RequireAuth allowedRoles={["admin"]} />,
   children: [
-    { element: <AdminDashboard />, index: true },
-    { element: <ManageBatch />, path: "manage-batch" },
-    { element: <ManageClasses />, path: "manage-classes" },
-    { element: <ManageCourses />, path: "manage-courses" },
-    { element: <ManageStudents />, path: "manage-students" },
-    { element: <ManageTeachers />, path: "manage-teachers" },
-    { element: <ManageAdmins />, path: "manage-admins" },
+    {
+      element: <AdminLayout />,
+      children: [
+        { element: <AdminDashboard />, index: true },
+        { element: <ManageBatch />, path: "manage-batch" },
+        { element: <ManageClasses />, path: "manage-classes" },
+        { element: <ManageCourses />, path: "manage-courses" },
+        { element: <ManageStudents />, path: "manage-students" },
+        { element: <ManageTeachers />, path: "manage-teachers" },
+        { element: <ManageAdmins />, path: "manage-admins" },
+      ],
+    },
   ],
 };
