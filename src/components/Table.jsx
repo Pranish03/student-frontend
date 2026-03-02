@@ -5,8 +5,17 @@ import {
   getCoreRowModel,
   flexRender,
   getSortedRowModel,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
-import { LuChevronDown, LuChevronsUpDown, LuChevronUp } from "react-icons/lu";
+import {
+  LuChevronDown,
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
+  LuChevronsUpDown,
+  LuChevronUp,
+} from "react-icons/lu";
 
 export const Table = ({ data, columns }) => {
   const [sorted, setSorted] = useState();
@@ -18,6 +27,7 @@ export const Table = ({ data, columns }) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting: sorted,
     },
@@ -75,6 +85,53 @@ export const Table = ({ data, columns }) => {
           </tbody>
         </table>
       </div>
+
+      <div className="flex items-center gap-6 justify-end mt-5">
+        <p className="text-gray-800">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </p>
+        <div className="flex items-center gap-3">
+          <PaginationButton
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.setPageIndex(0)}
+          >
+            <LuChevronsLeft size={19} />
+          </PaginationButton>
+
+          <PaginationButton
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
+          >
+            <LuChevronLeft size={19} />
+          </PaginationButton>
+
+          <PaginationButton
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
+          >
+            <LuChevronRight size={19} />
+          </PaginationButton>
+
+          <PaginationButton
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          >
+            <LuChevronsRight size={19} />
+          </PaginationButton>
+        </div>
+      </div>
     </div>
+  );
+};
+
+const PaginationButton = ({ children, ...props }) => {
+  return (
+    <button
+      className="p-1 border border-black/20 bg-white rounded-[10px] text-gray-800 cursor-pointer hover:bg-black/5 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+      {...props}
+    >
+      {children}
+    </button>
   );
 };
