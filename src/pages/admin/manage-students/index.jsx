@@ -11,13 +11,16 @@ import { IoAddCircle } from "react-icons/io5";
 import { AnimatePresence } from "framer-motion";
 import { AddStudentDialog } from "./AddStudentDialog";
 import { EditStudentDialog } from "./EditStudentDialog";
+import { DeleteStudentDialog } from "./DeleteStudentDialog";
 
 export const ManageStudents = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editingStudentId, setEditingStudentId] = useState(null);
+  const [deletingStudentId, setDeletingStudentId] = useState(null);
 
   const { data } = useQuery({
     queryKey: ["students"],
@@ -46,6 +49,12 @@ export const ManageStudents = () => {
     setEditingStudentId(selectedId);
     handleCloseDropdown();
     setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = () => {
+    setDeletingStudentId(selectedId);
+    handleCloseDropdown();
+    setShowDeleteDialog(true);
   };
 
   const columns = [
@@ -135,7 +144,7 @@ export const ManageStudents = () => {
             <Button
               variant="ghost-danger"
               className="text-left text-gray-900"
-              onClick={() => handleCloseDropdown()}
+              onClick={handleDeleteClick}
             >
               Delete
             </Button>
@@ -156,6 +165,18 @@ export const ManageStudents = () => {
             close={() => {
               setShowEditDialog(false);
               setEditingStudentId(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showDeleteDialog && deletingStudentId && (
+          <DeleteStudentDialog
+            id={deletingStudentId}
+            close={() => {
+              setShowDeleteDialog(false);
+              setDeletingStudentId(null);
             }}
           />
         )}

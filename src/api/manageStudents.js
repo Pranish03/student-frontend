@@ -19,3 +19,8 @@ export const editUser = async ({ data, id }) => {
   const res = await axios.patch(`/users/${id}`, data);
   return res.data;
 };
+
+export const deleteUser = async ({ id }) => {
+  const { data } = await axios.delete(`users/${id}`);
+  return data;
+};
