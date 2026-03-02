@@ -24,3 +24,8 @@ export const deleteUser = async (id) => {
   const { data } = await axios.delete(`users/${id}`);
   return data;
 };
+
+export const toggleUser = async (id) => {
+  const { data } = await axios.patch(`users/toggle/${id}`);
+  return data;
+};

@@ -12,14 +12,19 @@ import { AnimatePresence } from "framer-motion";
 import { AddStudentDialog } from "./AddStudentDialog";
 import { EditStudentDialog } from "./EditStudentDialog";
 import { DeleteStudentDialog } from "./DeleteStudentDialog";
+import { ToggleStudentDialog } from "./ToggleStudentDialog";
 
 export const ManageStudents = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showToggleDialog, setShowToggleDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const [editingStudentId, setEditingStudentId] = useState(null);
+  const [togglingStudentId, setTogglingStudentId] = useState(null);
   const [deletingStudentId, setDeletingStudentId] = useState(null);
 
   const { data } = useQuery({
@@ -55,6 +60,12 @@ export const ManageStudents = () => {
     setDeletingStudentId(selectedId);
     handleCloseDropdown();
     setShowDeleteDialog(true);
+  };
+
+  const handleToggleClick = () => {
+    setTogglingStudentId(selectedId);
+    handleCloseDropdown();
+    setShowToggleDialog(true);
   };
 
   const columns = [
@@ -137,7 +148,7 @@ export const ManageStudents = () => {
             <Button
               variant="ghost"
               className="text-left text-gray-900"
-              onClick={() => handleCloseDropdown()}
+              onClick={handleToggleClick}
             >
               Toggle Status
             </Button>
@@ -165,6 +176,18 @@ export const ManageStudents = () => {
             close={() => {
               setShowEditDialog(false);
               setEditingStudentId(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showToggleDialog && togglingStudentId && (
+          <ToggleStudentDialog
+            id={togglingStudentId}
+            close={() => {
+              setShowToggleDialog(false);
+              setTogglingStudentId(null);
             }}
           />
         )}
