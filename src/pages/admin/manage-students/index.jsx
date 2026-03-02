@@ -7,10 +7,17 @@ import { fetchAllStudents } from "../../../api/manageStudents";
 import { Table } from "../../../components/table/Table";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { Button } from "../../../components/Button";
+import { IoAddCircle } from "react-icons/io5";
+import { AnimatePresence } from "framer-motion";
+import { AddStudentDialog } from "./AddStudentDialog";
+import { EditStudentDialog } from "./EditStudentDialog";
 
 export const ManageStudents = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingStudentId, setEditingStudentId] = useState(null);
 
   const { data } = useQuery({
     queryKey: ["students"],
@@ -33,6 +40,12 @@ export const ManageStudents = () => {
 
   const handleCloseDropdown = () => {
     setSelectedId(null);
+  };
+
+  const handleEditClick = () => {
+    setEditingStudentId(selectedId);
+    handleCloseDropdown();
+    setShowEditDialog(true);
   };
 
   const columns = [
@@ -82,6 +95,16 @@ export const ManageStudents = () => {
 
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Students</h2>
 
+        <div className="float-end">
+          <Button
+            className="flex items-center gap-2"
+            onClick={() => setShowAddDialog(true)}
+          >
+            <IoAddCircle size={22} />
+            Add Student
+          </Button>
+        </div>
+
         <Table data={data?.data} columns={columns} />
       </div>
 
@@ -98,7 +121,7 @@ export const ManageStudents = () => {
             <Button
               variant="ghost"
               className="text-left text-gray-900"
-              onClick={() => handleCloseDropdown()}
+              onClick={handleEditClick}
             >
               Edit
             </Button>
@@ -119,6 +142,24 @@ export const ManageStudents = () => {
           </div>
         </>
       )}
+
+      <AnimatePresence>
+        {showAddDialog && (
+          <AddStudentDialog close={() => setShowAddDialog(false)} />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showEditDialog && editingStudentId && (
+          <EditStudentDialog
+            id={editingStudentId}
+            close={() => {
+              setShowEditDialog(false);
+              setEditingStudentId(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };
