@@ -42,15 +42,18 @@ export const EditStudentDialog = ({ id, close }) => {
   }, [data, reset]);
 
   const mutation = useMutation({
-    mutationFn: (data) => editUser({ id, ...data }),
+    mutationFn: editUser,
     onSuccess: (data) => {
       toast.success(data?.message || "Student updated successfully");
+
       queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["user", id] });
+
       close();
     },
   });
 
-  const onSubmit = (formData) => mutation.mutate(formData);
+  const onSubmit = (data) => mutation.mutate({ data, id });
 
   if (isLoading) {
     return (
@@ -90,6 +93,15 @@ export const EditStudentDialog = ({ id, close }) => {
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        {mutation?.isError && (
+          <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-base">
+              {mutation?.error?.response?.data?.message ||
+                "Something went wrong"}
+            </p>
+          </div>
+        )}
+
         <div className="mb-5">
           <label
             htmlFor="name"
@@ -116,7 +128,7 @@ export const EditStudentDialog = ({ id, close }) => {
           )}
         </div>
 
-        <div className={mutation?.isError ? "mb-5" : "mb-7"}>
+        <div className="mb-7">
           <label
             htmlFor="email"
             className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${
@@ -143,15 +155,6 @@ export const EditStudentDialog = ({ id, close }) => {
             </p>
           )}
         </div>
-
-        {mutation?.isError && (
-          <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">
-              {mutation?.error?.response?.data?.message ||
-                "Something went wrong"}
-            </p>
-          </div>
-        )}
 
         <div className="flex items-center gap-4 justify-end">
           <Button

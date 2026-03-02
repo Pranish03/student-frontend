@@ -46,6 +46,15 @@ export const AddStudentDialog = ({ close }) => {
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        {mutation?.isError && (
+          <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-base">
+              {mutation?.error?.response?.data?.message ||
+                "Something went wrong"}
+            </p>
+          </div>
+        )}
+
         <div className="mb-5">
           <label
             htmlFor="name"
@@ -93,15 +102,6 @@ export const AddStudentDialog = ({ close }) => {
             <p className="text-red-600 mt-2">{errors?.email?.message}</p>
           )}
         </div>
-
-        {mutation?.isError && (
-          <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">
-              {mutation?.error?.response?.data?.message ||
-                "Something went wrong"}
-            </p>
-          </div>
-        )}
 
         <div className="flex items-center gap-4 justify-end">
           <Button
