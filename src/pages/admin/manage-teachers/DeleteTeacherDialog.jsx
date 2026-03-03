@@ -14,6 +14,7 @@ export const DeleteTeacherDialog = ({ id, close }) => {
       toast.success(data?.message || "Teacher deleted successfully");
 
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
 
       close();
     },
