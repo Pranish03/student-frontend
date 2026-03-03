@@ -14,6 +14,7 @@ import { EditCourseDialog } from "./EditCourseDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
 import { DeleteCourseDialog } from "./DeleteCourseDialog";
 import { AssignTeacherDialog } from "./AssignTeacherDialog";
+import { RemoveTeacherDialog } from "./RemoveTeacherDialog";
 
 export const ManageCourses = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -23,10 +24,12 @@ export const ManageCourses = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showAssignDialog, setShowAssignDialog] = useState(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   const [editingCourse, setEditingCourse] = useState(null);
   const [deletingCourse, setDeletingCourse] = useState(null);
   const [assigningCourse, setAssigningCourse] = useState(null);
+  const [removingCourse, setRemovingCourse] = useState(null);
 
   const { data } = useQuery({
     queryKey: ["courses"],
@@ -66,6 +69,12 @@ export const ManageCourses = () => {
     setAssigningCourse(selectedCourse);
     handleCloseDropdown();
     setShowAssignDialog(true);
+  };
+
+  const handleRemoveClick = () => {
+    setRemovingCourse(selectedCourse);
+    handleCloseDropdown();
+    setShowRemoveDialog(true);
   };
 
   const columns = [
@@ -178,9 +187,9 @@ export const ManageCourses = () => {
                 <Button
                   variant="ghost-danger"
                   className="text-left text-gray-900"
-                  onClick={handleCloseDropdown}
+                  onClick={handleRemoveClick}
                 >
-                  Delete Teacher
+                  Remove Teacher
                 </Button>
               )}
               <Button
@@ -224,6 +233,15 @@ export const ManageCourses = () => {
           <AssignTeacherDialog
             course={assigningCourse}
             close={() => setShowAssignDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showRemoveDialog && removingCourse && (
+          <RemoveTeacherDialog
+            course={removingCourse}
+            close={() => setShowRemoveDialog(false)}
           />
         )}
       </AnimatePresence>
