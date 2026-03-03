@@ -59,7 +59,7 @@ export const Table = ({ globalFilterFn, data, columns }) => {
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className="px-3 py-2.5 font-semibold">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
@@ -68,7 +68,7 @@ export const Table = ({ globalFilterFn, data, columns }) => {
                       {header.column.columnDef.header !== "SN" &&
                         header.column.columnDef.header !== "Action" && (
                           <button
-                            className="p-1 border border-black/10 bg-black/1 rounded-[10px] text-gray-800 cursor-pointer hover:bg-white"
+                            className="p-1 bg-black/1 rounded-[10px] text-gray-800 cursor-pointer hover:bg-white"
                             onClick={header.column.getToggleSortingHandler()}
                           >
                             {{

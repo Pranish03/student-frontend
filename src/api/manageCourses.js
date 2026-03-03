@@ -24,3 +24,8 @@ export const deleteCourse = async (id) => {
   const res = await axios.delete(`/courses/${id}`);
   return res?.data;
 };
+
+export const assignTeacher = async ({ id, data }) => {
+  const res = await axios.patch(`/courses/update-teacher/${id}`, data);
+  return res?.data;
+};

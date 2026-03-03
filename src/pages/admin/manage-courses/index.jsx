@@ -13,6 +13,7 @@ import { AddCourseDialog } from "./AddCourseDialog";
 import { EditCourseDialog } from "./EditCourseDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
 import { DeleteCourseDialog } from "./DeleteCourseDialog";
+import { AssignTeacherDialog } from "./AssignTeacherDialog";
 
 export const ManageCourses = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -21,9 +22,11 @@ export const ManageCourses = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showAssignDialog, setShowAssignDialog] = useState(false);
 
   const [editingCourse, setEditingCourse] = useState(null);
   const [deletingCourse, setDeletingCourse] = useState(null);
+  const [assigningCourse, setAssigningCourse] = useState(null);
 
   const { data } = useQuery({
     queryKey: ["courses"],
@@ -57,6 +60,12 @@ export const ManageCourses = () => {
     setDeletingCourse(selectedCourse);
     handleCloseDropdown();
     setShowDeleteDialog(true);
+  };
+
+  const handleAssignClick = () => {
+    setAssigningCourse(selectedCourse);
+    handleCloseDropdown();
+    setShowAssignDialog(true);
   };
 
   const columns = [
@@ -158,32 +167,21 @@ export const ManageCourses = () => {
               >
                 Edit
               </Button>
-              {!selectedCourse.teacher && (
+              <Button
+                variant="ghost"
+                className="text-left text-gray-900"
+                onClick={handleAssignClick}
+              >
+                {!selectedCourse.teacher ? "Assign Teacher" : "Change Teacher"}
+              </Button>
+              {selectedCourse.teacher && (
                 <Button
-                  variant="ghost"
+                  variant="ghost-danger"
                   className="text-left text-gray-900"
                   onClick={handleCloseDropdown}
                 >
-                  Assign Teacher
+                  Delete Teacher
                 </Button>
-              )}
-              {selectedCourse.teacher && (
-                <>
-                  <Button
-                    variant="ghost"
-                    className="text-left text-gray-900"
-                    onClick={handleCloseDropdown}
-                  >
-                    Change Teacher
-                  </Button>
-                  <Button
-                    variant="ghost-danger"
-                    className="text-left text-gray-900"
-                    onClick={handleCloseDropdown}
-                  >
-                    Delete Teacher
-                  </Button>
-                </>
               )}
               <Button
                 variant="ghost-danger"
@@ -217,6 +215,15 @@ export const ManageCourses = () => {
           <DeleteCourseDialog
             course={deletingCourse}
             close={() => setShowDeleteDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showAssignDialog && assigningCourse && (
+          <AssignTeacherDialog
+            course={assigningCourse}
+            close={() => setShowAssignDialog(false)}
           />
         )}
       </AnimatePresence>
