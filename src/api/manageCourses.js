@@ -19,3 +19,8 @@ export const editCourse = async ({ data, id }) => {
   const res = await axios.patch(`/courses/${id}`, data);
   return res?.data;
 };
+
+export const deleteCourse = async (id) => {
+  const res = await axios.delete(`/courses/${id}`);
+  return res?.data;
+};

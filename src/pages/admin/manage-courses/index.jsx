@@ -12,6 +12,7 @@ import { Table } from "../../../components/table/Table";
 import { AddCourseDialog } from "./AddCourseDialog";
 import { EditCourseDialog } from "./EditCourseDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
+import { DeleteCourseDialog } from "./DeleteCourseDialog";
 
 export const ManageCourses = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -19,8 +20,10 @@ export const ManageCourses = () => {
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const [editingCourse, setEditingCourse] = useState(null);
+  const [deletingCourse, setDeletingCourse] = useState(null);
 
   const { data } = useQuery({
     queryKey: ["courses"],
@@ -48,6 +51,12 @@ export const ManageCourses = () => {
     setEditingCourse(selectedCourse);
     handleCloseDropdown();
     setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = () => {
+    setDeletingCourse(selectedCourse);
+    handleCloseDropdown();
+    setShowDeleteDialog(true);
   };
 
   const columns = [
@@ -179,7 +188,7 @@ export const ManageCourses = () => {
               <Button
                 variant="ghost-danger"
                 className="text-left text-gray-900"
-                onClick={handleCloseDropdown}
+                onClick={handleDeleteClick}
               >
                 Delete
               </Button>
@@ -199,6 +208,15 @@ export const ManageCourses = () => {
           <EditCourseDialog
             course={editingCourse}
             close={() => setShowEditDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showDeleteDialog && deletingCourse && (
+          <DeleteCourseDialog
+            course={deletingCourse}
+            close={() => setShowDeleteDialog(false)}
           />
         )}
       </AnimatePresence>

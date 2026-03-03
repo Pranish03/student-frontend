@@ -41,8 +41,6 @@ export const EditCourseDialog = ({ course, close }) => {
       toast.success(data?.message || "Course updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
-      queryClient.invalidateQueries({ queryKey: ["course", course?._id] });
-
       close();
     },
   });
