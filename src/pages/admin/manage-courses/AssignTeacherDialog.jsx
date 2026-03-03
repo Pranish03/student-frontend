@@ -12,11 +12,7 @@ import { fetchAllTeachers } from "../../../api/manageUsers";
 import { assignTeacher } from "../../../api/manageCourses";
 import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const assignTeacherSchema = z.object({
-  teacher: z.string().min(1, "Please select a teacher"),
-});
+import { assignTeacherSchema } from "../../../schemas/courseSchema";
 
 export const AssignTeacherDialog = ({ course, close }) => {
   const [searchTerm, setSearchTerm] = useState("");
