@@ -69,6 +69,15 @@ export const AssignTeacherDialog = ({ course, close }) => {
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {mutation?.isError && (
+          <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-base">
+              {mutation?.error?.response?.data?.message ||
+                "Something went wrong"}
+            </p>
+          </div>
+        )}
+
         <div className="relative">
           <IoSearch
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -107,7 +116,7 @@ export const AssignTeacherDialog = ({ course, close }) => {
               )}
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 space-y-4">
+            <div className="divide-y divide-gray-200 space-y-3">
               {filteredTeachers.map((teacher) => (
                 <label
                   key={teacher._id}
