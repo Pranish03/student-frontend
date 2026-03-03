@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
 import { resetPassword } from "../../../api/auth";

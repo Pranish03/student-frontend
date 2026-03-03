@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTeacherSchema } from "../../../schemas/userSchema";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Dialog } from "../../../components/Dialog";
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";

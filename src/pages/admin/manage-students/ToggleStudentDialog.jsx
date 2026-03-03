@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { ImSpinner8 } from "react-icons/im";
 import { Dialog } from "../../../components/Dialog";
 import { toggleUser } from "../../../api/manageUsers";

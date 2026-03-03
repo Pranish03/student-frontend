@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
 import { login } from "../../../api/auth";
@@ -14,7 +14,7 @@ import { Input } from "../../../components/Input";
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -32,8 +32,8 @@ export const Login = () => {
     mutationFn: login,
     onSuccess: (data) => {
       toast.success(data?.message);
-      console.log(data);
-      navigate(`/${data?.data?.role}`);
+
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
 
