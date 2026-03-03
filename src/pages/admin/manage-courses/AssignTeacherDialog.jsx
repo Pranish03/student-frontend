@@ -149,7 +149,7 @@ export const AssignTeacherDialog = ({ course, close }) => {
                     </div>
 
                     {course?.teacher?._id === teacher._id && (
-                      <span className="text-xs border border-green-900/20 text-green-500 bg-green-50 px-2 py-1 rounded-full">
+                      <span className="text-xs border border-green-900/20 text-green-500 bg-green-100 px-2 py-1 rounded-full">
                         Currently Assigned
                       </span>
                     )}
