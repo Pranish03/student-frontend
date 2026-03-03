@@ -14,6 +14,7 @@ import { AddTeacherDialog } from "./AddTeacherDialog";
 import { EditTeacherDialog } from "./EditTeacherDialog";
 import { ToggleTeacherDialog } from "./ToggleTeacherDialog";
 import { DeleteTeacherDialog } from "./DeleteTeacherDialog";
+import { filterSpecificColumns } from "../../../utils/tableFilters";
 
 export const ManageTeachers = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -126,7 +127,11 @@ export const ManageTeachers = () => {
           </Button>
         </div>
 
-        <Table data={data?.data} columns={columns} />
+        <Table
+          data={data?.data}
+          columns={columns}
+          globalFilterFn={filterSpecificColumns("name", "email")}
+        />
       </div>
 
       <AnimatePresence>

@@ -14,6 +14,7 @@ import { AddStudentDialog } from "./AddStudentDialog";
 import { EditStudentDialog } from "./EditStudentDialog";
 import { DeleteStudentDialog } from "./DeleteStudentDialog";
 import { ToggleStudentDialog } from "./ToggleStudentDialog";
+import { filterSpecificColumns } from "../../../utils/tableFilters";
 
 export const ManageStudents = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -126,7 +127,11 @@ export const ManageStudents = () => {
           </Button>
         </div>
 
-        <Table data={data?.data} columns={columns} />
+        <Table
+          data={data?.data}
+          columns={columns}
+          globalFilterFn={filterSpecificColumns("name", "email")}
+        />
       </div>
 
       <AnimatePresence>

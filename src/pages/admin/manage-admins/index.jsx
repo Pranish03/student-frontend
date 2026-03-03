@@ -14,6 +14,7 @@ import { AddAdminDialog } from "./AddAdminDialog";
 import { EditAdminDialog } from "./EditAdminDialog";
 import { ToggleAdminDialog } from "./ToggleAdminDialog";
 import { DeleteAdminDialog } from "./DeleteAdminDialog";
+import { filterSpecificColumns } from "../../../utils/tableFilters";
 
 export const ManageAdmins = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -126,7 +127,11 @@ export const ManageAdmins = () => {
           </Button>
         </div>
 
-        <Table data={data?.data} columns={columns} />
+        <Table
+          data={data?.data}
+          columns={columns}
+          globalFilterFn={filterSpecificColumns("name", "email")}
+        />
       </div>
 
       <AnimatePresence>
