@@ -19,3 +19,8 @@ export const getMe = async () => {
   const { data } = await axios.get("/auth/me");
   return data;
 };
+
+export const logout = async () => {
+  const { data } = await axios.post("/auth/logout");
+  return data;
+};
