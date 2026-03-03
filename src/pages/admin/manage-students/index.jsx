@@ -29,7 +29,7 @@ export const ManageStudents = () => {
   const [togglingStudentId, setTogglingStudentId] = useState(null);
   const [deletingStudentId, setDeletingStudentId] = useState(null);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["students"],
     queryFn: fetchAllStudents,
   });
@@ -131,6 +131,7 @@ export const ManageStudents = () => {
           data={data?.data}
           columns={columns}
           globalFilterFn={filterSpecificColumns("name", "email")}
+          isLoading={isLoading}
         />
       </div>
 

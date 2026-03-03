@@ -29,7 +29,7 @@ export const ManageAdmins = () => {
   const [togglingAdminId, setTogglingAdminId] = useState(null);
   const [deletingAdminId, setDeletingAdminId] = useState(null);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["admins"],
     queryFn: fetchAllAdmins,
   });
@@ -131,6 +131,7 @@ export const ManageAdmins = () => {
           data={data?.data}
           columns={columns}
           globalFilterFn={filterSpecificColumns("name", "email")}
+          isLoading={isLoading}
         />
       </div>
 

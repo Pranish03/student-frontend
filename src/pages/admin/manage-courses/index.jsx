@@ -31,7 +31,7 @@ export const ManageCourses = () => {
   const [assigningCourse, setAssigningCourse] = useState(null);
   const [removingCourse, setRemovingCourse] = useState(null);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["courses"],
     queryFn: fetchAllCourses,
   });
@@ -141,6 +141,7 @@ export const ManageCourses = () => {
           data={data?.data}
           columns={columns}
           globalFilterFn={filterSpecificColumns("name", "code")}
+          isLoading={isLoading}
         />
       </div>
 
