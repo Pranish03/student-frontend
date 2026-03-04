@@ -43,15 +43,15 @@ export const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-80 bg-white text-gray-800 p-4 border-r border-black/10">
+      <aside className="w-80 bg-white text-zinc-800 p-4 border-r border-zinc-200">
         <div className="mb-5">
-          <h1 className="text-2xl text-gray-900 font-black tracking-wide pl-3.5">
+          <h1 className="text-2xl text-zinc-900 font-black tracking-wide pl-3.5">
             SMS.
           </h1>
         </div>
 
         <div className="flex flex-col h-[calc(100vh-90px)] justify-between">
-          <div className="space-y-2 text-gray-900">
+          <div className="space-y-2 text-zinc-900">
             <div>
               <NavButton to="/admin">
                 <span className="flex items-center gap-3">
@@ -97,10 +97,10 @@ export const AdminLayout = () => {
                   round={10}
                 />
                 <div className="flex flex-col gap-0">
-                  <span className="text-base text-gray-900 font-semibold max-w-35 text-nowrap overflow-hidden text-ellipsis">
+                  <span className="text-base text-zinc-900 font-semibold max-w-35 text-nowrap overflow-hidden text-ellipsis">
                     {user?.name}
                   </span>
-                  <span className="text-sm text-gray-800 max-w-35 overflow-hidden text-ellipsis">
+                  <span className="text-sm text-zinc-800 max-w-35 overflow-hidden text-ellipsis">
                     {user?.email}
                   </span>
                 </div>
@@ -121,7 +121,7 @@ export const AdminLayout = () => {
                     transition={{ duration: 0.15 }}
                   />
                   <motion.div
-                    className="absolute z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base bottom-0 -right-50"
+                    className="absolute z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base bottom-0 -right-50"
                     initial={{ opacity: 0, scale: 0.95, y: 8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 8 }}
@@ -138,10 +138,10 @@ export const AdminLayout = () => {
                         round={10}
                       />
                       <div className="flex flex-col gap-0">
-                        <span className="text-base text-gray-900 font-semibold">
+                        <span className="text-base text-zinc-900 font-semibold">
                           {user?.name}
                         </span>
-                        <span className="text-sm text-gray-800">
+                        <span className="text-sm text-zinc-800">
                           {user?.email}
                         </span>
                       </div>
@@ -150,7 +150,7 @@ export const AdminLayout = () => {
                     <Link to="/admin/account">
                       <Button
                         variant="ghost"
-                        className="text-left text-gray-900 w-full"
+                        className="text-left text-zinc-900 w-full"
                         onClick={() => setShowMenu(false)}
                       >
                         Account
@@ -159,7 +159,7 @@ export const AdminLayout = () => {
 
                     <Button
                       variant="ghost-danger"
-                      className="text-left text-gray-900"
+                      className="text-left"
                       onClick={handleLogout}
                     >
                       Logout
