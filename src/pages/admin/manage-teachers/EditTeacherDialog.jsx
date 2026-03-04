@@ -9,12 +9,10 @@ import { ImSpinner8 } from "react-icons/im";
 import { updateStudentSchema } from "../../../schemas/userSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editUser } from "../../../api/manageUsers";
-import { useUser } from "../../../hooks/useUser";
 
-export const EditTeacherDialog = ({ id, close }) => {
+export const EditTeacherDialog = ({ teacher, close }) => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useUser(id);
   const {
     register,
     handleSubmit,
@@ -29,13 +27,13 @@ export const EditTeacherDialog = ({ id, close }) => {
   });
 
   useEffect(() => {
-    if (data?.data) {
+    if (teacher) {
       reset({
-        name: data?.data?.name,
-        email: data?.data?.email,
+        name: teacher?.name || "",
+        email: teacher?.email || "",
       });
     }
-  }, [data, reset]);
+  }, [teacher, reset]);
 
   const mutation = useMutation({
     mutationFn: editUser,
@@ -43,44 +41,12 @@ export const EditTeacherDialog = ({ id, close }) => {
       toast.success(data?.message || "Teacher updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
-      queryClient.invalidateQueries({ queryKey: ["user", id] });
 
       close();
     },
   });
 
-  const onSubmit = (data) => mutation.mutate({ data, id });
-
-  if (isLoading) {
-    return (
-      <Dialog
-        heading="Edit Teacher"
-        desc="Loading teacher information..."
-        close={close}
-      >
-        <div className="flex justify-center items-center py-8">
-          <ImSpinner8 className="animate-spin text-3xl text-zinc-500" />
-        </div>
-      </Dialog>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Dialog
-        heading="Edit Student"
-        desc="Failed to load student information"
-        close={close}
-      >
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Could not load teacher data</p>
-          <Button variant="secondary" onClick={close}>
-            Close
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
+  const onSubmit = (data) => mutation.mutate({ data, id: teacher?._id });
 
   return (
     <Dialog

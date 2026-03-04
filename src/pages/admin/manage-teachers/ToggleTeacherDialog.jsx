@@ -4,14 +4,9 @@ import { ImSpinner8 } from "react-icons/im";
 import { Dialog } from "../../../components/Dialog";
 import { toggleUser } from "../../../api/manageUsers";
 import { Button } from "../../../components/Button";
-import { useUser } from "../../../hooks/useUser";
 
-export const ToggleTeacherDialog = ({ id, close }) => {
+export const ToggleTeacherDialog = ({ teacher, close }) => {
   const queryClient = useQueryClient();
-
-  const { data, isLoading, isError } = useUser(id);
-
-  console.log(data);
 
   const mutation = useMutation({
     mutationFn: toggleUser,
@@ -19,49 +14,17 @@ export const ToggleTeacherDialog = ({ id, close }) => {
       toast.success(data?.message || "Teacher status changed successfully");
 
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
-      queryClient.invalidateQueries({ queryKey: ["user", id] });
 
       close();
     },
   });
 
-  const handleToggle = () => mutation.mutate(id);
-
-  if (isLoading) {
-    return (
-      <Dialog
-        heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Teacher`}
-        desc="Loading teacher information..."
-        close={close}
-      >
-        <div className="flex justify-center items-center py-8">
-          <ImSpinner8 className="animate-spin text-3xl text-zinc-500" />
-        </div>
-      </Dialog>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Dialog
-        heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Teacher`}
-        desc="Failed to load teacher information"
-        close={close}
-      >
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Could not load teacher data</p>
-          <Button variant="secondary" onClick={close}>
-            Close
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
+  const handleToggle = () => mutation.mutate(teacher?._id);
 
   return (
     <Dialog
-      heading={`${data?.data?.isActive ? "Deactivate" : "Activate"} Teacher`}
-      desc={`Are you sure you want to ${data?.data?.isActive ? "deactivate" : "activate"} this teacher?`}
+      heading={`${teacher?.isActive ? "Deactivate" : "Activate"} Teacher`}
+      desc={`Are you sure you want to ${teacher?.isActive ? "deactivate" : "activate"} this teacher?`}
       close={close}
     >
       {mutation?.isError && (
@@ -92,7 +55,7 @@ export const ToggleTeacherDialog = ({ id, close }) => {
           {mutation?.isPending && (
             <ImSpinner8 className="animate-spin text-lg" />
           )}
-          <span>{data?.data?.isActive ? "Deactivate" : "Activate"}</span>
+          <span>{teacher?.isActive ? "Deactivate" : "Activate"}</span>
         </Button>
       </div>
     </Dialog>

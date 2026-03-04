@@ -25,9 +25,9 @@ export const ManageStudents = () => {
   const [showToggleDialog, setShowToggleDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const [editingStudentId, setEditingStudentId] = useState(null);
-  const [togglingStudentId, setTogglingStudentId] = useState(null);
-  const [deletingStudentId, setDeletingStudentId] = useState(null);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [togglingStudent, setTogglingStudent] = useState(null);
+  const [deletingStudent, setDeletingStudent] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["students"],
@@ -53,19 +53,19 @@ export const ManageStudents = () => {
   };
 
   const handleEditClick = () => {
-    setEditingStudentId(selectedId);
+    setEditingStudent(selectedId);
     handleCloseDropdown();
     setShowEditDialog(true);
   };
 
   const handleDeleteClick = () => {
-    setDeletingStudentId(selectedId);
+    setDeletingStudent(selectedId);
     handleCloseDropdown();
     setShowDeleteDialog(true);
   };
 
   const handleToggleClick = () => {
-    setTogglingStudentId(selectedId);
+    setTogglingStudent(selectedId);
     handleCloseDropdown();
     setShowToggleDialog(true);
   };
@@ -93,7 +93,7 @@ export const ManageStudents = () => {
       header: "Action",
       cell: (info) => (
         <button
-          onClick={(e) => handleActionClick(e, info.row.original._id)}
+          onClick={(e) => handleActionClick(e, info.row.original)}
           className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer relative"
         >
           <LuEllipsis size={18} />
@@ -155,7 +155,7 @@ export const ManageStudents = () => {
               transition={{ duration: 0.15 }}
             />
             <motion.div
-              className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
+              className="fixed z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
               style={{
                 top: dropdownPosition.top,
                 left: dropdownPosition.left,
@@ -201,36 +201,36 @@ export const ManageStudents = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showEditDialog && editingStudentId && (
+        {showEditDialog && editingStudent && (
           <EditStudentDialog
-            id={editingStudentId}
+            student={editingStudent}
             close={() => {
               setShowEditDialog(false);
-              setEditingStudentId(null);
+              setEditingStudent(null);
             }}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showToggleDialog && togglingStudentId && (
+        {showToggleDialog && togglingStudent && (
           <ToggleStudentDialog
-            id={togglingStudentId}
+            student={togglingStudent}
             close={() => {
               setShowToggleDialog(false);
-              setTogglingStudentId(null);
+              setTogglingStudent(null);
             }}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showDeleteDialog && deletingStudentId && (
+        {showDeleteDialog && deletingStudent && (
           <DeleteStudentDialog
-            id={deletingStudentId}
+            student={deletingStudent}
             close={() => {
               setShowDeleteDialog(false);
-              setDeletingStudentId(null);
+              setDeletingStudent(null);
             }}
           />
         )}

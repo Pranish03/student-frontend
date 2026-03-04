@@ -5,7 +5,7 @@ import { Dialog } from "../../../components/Dialog";
 import { deleteUser } from "../../../api/manageUsers";
 import { Button } from "../../../components/Button";
 
-export const DeleteAdminDialog = ({ id, close }) => {
+export const DeleteAdminDialog = ({ admin, close }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -19,7 +19,7 @@ export const DeleteAdminDialog = ({ id, close }) => {
     },
   });
 
-  const handleDelete = () => mutation.mutate(id);
+  const handleDelete = () => mutation.mutate(admin?._id);
 
   return (
     <Dialog

@@ -165,7 +165,7 @@ export const ManageCourses = () => {
               transition={{ duration: 0.15 }}
             />
             <motion.div
-              className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
+              className="fixed z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
               style={{
                 top: dropdownPosition.top,
                 left: dropdownPosition.left,

@@ -9,12 +9,9 @@ import { ImSpinner8 } from "react-icons/im";
 import { updateStudentSchema } from "../../../schemas/userSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editUser } from "../../../api/manageUsers";
-import { useUser } from "../../../hooks/useUser";
 
-export const EditAdminDialog = ({ id, close }) => {
+export const EditAdminDialog = ({ admin, close }) => {
   const queryClient = useQueryClient();
-
-  const { data, isLoading, isError } = useUser(id);
 
   const {
     register,
@@ -30,13 +27,13 @@ export const EditAdminDialog = ({ id, close }) => {
   });
 
   useEffect(() => {
-    if (data?.data) {
+    if (admin) {
       reset({
-        name: data?.data?.name,
-        email: data?.data?.email,
+        name: admin?.name || "",
+        email: admin?.email || "",
       });
     }
-  }, [data, reset]);
+  }, [admin, reset]);
 
   const mutation = useMutation({
     mutationFn: editUser,
@@ -44,44 +41,12 @@ export const EditAdminDialog = ({ id, close }) => {
       toast.success(data?.message || "Admin updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["admins"] });
-      queryClient.invalidateQueries({ queryKey: ["user", id] });
 
       close();
     },
   });
 
-  const onSubmit = (data) => mutation.mutate({ data, id });
-
-  if (isLoading) {
-    return (
-      <Dialog
-        heading="Edit Admin"
-        desc="Loading admin information..."
-        close={close}
-      >
-        <div className="flex justify-center items-center py-8">
-          <ImSpinner8 className="animate-spin text-3xl text-zinc-500" />
-        </div>
-      </Dialog>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Dialog
-        heading="Edit Admin"
-        desc="Failed to load admin information"
-        close={close}
-      >
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Could not load admin data</p>
-          <Button variant="secondary" onClick={close}>
-            Close
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
+  const onSubmit = (data) => mutation.mutate({ data, id: admin?._id });
 
   return (
     <Dialog

@@ -17,7 +17,7 @@ import { DeleteAdminDialog } from "./DeleteAdminDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
 
 export const ManageAdmins = () => {
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -25,9 +25,9 @@ export const ManageAdmins = () => {
   const [showToggleDialog, setShowToggleDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const [editingAdminId, setEditingAdminId] = useState(null);
-  const [togglingAdminId, setTogglingAdminId] = useState(null);
-  const [deletingAdminId, setDeletingAdminId] = useState(null);
+  const [editingAdmin, setEditingAdmin] = useState(null);
+  const [togglingAdmin, setTogglingAdmin] = useState(null);
+  const [deletingAdmin, setDeletingAdmin] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admins"],
@@ -45,27 +45,27 @@ export const ManageAdmins = () => {
       left: rect.left + window.scrollX - 138 + rect.width,
     });
 
-    setSelectedId((prevId) => (prevId === id ? null : id));
+    setSelectedAdmin((prevId) => (prevId === id ? null : id));
   };
 
   const handleCloseDropdown = () => {
-    setSelectedId(null);
+    setSelectedAdmin(null);
   };
 
   const handleEditClick = () => {
-    setEditingAdminId(selectedId);
+    setEditingAdmin(selectedAdmin);
     handleCloseDropdown();
     setShowEditDialog(true);
   };
 
   const handleDeleteClick = () => {
-    setDeletingAdminId(selectedId);
+    setDeletingAdmin(selectedAdmin);
     handleCloseDropdown();
     setShowDeleteDialog(true);
   };
 
   const handleToggleClick = () => {
-    setTogglingAdminId(selectedId);
+    setTogglingAdmin(selectedAdmin);
     handleCloseDropdown();
     setShowToggleDialog(true);
   };
@@ -93,7 +93,7 @@ export const ManageAdmins = () => {
       header: "Action",
       cell: (info) => (
         <button
-          onClick={(e) => handleActionClick(e, info.row.original._id)}
+          onClick={(e) => handleActionClick(e, info.row.original)}
           className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer relative"
         >
           <LuEllipsis size={18} />
@@ -144,7 +144,7 @@ export const ManageAdmins = () => {
       </div>
 
       <AnimatePresence>
-        {selectedId && (
+        {selectedAdmin && (
           <>
             <motion.div
               className="fixed inset-0 z-40"
@@ -155,7 +155,7 @@ export const ManageAdmins = () => {
               transition={{ duration: 0.15 }}
             />
             <motion.div
-              className="fixed z-50 flex flex-col bg-white border border-black/20 rounded-[10px] shadow p-1 text-base"
+              className="fixed z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
               style={{
                 top: dropdownPosition.top,
                 left: dropdownPosition.left,
@@ -201,36 +201,36 @@ export const ManageAdmins = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showEditDialog && editingAdminId && (
+        {showEditDialog && editingAdmin && (
           <EditAdminDialog
-            id={editingAdminId}
+            admin={editingAdmin}
             close={() => {
               setShowEditDialog(false);
-              setEditingAdminId(null);
+              setEditingAdmin(null);
             }}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showToggleDialog && togglingAdminId && (
+        {showToggleDialog && togglingAdmin && (
           <ToggleAdminDialog
-            id={togglingAdminId}
+            admin={togglingAdmin}
             close={() => {
               setShowToggleDialog(false);
-              setTogglingAdminId(null);
+              setTogglingAdmin(null);
             }}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showDeleteDialog && deletingAdminId && (
+        {showDeleteDialog && deletingAdmin && (
           <DeleteAdminDialog
-            id={deletingAdminId}
+            admin={deletingAdmin}
             close={() => {
               setShowDeleteDialog(false);
-              setDeletingAdminId(null);
+              setDeletingAdmin(null);
             }}
           />
         )}

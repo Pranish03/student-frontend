@@ -9,12 +9,9 @@ import { ImSpinner8 } from "react-icons/im";
 import { updateStudentSchema } from "../../../schemas/userSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editUser } from "../../../api/manageUsers";
-import { useUser } from "../../../hooks/useUser";
 
-export const EditStudentDialog = ({ id, close }) => {
+export const EditStudentDialog = ({ student, close }) => {
   const queryClient = useQueryClient();
-
-  const { data, isLoading, isError } = useUser(id);
 
   const {
     register,
@@ -30,13 +27,13 @@ export const EditStudentDialog = ({ id, close }) => {
   });
 
   useEffect(() => {
-    if (data?.data) {
+    if (student) {
       reset({
-        name: data?.data?.name,
-        email: data?.data?.email,
+        name: student?.name || "",
+        email: student?.email,
       });
     }
-  }, [data, reset]);
+  }, [student, reset]);
 
   const mutation = useMutation({
     mutationFn: editUser,
@@ -44,44 +41,12 @@ export const EditStudentDialog = ({ id, close }) => {
       toast.success(data?.message || "Student updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["students"] });
-      queryClient.invalidateQueries({ queryKey: ["user", id] });
 
       close();
     },
   });
 
-  const onSubmit = (data) => mutation.mutate({ data, id });
-
-  if (isLoading) {
-    return (
-      <Dialog
-        heading="Edit Student"
-        desc="Loading student information..."
-        close={close}
-      >
-        <div className="flex justify-center items-center py-8">
-          <ImSpinner8 className="animate-spin text-3xl text-zinc-500" />
-        </div>
-      </Dialog>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Dialog
-        heading="Edit Student"
-        desc="Failed to load student information"
-        close={close}
-      >
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Could not load student data</p>
-          <Button variant="secondary" onClick={close}>
-            Close
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
+  const onSubmit = (data) => mutation.mutate({ data, id: student?._id });
 
   return (
     <Dialog
