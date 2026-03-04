@@ -90,11 +90,6 @@ export const Table = ({ globalFilterFn, data, columns, isLoading = false }) => {
             <p className="text-zinc-500 text-base mb-3">
               Try adjusting your search terms
             </p>
-            {filtered && (
-              <Button variant="secondary" onClick={() => setFiltered("")}>
-                Clear search
-              </Button>
-            )}
           </div>
         ) : (
           <table className="min-w-full">

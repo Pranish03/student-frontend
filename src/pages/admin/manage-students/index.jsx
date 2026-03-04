@@ -118,7 +118,12 @@ export const ManageStudents = () => {
           <span className="text-zinc-900">students</span>
         </div>
 
-        <h2 className="text-2xl font-bold text-zinc-900 mb-4">Students</h2>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-zinc-900 mb-1">Students</h1>
+          <p className="text-zinc-800">
+            {data?.data?.length || 0} total students
+          </p>
+        </div>
 
         <div className="float-end">
           <Button
