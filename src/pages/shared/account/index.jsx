@@ -99,7 +99,7 @@ export const Account = () => {
                     <LuUser className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-500 mb-1">Full Name</p>
+                    <p className="text-sm text-zinc-500">Full Name</p>
                     <p className="text-zinc-800 font-medium">
                       {user?.name || "Not provided"}
                     </p>
@@ -111,7 +111,7 @@ export const Account = () => {
                     <LuMail className="w-5 h-5 text-green-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-zinc-500 mb-1">Email Address</p>
+                    <p className="text-sm text-zinc-500">Email Address</p>
                     <p className="text-zinc-800 font-medium break-all">
                       {user?.email || "Not provided"}
                     </p>
@@ -123,8 +123,8 @@ export const Account = () => {
                     <LuKey className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-500 mb-1">Account ID</p>
-                    <p className="text-zinc-800 font-medium font-mono text-sm">
+                    <p className="text-sm text-zinc-500">Account ID</p>
+                    <p className="text-zinc-800 font-medium font-mono">
                       {user?._id || "Not available"}
                     </p>
                   </div>

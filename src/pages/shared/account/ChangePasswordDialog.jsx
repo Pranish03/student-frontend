@@ -44,7 +44,7 @@ export const ChangePasswordDialog = ({ close }) => {
   return (
     <Dialog
       heading="Change Password"
-      desc="Enter your current password and choose a new strong password to secure your account."
+      desc="Choose a new strong password to secure your account."
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
