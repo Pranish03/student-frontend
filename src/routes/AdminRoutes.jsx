@@ -7,6 +7,7 @@ import { ManageCourses } from "../pages/admin/manage-courses";
 import { ManageStudents } from "../pages/admin/manage-students";
 import { ManageTeachers } from "../pages/admin/manage-teachers";
 import { ManageAdmins } from "../pages/admin/manage-admins";
+import { Account } from "../pages/shared/account/index.jsx";
 
 export const AdminRoutes = {
   path: "/admin",
@@ -22,6 +23,7 @@ export const AdminRoutes = {
         { element: <ManageStudents />, path: "manage-students" },
         { element: <ManageTeachers />, path: "manage-teachers" },
         { element: <ManageAdmins />, path: "manage-admins" },
+        { element: <Account />, path: "account" },
       ],
     },
   ],

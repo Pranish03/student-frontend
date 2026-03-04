@@ -21,3 +21,21 @@ export const resetPasswordSchema = z
     message: "Password do not match",
     path: ["confirm"],
   });
+
+// Update password validation schema
+export const updatePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string("Current password is required")
+      .min(8, "Current password must have at least 8 characters"),
+    newPassword: z
+      .string("Password is required")
+      .min(8, "Password must have at least 8 characters"),
+    confirmNew: z
+      .string("Confirm password is required")
+      .min(8, "confirm password must have at least 8 characters"),
+  })
+  .refine((data) => data.newPassword === data.confirmNew, {
+    message: "Password do not match",
+    path: ["confirmNew"],
+  });

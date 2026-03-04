@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
@@ -50,7 +50,7 @@ export const AdminLayout = () => {
           </h1>
         </div>
 
-        <div className="flex flex-col h-[calc(100vh-100px)] justify-between">
+        <div className="flex flex-col h-[calc(100vh-90px)] justify-between">
           <div className="space-y-2 text-gray-900">
             <div>
               <NavButton to="/admin">
@@ -147,13 +147,16 @@ export const AdminLayout = () => {
                       </div>
                     </div>
 
-                    <Button
-                      variant="ghost"
-                      className="text-left text-gray-900"
-                      onClick={() => setShowMenu(false)}
-                    >
-                      Account
-                    </Button>
+                    <Link to="/admin/account">
+                      <Button
+                        variant="ghost"
+                        className="text-left text-gray-900 w-full"
+                        onClick={() => setShowMenu(false)}
+                      >
+                        Account
+                      </Button>
+                    </Link>
+
                     <Button
                       variant="ghost-danger"
                       className="text-left text-gray-900"
