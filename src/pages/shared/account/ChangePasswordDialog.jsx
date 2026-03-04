@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Dialog } from "../../../components/Dialog";
 import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 import { updatePasswordSchema } from "../../../schemas/authSchema";
+import { ImSpinner8 } from "react-icons/im";
+import { updatePassword } from "../../../api/auth";
 
 export const ChangePasswordDialog = ({ close }) => {
   const [showCurrent, setShowCurrent] = useState(false);
@@ -26,10 +30,16 @@ export const ChangePasswordDialog = ({ close }) => {
     resolver: zodResolver(updatePasswordSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    close();
-  };
+  const mutation = useMutation({
+    mutationFn: updatePassword,
+    onSuccess: (data) => {
+      toast.success(data?.message);
+
+      close();
+    },
+  });
+
+  const onSubmit = (data) => mutation.mutate(data);
 
   return (
     <Dialog
@@ -38,6 +48,15 @@ export const ChangePasswordDialog = ({ close }) => {
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        {mutation?.isError && (
+          <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-base">
+              {mutation?.error?.response?.data?.message ||
+                "Something went wrong"}
+            </p>
+          </div>
+        )}
+
         <div className="mb-5">
           <div className="flex items-center justify-between">
             <label
@@ -55,13 +74,14 @@ export const ChangePasswordDialog = ({ close }) => {
               type={showCurrent ? "text" : "password"}
               id="current"
               placeholder="Enter current password"
+              disabled={mutation?.isPending}
               {...register("currentPassword")}
               errors={errors?.currentPassword}
             />
 
             <button
               type="button"
-              className="absolute right-3 cursor-pointer text-zinc-400 hover:text-zinc-600 transition-colors"
+              className="absolute right-3 cursor-pointer text-zinc-400 hover:text-green-600 transition-colors"
               onClick={() => setShowCurrent((prev) => !prev)}
               tabIndex={-1}
             >
@@ -93,13 +113,14 @@ export const ChangePasswordDialog = ({ close }) => {
               type={showNew ? "text" : "password"}
               id="new"
               placeholder="Enter new password"
+              disabled={mutation?.isPending}
               {...register("newPassword")}
               errors={errors?.newPassword}
             />
 
             <button
               type="button"
-              className="absolute right-3 cursor-pointer text-zinc-400 hover:text-zinc-600 transition-colors"
+              className="absolute right-3 cursor-pointer text-zinc-400 hover:text-green-600 transition-colors"
               onClick={() => setShowNew((prev) => !prev)}
               tabIndex={-1}
             >
@@ -131,13 +152,14 @@ export const ChangePasswordDialog = ({ close }) => {
               type={showConfirm ? "text" : "password"}
               id="confirm"
               placeholder="Confirm new password"
+              disabled={mutation?.isPending}
               {...register("confirmNew")}
               errors={errors?.confirmNew}
             />
 
             <button
               type="button"
-              className="absolute right-3 cursor-pointer text-zinc-400 hover:text-zinc-600 transition-colors"
+              className="absolute right-3 cursor-pointer text-zinc-400 hover:text-green-600 transition-colors"
               onClick={() => setShowConfirm((prev) => !prev)}
               tabIndex={-1}
             >
@@ -164,7 +186,6 @@ export const ChangePasswordDialog = ({ close }) => {
           </ul>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-4 justify-end">
           <Button
             variant="secondary"
@@ -179,8 +200,16 @@ export const ChangePasswordDialog = ({ close }) => {
           <Button
             className="flex items-center justify-center gap-3 min-w-35"
             type="submit"
+            disabled={mutation?.isPending}
           >
-            Change Password
+            {mutation?.isPending ? (
+              <>
+                <ImSpinner8 className="animate-spin text-lg" />
+                <span>Changing...</span>
+              </>
+            ) : (
+              "Change Password"
+            )}
           </Button>
         </div>
       </form>

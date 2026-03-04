@@ -15,6 +15,11 @@ export const resetPassword = async ({ data, token }) => {
   return res?.data;
 };
 
+export const updatePassword = async (data) => {
+  const res = await axios.post(`/auth/update-password`, data);
+  return res?.data;
+};
+
 export const getMe = async () => {
   const { data } = await axios.get("/auth/me");
   return data;

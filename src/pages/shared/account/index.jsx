@@ -193,29 +193,3 @@ export const Account = () => {
     </>
   );
 };
-
-{
-  /* <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-xs font-medium text-blue-800 mb-2">
-                      Password requirements:
-                    </p>
-                    <ul className="text-xs text-blue-700 space-y-1">
-                      <li className="flex items-center gap-1">
-                        <span className="w-1 h-1 bg-blue-700 rounded-full"></span>
-                        At least 8 characters long
-                      </li>
-                      <li className="flex items-center gap-1">
-                        <span className="w-1 h-1 bg-blue-700 rounded-full"></span>
-                        Contains at least one uppercase letter
-                      </li>
-                      <li className="flex items-center gap-1">
-                        <span className="w-1 h-1 bg-blue-700 rounded-full"></span>
-                        Contains at least one number
-                      </li>
-                      <li className="flex items-center gap-1">
-                        <span className="w-1 h-1 bg-blue-700 rounded-full"></span>
-                        Contains at least one special character
-                      </li>
-                    </ul>
-                  </div> */
-}
