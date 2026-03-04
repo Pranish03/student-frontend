@@ -10,16 +10,16 @@ export const CheckEmail = () => {
           <FiMail size={30} />
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-5">
+        <h1 className="text-2xl font-bold text-zinc-900 text-center mb-5">
           Check your email.
         </h1>
 
-        <p className="text-base text-center text-gray-800 mb-2">
+        <p className="text-base text-center text-zinc-800 mb-2">
           If an account exists, you'll get an email with the reset password
           link.
         </p>
 
-        <p className="text-base text-center text-gray-800 mb-7">
+        <p className="text-base text-center text-zinc-800 mb-7">
           Didn't receive the email? Check your spam folder.
         </p>
 

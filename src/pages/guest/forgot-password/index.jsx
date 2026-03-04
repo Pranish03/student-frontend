@@ -34,18 +34,18 @@ export const ForgotPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-95">
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-1">
+        <h1 className="text-2xl font-bold text-zinc-900 text-center mb-1">
           Forgot password?
         </h1>
-        <h2 className="text-base text-center text-gray-800 mb-4">
+        <h2 className="text-base text-center text-zinc-800 mb-4">
           Enter your email to send password reset link
         </h2>
 
-        <form className="text-gray-800" onSubmit={handleSubmit(onSubmit)}>
+        <form className="text-zinc-800" onSubmit={handleSubmit(onSubmit)}>
           <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
             <label
               htmlFor="email"
-              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
+              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-zinc-900"}`}
             >
               Email
               <span className="text-red-600">*</span>
@@ -55,6 +55,7 @@ export const ForgotPassword = () => {
               type="email"
               id="email"
               placeholder="m@example.com"
+              disabled={mutation?.isPending}
               {...register("email")}
               errors={errors.email}
             />

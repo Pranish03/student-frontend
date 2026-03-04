@@ -44,18 +44,18 @@ export const ResetPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-95">
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-1">
+        <h1 className="text-2xl font-bold text-zinc-900 text-center mb-1">
           Reset password.
         </h1>
-        <p className="text-base text-center text-gray-800 mb-4">
+        <p className="text-base text-center text-zinc-800 mb-4">
           Create and confirm your new password
         </p>
 
-        <form className="text-gray-800" onSubmit={handleSubmit(onSubmit)}>
+        <form className="text-zinc-800" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5">
             <label
               htmlFor="password"
-              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.password ? "text-red-600" : "text-gray-900"}`}
+              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.password ? "text-red-600" : "text-zinc-900"}`}
             >
               Password
               <span className="text-red-600">*</span>
@@ -73,7 +73,7 @@ export const ResetPassword = () => {
 
               <button
                 type="button"
-                className="absolute right-3 cursor-pointer text-gray-400 hover:text-green-600"
+                className="absolute right-3 cursor-pointer text-zinc-400 hover:text-green-600"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
@@ -84,7 +84,7 @@ export const ResetPassword = () => {
           <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
             <label
               htmlFor="confirm"
-              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.confirm ? "text-red-600" : "text-gray-900"}`}
+              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.confirm ? "text-red-600" : "text-zinc-900"}`}
             >
               Confirm password
               <span className="text-red-600">*</span>
@@ -102,7 +102,7 @@ export const ResetPassword = () => {
 
               <button
                 type="button"
-                className="absolute right-3 cursor-pointer text-gray-400 hover:text-green-600"
+                className="absolute right-3 cursor-pointer text-zinc-400 hover:text-green-600"
                 onClick={() => setShowConfirm((prev) => !prev)}
               >
                 {showConfirm ? <FiEyeOff size={18} /> : <FiEye size={18} />}

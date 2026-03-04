@@ -42,21 +42,21 @@ export const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-95">
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-1">
+        <h1 className="text-2xl font-bold text-zinc-900 text-center mb-1">
           Welcome to SMS.
         </h1>
-        <h2 className="text-base text-center text-gray-800 mb-4">
+        <h2 className="text-base text-center text-zinc-800 mb-4">
           Login to access your account
         </h2>
 
         <form
-          className="space-y-5 text-gray-800"
+          className="space-y-5 text-zinc-800"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="mb-5">
             <label
               htmlFor="email"
-              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
+              className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-zinc-900"}`}
             >
               Email
               <span className="text-red-600">*</span>
@@ -66,7 +66,8 @@ export const Login = () => {
               className="w-full"
               type="email"
               id="email"
-              placeholder="Enter your email"
+              placeholder="m@example.com"
+              disabled={mutation?.isPending}
               {...register("email")}
               errors={errors.email}
             />
@@ -80,7 +81,7 @@ export const Login = () => {
             <div className="flex items-center justify-between sm:text-base text-sm mb-2 font-medium ">
               <label
                 htmlFor="password"
-                className={`block max-w-fit ${errors.password ? "text-red-600" : "text-gray-900"}`}
+                className={`block max-w-fit ${errors.password ? "text-red-600" : "text-zinc-900"}`}
               >
                 Password
                 <span className="text-red-600">*</span>
@@ -99,14 +100,14 @@ export const Login = () => {
                 className="w-full"
                 type={showPassword ? "text" : "password"}
                 id="password"
-                placeholder="Enter your password"
+                disabled={mutation?.isPending}
                 {...register("password")}
                 errors={errors.password}
               />
 
               <button
                 type="button"
-                className="absolute right-3 cursor-pointer text-gray-400 hover:text-green-600"
+                className="absolute right-3 cursor-pointer text-zinc-400 hover:text-green-600"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
