@@ -4,5 +4,8 @@ import { StudentDashboard } from "../pages/student/dashboard";
 export const StudentRoutes = {
   path: "/student",
   element: <RequireAuth allowedRoles={["student"]} />,
-  children: [{ element: <StudentDashboard />, index: true }],
+  children: [
+    { element: <StudentDashboard />, index: true },
+    { element: <Account />, path: "account" },
+  ],
 };
