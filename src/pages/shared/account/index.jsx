@@ -106,7 +106,7 @@ export const Account = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-xl">
+                <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-[10px]">
                   <div className="bg-green-100 p-2 rounded-lg">
                     <LuMail className="w-5 h-5 text-green-600" />
                   </div>
@@ -118,7 +118,7 @@ export const Account = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-xl">
+                <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-[10px]">
                   <div className="bg-green-100 p-2 rounded-lg">
                     <LuKey className="w-5 h-5 text-green-600" />
                   </div>
