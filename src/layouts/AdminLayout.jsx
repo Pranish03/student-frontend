@@ -97,7 +97,7 @@ export const AdminLayout = () => {
                   round={10}
                 />
                 <div className="flex flex-col gap-0">
-                  <span className="text-base text-gray-900 font-semibold max-w-35 overflow-hidden text-ellipsis">
+                  <span className="text-base text-gray-900 font-semibold max-w-35 text-nowrap overflow-hidden text-ellipsis">
                     {user?.name}
                   </span>
                   <span className="text-sm text-gray-800 max-w-35 overflow-hidden text-ellipsis">
