@@ -1,4 +1,5 @@
 import { RequireAuth } from "../components/auth/RequireAuth";
+import { Account } from "../pages/shared/account";
 import { TeacherDashboard } from "../pages/teacher/dashboard";
 
 export const TeacherRoutes = {
