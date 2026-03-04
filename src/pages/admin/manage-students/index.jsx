@@ -179,7 +179,7 @@ export const ManageStudents = () => {
               </Button>
               <Button
                 variant="ghost-danger"
-                className="text-left text-zinc-900"
+                className="text-left"
                 onClick={handleDeleteClick}
               >
                 Delete

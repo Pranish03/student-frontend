@@ -190,7 +190,7 @@ export const ManageCourses = () => {
               {selectedCourse.teacher && (
                 <Button
                   variant="ghost-danger"
-                  className="text-left text-zinc-900"
+                  className="text-left"
                   onClick={handleRemoveClick}
                 >
                   Remove Teacher
@@ -198,7 +198,7 @@ export const ManageCourses = () => {
               )}
               <Button
                 variant="ghost-danger"
-                className="text-left text-zinc-900"
+                className="text-left"
                 onClick={handleDeleteClick}
               >
                 Delete
