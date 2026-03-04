@@ -76,7 +76,7 @@ export const AssignTeacherDialog = ({ course, close }) => {
 
         <div className="relative">
           <IoSearch
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
             size={18}
           />
           <Input
@@ -90,7 +90,7 @@ export const AssignTeacherDialog = ({ course, close }) => {
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
             >
               <IoClose size={18} />
             </button>
@@ -100,25 +100,25 @@ export const AssignTeacherDialog = ({ course, close }) => {
         <div className="max-h-96 overflow-y-auto">
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
-              <ImSpinner8 className="animate-spin text-3xl text-gray-400" />
+              <ImSpinner8 className="animate-spin text-3xl text-zinc-400" />
             </div>
           ) : filteredTeachers.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No teachers found</p>
+              <p className="text-zinc-500">No teachers found</p>
               {searchTerm && (
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-zinc-400 mt-1">
                   Try adjusting your search
                 </p>
               )}
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 space-y-3">
+            <div className="divide-y divide-zinc-200 space-y-3">
               {filteredTeachers.map((teacher) => (
                 <label
                   key={teacher._id}
-                  className={`flex items-center border rounded-[10px] p-2.5 hover:bg-gray-50 cursor-pointer transition-colors ${
+                  className={`flex items-center border rounded-[10px] p-2.5 hover:bg-zinc-50 cursor-pointer transition-colors ${
                     selectedTeacher === teacher._id
-                      ? "bg-blue-50 border-blue-200"
+                      ? "bg-green-50 border-green-200"
                       : "border-black/20"
                   }`}
                 >
@@ -126,7 +126,7 @@ export const AssignTeacherDialog = ({ course, close }) => {
                     type="radio"
                     value={teacher._id}
                     {...register("teacher")}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-green-600 border-zinc-300 focus:ring-green-500 accent-green-600"
                   />
 
                   <div className="ml-3 flex items-center flex-1">
@@ -138,10 +138,10 @@ export const AssignTeacherDialog = ({ course, close }) => {
                     />
 
                     <div className="ml-3 flex-1">
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-zinc-900">
                         {teacher.name || "Unnamed Teacher"}
                       </p>
-                      <p className="text-sm text-gray-600">{teacher.email}</p>
+                      <p className="text-sm text-zinc-600">{teacher.email}</p>
                     </div>
 
                     {course?.teacher?._id === teacher._id && (

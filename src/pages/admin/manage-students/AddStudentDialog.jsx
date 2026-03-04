@@ -58,7 +58,7 @@ export const AddStudentDialog = ({ close }) => {
         <div className="mb-5">
           <label
             htmlFor="name"
-            className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.name ? "text-red-600" : "text-gray-900"}`}
+            className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.name ? "text-red-600" : "text-zinc-900"}`}
           >
             Name
             <span className="text-red-600">*</span>
@@ -82,7 +82,7 @@ export const AddStudentDialog = ({ close }) => {
         <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
           <label
             htmlFor="email"
-            className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-gray-900"}`}
+            className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-zinc-900"}`}
           >
             Email
             <span className="text-red-600">*</span>

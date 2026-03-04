@@ -35,7 +35,7 @@ export const ToggleStudentDialog = ({ id, close }) => {
         close={close}
       >
         <div className="flex justify-center items-center py-8">
-          <ImSpinner8 className="animate-spin text-3xl text-gray-500" />
+          <ImSpinner8 className="animate-spin text-3xl text-zinc-500" />
         </div>
       </Dialog>
     );

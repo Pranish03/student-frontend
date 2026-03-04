@@ -34,7 +34,7 @@ export const Account = () => {
 
         <LuChevronRight />
 
-        <span className="text-zinc-900">students</span>
+        <span className="text-zinc-900">account</span>
       </div>
 
       <div className="mb-8">

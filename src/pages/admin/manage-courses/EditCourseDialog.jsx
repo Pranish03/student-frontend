@@ -67,7 +67,7 @@ export const EditCourseDialog = ({ course, close }) => {
           <label
             htmlFor="name"
             className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${
-              errors?.name ? "text-red-600" : "text-gray-900"
+              errors?.name ? "text-red-600" : "text-zinc-900"
             }`}
           >
             Name
@@ -93,7 +93,7 @@ export const EditCourseDialog = ({ course, close }) => {
           <label
             htmlFor="code"
             className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${
-              errors?.code ? "text-red-600" : "text-gray-900"
+              errors?.code ? "text-red-600" : "text-zinc-900"
             }`}
           >
             Code

@@ -94,7 +94,7 @@ export const ManageTeachers = () => {
       cell: (info) => (
         <button
           onClick={(e) => handleActionClick(e, info.row.original._id)}
-          className="p-1.5 hover:bg-black/5 rounded-[10px] cursor-pointer relative"
+          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer relative"
         >
           <LuEllipsis size={18} />
         </button>
@@ -106,16 +106,19 @@ export const ManageTeachers = () => {
     <>
       <div>
         <div className="flex items-center gap-1 mb-4">
-          <Link className="text-gray-800 hover:underline" to="/admin">
+          <Link
+            className="text-zinc-500 hover:underline hover:text-zinc-900"
+            to="/admin"
+          >
             admin
           </Link>
 
           <LuChevronRight />
 
-          <span>teachers</span>
+          <span className="text-zinc-900">teachers</span>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Teachers</h2>
+        <h2 className="text-2xl font-bold text-zinc-900 mb-4">Teachers</h2>
 
         <div className="float-end">
           <Button
@@ -162,21 +165,21 @@ export const ManageTeachers = () => {
             >
               <Button
                 variant="ghost"
-                className="text-left text-gray-900"
+                className="text-left text-zinc-900"
                 onClick={handleEditClick}
               >
                 Edit
               </Button>
               <Button
                 variant="ghost"
-                className="text-left text-gray-900"
+                className="text-left text-zinc-900"
                 onClick={handleToggleClick}
               >
                 Toggle Status
               </Button>
               <Button
                 variant="ghost-danger"
-                className="text-left text-gray-900"
+                className="text-left text-zinc-900"
                 onClick={handleDeleteClick}
               >
                 Delete

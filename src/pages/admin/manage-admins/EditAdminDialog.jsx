@@ -60,7 +60,7 @@ export const EditAdminDialog = ({ id, close }) => {
         close={close}
       >
         <div className="flex justify-center items-center py-8">
-          <ImSpinner8 className="animate-spin text-3xl text-gray-500" />
+          <ImSpinner8 className="animate-spin text-3xl text-zinc-500" />
         </div>
       </Dialog>
     );
@@ -103,7 +103,7 @@ export const EditAdminDialog = ({ id, close }) => {
           <label
             htmlFor="name"
             className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${
-              errors?.name ? "text-red-600" : "text-gray-900"
+              errors?.name ? "text-red-600" : "text-zinc-900"
             }`}
           >
             Name
@@ -129,7 +129,7 @@ export const EditAdminDialog = ({ id, close }) => {
           <label
             htmlFor="email"
             className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${
-              errors?.email ? "text-red-600" : "text-gray-900"
+              errors?.email ? "text-red-600" : "text-zinc-900"
             }`}
           >
             Email
