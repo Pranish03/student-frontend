@@ -57,37 +57,37 @@ export const Table = ({ globalFilterFn, data, columns, isLoading = false }) => {
             value={filtered}
             onChange={(e) => setFiltered(e.target.value)}
           />
-          <LuSearch size={18} className="absolute left-3 text-gray-500" />
+          <LuSearch size={18} className="absolute left-3 text-zinc-500" />
           {filtered && (
             <button
               className="absolute right-3 cursor-pointer"
               onClick={() => setFiltered("")}
             >
-              <LuX size={18} className="text-gray-500" />
+              <LuX size={18} className="text-zinc-500" />
             </button>
           )}
         </div>
       </div>
-      <div className="rounded-[10px] border border-black/20 overflow-hidden">
+      <div className="rounded-[10px] border border-zinc-300 overflow-hidden">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <ImSpinner8 size={35} className="animate-spin text-green-600" />
 
-            <p className="mt-2 text-gray-800 text-lg">Loading...</p>
+            <p className="mt-2 text-zinc-800 text-lg">Loading...</p>
           </div>
         ) : !hasData ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <LuInbox size={64} className="text-zinc-400" />
-            <p className="text-gray-900 font-bold text-xl">No data</p>
-            <p className="text-gray-800 text-base">
+            <p className="text-zinc-500 font-bold text-xl">No data</p>
+            <p className="text-zinc-500 text-base">
               Check back later or add new items
             </p>
           </div>
         ) : !hasSearchResults ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <LuFilterX size={64} className="text-zinc-400" />
-            <p className="text-gray-900 font-bold text-xl">No result found</p>
-            <p className="text-gray-800 text-base mb-3">
+            <p className="text-zinc-500 font-bold text-xl">No result found</p>
+            <p className="text-zinc-500 text-base mb-3">
               Try adjusting your search terms
             </p>
             {filtered && (
@@ -98,7 +98,7 @@ export const Table = ({ globalFilterFn, data, columns, isLoading = false }) => {
           </div>
         ) : (
           <table className="min-w-full">
-            <thead className="bg-black/5 text-gray-900">
+            <thead className="bg-zinc-100 text-zinc-900">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -112,7 +112,7 @@ export const Table = ({ globalFilterFn, data, columns, isLoading = false }) => {
                         {header.column.columnDef.header !== "SN" &&
                           header.column.columnDef.header !== "Action" && (
                             <button
-                              className="p-1 bg-black/1 rounded-[10px] text-gray-800 cursor-pointer hover:bg-white"
+                              className="p-1 bg-zinc-100 rounded-[10px] text-zinc-800 cursor-pointer hover:bg-zinc-200"
                               onClick={header.column.getToggleSortingHandler()}
                             >
                               {{
@@ -130,7 +130,7 @@ export const Table = ({ globalFilterFn, data, columns, isLoading = false }) => {
               ))}
             </thead>
 
-            <tbody className="divide-y divide-black/20 border-t border-black/20 text-gray-800">
+            <tbody className="divide-y divide-zinc-300 border-t border-zinc-300 text-zinc-800">
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (

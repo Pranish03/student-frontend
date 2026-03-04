@@ -10,7 +10,7 @@ export const Pagination = ({ table }) => {
 
   return (
     <div className="flex items-center gap-6 justify-end mt-5">
-      <p className="text-gray-800">
+      <p className="text-zinc-800">
         Page {table.getState().pagination.pageIndex + 1} of{" "}
         {table.getPageCount()}
       </p>
@@ -50,7 +50,7 @@ export const Pagination = ({ table }) => {
 const PaginationButton = ({ children, ...props }) => {
   return (
     <button
-      className="p-1 border border-black/20 bg-white rounded-[10px] text-gray-800 cursor-pointer hover:bg-black/5 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+      className="p-1 border border-zinc-400 bg-white rounded-[10px] text-zinc-800 cursor-pointer hover:bg-black/5 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-transparent"
       {...props}
     >
       {children}

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoChevronForward } from "react-icons/io5";
@@ -17,7 +18,7 @@ export const CollapsibleMenu = ({
     <div className={className}>
       <Button
         variant="ghost"
-        className="w-full flex justify-between items-center text-gray-900"
+        className="w-full flex justify-between items-center text-zinc-900"
         onClick={() => setOpen((prev) => !prev)}
       >
         <span className="flex items-center gap-3">
@@ -37,7 +38,7 @@ export const CollapsibleMenu = ({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.1, ease: "easeInOut" }}
-            className="border-l border-gray-200 ml-4.5 pl-3"
+            className="border-l border-zinc-200 ml-4.5 pl-3"
           >
             {children}
           </motion.div>
