@@ -118,7 +118,7 @@ export const AddClassDialog = ({ close }) => {
             className="w-full"
             type="number"
             id="academicYear"
-            placeholder="2024"
+            placeholder="2026"
             min="2000"
             max="2100"
             step="1"

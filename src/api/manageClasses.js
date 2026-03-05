@@ -9,3 +9,8 @@ export const createClass = async (data) => {
   const res = await axios.post("/classes", data);
   return res?.data;
 };
+
+export const editClass = async ({ data, id }) => {
+  const res = await axios.patch(`/classes/${id}`, data);
+  return res?.data;
+};

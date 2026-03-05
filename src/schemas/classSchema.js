@@ -15,7 +15,12 @@ export const createClassSchema = z.object({
       (year) => year >= new Date().getFullYear(),
       "Academic year cannot be in the past",
     ),
-  capacity: z.coerce.number().int().min(10).max(35).default(35),
+  capacity: z.coerce
+    .number()
+    .int()
+    .min(10, "Capacity must me more than 10")
+    .max(35, "Capacity must me less than 35")
+    .default(35),
 });
 
 // Validation schema for updating a class
