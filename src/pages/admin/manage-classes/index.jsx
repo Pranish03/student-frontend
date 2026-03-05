@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import { LuChevronRight, LuEllipsis } from "react-icons/lu";
@@ -24,6 +24,9 @@ export const ManageClasses = () => {
 
   const [editingClass, setEditingClass] = useState(null);
   const [deletingClass, setDeletingClass] = useState(null);
+  // const [managingClass, setManagingClass] = useState(null);
+
+  const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
     queryKey: ["classes"],
@@ -59,6 +62,11 @@ export const ManageClasses = () => {
     setDeletingClass(selectedClass);
     handleCloseDropdown();
     setShowDeleteDialog(true);
+  };
+
+  const handleManageClick = () => {
+    navigate(`/admin/manage-classes/${selectedClass._id}`);
+    // handleCloseDropdown();
   };
 
   const columns = [
@@ -159,7 +167,7 @@ export const ManageClasses = () => {
               <Button
                 variant="ghost"
                 className="text-left text-zinc-900"
-                // onClick={handleEditClick}
+                onClick={handleManageClick}
               >
                 Manage Class
               </Button>

@@ -5,6 +5,11 @@ export const fetchAllClasses = async () => {
   return data;
 };
 
+export const fetchClass = async (id) => {
+  const { data } = await axios.get(`/classes/${id}`);
+  return data;
+};
+
 export const createClass = async (data) => {
   const res = await axios.post("/classes", data);
   return res?.data;
