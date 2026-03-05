@@ -79,7 +79,7 @@ export const AddCourseDialog = ({ close }) => {
           )}
         </div>
 
-        <div className={`${mutation?.isError ? "mb-5" : "mb-7"}`}>
+        <div className="mb-5">
           <label
             htmlFor="code"
             className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.email ? "text-red-600" : "text-zinc-900"}`}
