@@ -12,6 +12,7 @@ import { useState } from "react";
 import { AddClassDialog } from "./AddClassDialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { EditClassDialog } from "./EditClassDialog";
+import { DeleteClassDialog } from "./DeleteClassDialog";
 
 export const ManageClasses = () => {
   const [selectedClass, setSelectedClass] = useState(null);
@@ -19,8 +20,10 @@ export const ManageClasses = () => {
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const [editingClass, setEditingClass] = useState(null);
+  const [deletingClass, setDeletingClass] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["classes"],
@@ -50,6 +53,12 @@ export const ManageClasses = () => {
     setEditingClass(selectedClass);
     handleCloseDropdown();
     setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = () => {
+    setDeletingClass(selectedClass);
+    handleCloseDropdown();
+    setShowDeleteDialog(true);
   };
 
   const columns = [
@@ -165,7 +174,7 @@ export const ManageClasses = () => {
               <Button
                 variant="ghost-danger"
                 className="text-left"
-                // onClick={handleDeleteClick}
+                onClick={handleDeleteClick}
               >
                 Delete
               </Button>
@@ -185,6 +194,15 @@ export const ManageClasses = () => {
           <EditClassDialog
             classData={editingClass}
             close={() => setShowEditDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showDeleteDialog && deletingClass && (
+          <DeleteClassDialog
+            classData={deletingClass}
+            close={() => setShowDeleteDialog(false)}
           />
         )}
       </AnimatePresence>

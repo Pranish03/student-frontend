@@ -14,3 +14,8 @@ export const editClass = async ({ data, id }) => {
   const res = await axios.patch(`/classes/${id}`, data);
   return res?.data;
 };
+
+export const deleteClass = async (id) => {
+  const res = await axios.delete(`/classes/${id}`);
+  return res?.data;
+};
