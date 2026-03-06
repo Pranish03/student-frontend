@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,6 +19,7 @@ import { logout } from "../api/auth";
 
 export const AdminLayout = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const buttonRef = useRef(null);
 
   const { user, refetch } = useAuth();
   const queryClient = useQueryClient();
@@ -43,7 +44,7 @@ export const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-80 bg-white text-zinc-800 p-4 border-r border-zinc-200">
+      <aside className="fixed top-0 left-0 w-80 h-screen bg-white text-zinc-800 p-4 border-r border-zinc-200 overflow-y-auto">
         <div className="mb-5">
           <h1 className="text-2xl text-zinc-900 font-black tracking-wide pl-3.5">
             SMS.
@@ -83,7 +84,7 @@ export const AdminLayout = () => {
             </CollapsibleMenu>
           </div>
 
-          <div className="relative">
+          <div className="relative" ref={buttonRef}>
             <Button
               variant="ghost"
               className="w-full text-left flex items-center justify-between"
@@ -121,7 +122,13 @@ export const AdminLayout = () => {
                     transition={{ duration: 0.15 }}
                   />
                   <motion.div
-                    className="absolute z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base bottom-0 -right-50"
+                    className="absolute z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
+                    style={{
+                      bottom: "100%",
+                      right: "0",
+                      marginBottom: "8px",
+                      minWidth: "200px",
+                    }}
                     initial={{ opacity: 0, scale: 0.95, y: 8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 8 }}
@@ -130,7 +137,7 @@ export const AdminLayout = () => {
                       ease: "easeOut",
                     }}
                   >
-                    <div className="flex items-center gap-3 pl-1 pr-1.5 pt-0 mb-4">
+                    <div className="flex items-center gap-3 px-3 py-2 mb-2 border-b border-zinc-100">
                       <Avatar
                         name={user?.name}
                         value={user?._id}
@@ -172,9 +179,9 @@ export const AdminLayout = () => {
         </div>
       </aside>
 
-      <div className="flex-1 p-6">
+      <main className="flex-1 ml-80 p-6 min-h-screen">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };
