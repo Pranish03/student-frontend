@@ -1,15 +1,19 @@
-import { LuChevronRight, LuEllipsis, LuMail, LuUsers } from "react-icons/lu";
+import { LuMail } from "react-icons/lu";
 import { LuTrash2 } from "react-icons/lu";
 import Avatar from "react-avatar";
 import { Button } from "../../../../components/Button";
 import { IoDuplicate } from "react-icons/io5";
 import { useState } from "react";
 import { EnrollStudentDialog } from "./EnrollStudentDialog";
+import { RemoveStudentDialog } from "./RemoveStudentDialog";
 import { AnimatePresence } from "framer-motion";
 import { Table } from "./Table";
 
 export const Students = ({ classData }) => {
+  const [studentId, setStudentId] = useState(null);
+
   const [showEnrollDialog, setShowEnrollDialog] = useState(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   const columns = [
     {
@@ -39,7 +43,10 @@ export const Students = ({ classData }) => {
           </div>
 
           <div>
-            <button className="p-1.5 bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white rounded-[10px] cursor-pointer">
+            <button
+              className="p-1.5 bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white rounded-[10px] cursor-pointer"
+              onClick={() => handleRemove(info.row.original._id)}
+            >
               <LuTrash2 size={18} />
             </button>
           </div>
@@ -47,6 +54,11 @@ export const Students = ({ classData }) => {
       ),
     },
   ];
+
+  const handleRemove = (id) => {
+    setStudentId(id);
+    setShowRemoveDialog(true);
+  };
 
   return (
     <>
@@ -70,6 +82,16 @@ export const Students = ({ classData }) => {
           <EnrollStudentDialog
             classData={classData}
             close={() => setShowEnrollDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showRemoveDialog && studentId && (
+          <RemoveStudentDialog
+            classId={classData?._id}
+            studentId={studentId}
+            close={() => setShowRemoveDialog(false)}
           />
         )}
       </AnimatePresence>

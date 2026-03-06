@@ -29,3 +29,10 @@ export const enrollStudents = async ({ id, data }) => {
   const res = await axios.patch(`/classes/${id}/students`, data);
   return res?.data;
 };
+
+export const removeStudents = async ({ classId, studentId }) => {
+  const res = await axios.delete(`/classes/${classId}/students`, {
+    data: { students: [studentId] },
+  });
+  return res?.data;
+};
