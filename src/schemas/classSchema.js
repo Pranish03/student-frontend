@@ -35,7 +35,7 @@ export const assignCourses = z.object({
 });
 
 // Validation schema for enrolling students
-export const enrollStudents = z.object({
+export const enrollStudentsSchema = z.object({
   students: z
     .array(objectID)
     .min(1, "At least one student is required")

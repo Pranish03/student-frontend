@@ -24,3 +24,8 @@ export const deleteClass = async (id) => {
   const res = await axios.delete(`/classes/${id}`);
   return res?.data;
 };
+
+export const enrollStudents = async ({ id, data }) => {
+  const res = await axios.patch(`/classes/${id}/students`, data);
+  return res?.data;
+};

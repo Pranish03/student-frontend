@@ -178,7 +178,13 @@ export const AdminLayout = () => {
         </div>
       </aside>
 
-      <main className="flex-1 ml-80 p-6 min-h-screen">
+      <main
+        className="flex-1 ml-80 p-6 min-h-screen overflow-y-auto"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
         <Outlet />
       </main>
     </div>

@@ -100,7 +100,7 @@ export const ManageClasses = () => {
 
   return (
     <>
-      <div>
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center gap-1 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
