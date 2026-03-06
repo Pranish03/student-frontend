@@ -174,7 +174,7 @@ export const ManageClass = () => {
                 />
                 {tab.label}
                 {tab.id === "students" && classData.students?.length > 0 && (
-                  <span className="ml-1 text-xs bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full">
+                  <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
                     {classData.students.length}
                   </span>
                 )}

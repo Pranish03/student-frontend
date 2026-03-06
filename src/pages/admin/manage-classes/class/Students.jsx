@@ -63,16 +63,15 @@ export const Students = ({ classData }) => {
   return (
     <>
       <div className="bg-white border border-zinc-300 rounded-[10px] p-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-semibold text-zinc-900">Students</h2>
-          <Button
-            className="flex items-center justify-between gap-2"
-            onClick={() => setShowEnrollDialog(true)}
-          >
-            <IoDuplicate />
-            Enroll Students
-          </Button>
-        </div>
+        <h2 className="text-2xl font-semibold text-zinc-900 mb-3">Students</h2>
+
+        <Button
+          className="flex items-center justify-between gap-2 float-end"
+          onClick={() => setShowEnrollDialog(true)}
+        >
+          <IoDuplicate />
+          Enroll Students
+        </Button>
 
         <Table data={classData?.students} columns={columns} />
       </div>

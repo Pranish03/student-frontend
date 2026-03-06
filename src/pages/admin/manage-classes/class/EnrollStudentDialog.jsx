@@ -105,7 +105,7 @@ export const EnrollStudentDialog = ({ classData, close }) => {
           </div>
         )}
 
-        {enrolledStudents.length > 0 && (
+        {/* {enrolledStudents.length > 0 && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm font-medium text-blue-800 mb-2">
               Currently Enrolled Students ({enrolledStudents.length}/
@@ -129,7 +129,7 @@ export const EnrollStudentDialog = ({ classData, close }) => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="relative">
           <IoSearch
@@ -156,7 +156,7 @@ export const EnrollStudentDialog = ({ classData, close }) => {
         </div>
 
         {filteredStudents.length > 0 && (
-          <div className="flex items-center justify-between px-2 py-2 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between px-2 py-2 bg-zinc-50 rounded-[10px]">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
