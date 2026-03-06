@@ -50,7 +50,6 @@ export const AdminLayout = () => {
             SMS.
           </h1>
         </div>
-
         <div className="flex flex-col h-[calc(100vh-90px)] justify-between">
           <div className="space-y-2 text-zinc-900">
             <div>
@@ -122,11 +121,11 @@ export const AdminLayout = () => {
                     transition={{ duration: 0.15 }}
                   />
                   <motion.div
-                    className="absolute z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
+                    className="fixed z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
                     style={{
-                      bottom: "100%",
-                      right: "0",
-                      marginBottom: "8px",
+                      bottom: "0",
+                      left: "300px",
+                      marginBottom: "20px",
                       minWidth: "200px",
                     }}
                     initial={{ opacity: 0, scale: 0.95, y: 8 }}
