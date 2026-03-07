@@ -16,6 +16,7 @@ import { Button } from "../../../../components/Button";
 import { Courses } from "./Courses";
 import { Students } from "./Students";
 import { useState } from "react";
+import { Schedule } from "../schedule";
 
 export const ManageClass = () => {
   const { id } = useParams();
@@ -67,40 +68,7 @@ export const ManageClass = () => {
       case "students":
         return <Students classData={classData} />;
       case "schedule":
-        return (
-          <div className="bg-white border border-zinc-300 rounded-[10px] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-zinc-900">
-                Class Schedule
-              </h2>
-              <LuClock className="w-5 h-5 text-zinc-400" />
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center pb-2 border-b border-zinc-100">
-                <span className="text-sm text-zinc-600">
-                  Monday - Wednesday
-                </span>
-                <span className="text-sm font-medium text-zinc-900">
-                  9:00 AM - 10:30 AM
-                </span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b border-zinc-100">
-                <span className="text-sm text-zinc-600">
-                  Tuesday - Thursday
-                </span>
-                <span className="text-sm font-medium text-zinc-900">
-                  2:00 PM - 3:30 PM
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-zinc-600">Friday</span>
-                <span className="text-sm font-medium text-zinc-900">
-                  Lab Session
-                </span>
-              </div>
-            </div>
-          </div>
-        );
+        return <Schedule classData={classData} />;
       default:
         return null;
     }
