@@ -27,9 +27,9 @@ export const Account = () => {
       <div className="flex items-center gap-1 mb-4">
         <Link
           className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/admin"
+          to={`/${user?.role}`}
         >
-          admin
+          {user?.role}
         </Link>
 
         <LuChevronRight />
@@ -62,9 +62,9 @@ export const Account = () => {
               <h2 className="text-xl font-semibold text-zinc-800 mb-1">
                 {user?.name}
               </h2>
-              <p className="text-zinc-500 text-sm mb-4 flex items-center justify-center gap-1">
+              <p className="text-zinc-500 text-sm mb-4 flex items-center justify-center gap-1 capitalize">
                 <LuShield className="w-4 h-4 text-green-600" />
-                Administrator
+                {user?.role}
               </p>
 
               <div className="pt-4 mt-2">
