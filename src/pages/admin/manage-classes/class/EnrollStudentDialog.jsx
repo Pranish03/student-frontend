@@ -56,11 +56,6 @@ export const EnrollStudentDialog = ({ classData, close }) => {
       });
       close();
     },
-    onError: (error) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to enroll students",
-      );
-    },
   });
 
   const handleCheckboxChange = (studentId) => {
@@ -85,9 +80,7 @@ export const EnrollStudentDialog = ({ classData, close }) => {
     }
   };
 
-  const onSubmit = (data) => {
-    mutation.mutate({ data, id: classData?._id });
-  };
+  const onSubmit = (data) => mutation.mutate({ data, id: classData?._id });
 
   return (
     <Dialog

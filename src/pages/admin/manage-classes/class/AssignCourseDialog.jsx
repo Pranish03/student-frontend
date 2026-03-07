@@ -57,9 +57,6 @@ export const AssignCourseDialog = ({ classData, close }) => {
       });
       close();
     },
-    onError: (error) => {
-      toast.error(error?.response?.data?.message || "Failed to assign courses");
-    },
   });
 
   const handleCheckboxChange = (courseId) => {
