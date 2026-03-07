@@ -8,7 +8,6 @@ import {
   LuLoader,
   LuClock,
 } from "react-icons/lu";
-import { IoPencil } from "react-icons/io5";
 import { FaPenNib } from "react-icons/fa";
 
 import { Link, useParams } from "react-router-dom";
@@ -176,7 +175,8 @@ export const ManageClass = () => {
                 `}
               >
                 <Icon
-                  className={`w-4 h-4 ${isActive ? "text-green-600" : "text-zinc-400"}`}
+                  size={18}
+                  className={`${isActive ? "text-green-600" : "text-zinc-400"}`}
                 />
                 {tab.label}
                 {tab.id === "students" && classData.students?.length > 0 && (
@@ -185,7 +185,7 @@ export const ManageClass = () => {
                   </span>
                 )}
                 {tab.id === "courses" && classData.courses?.length > 0 && (
-                  <span className="ml-1 text-xs bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full">
+                  <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
                     {classData.courses.length}
                   </span>
                 )}

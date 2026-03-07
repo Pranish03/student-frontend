@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Avatar from "react-avatar";
 import { fetchAllCourses } from "../../../../api/manageCourses";
 import { Dialog } from "../../../../components/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { assignCourses } from "../../../../api/manageClasses";
 import { toast } from "react-toastify";
 import { ImSpinner8 } from "react-icons/im";
+import { BsFileEarmarkCodeFill } from "react-icons/bs";
 import { IoSearch, IoClose } from "react-icons/io5";
 
 export const AssignCourseDialog = ({ classData, close }) => {
@@ -201,14 +201,13 @@ export const AssignCourseDialog = ({ classData, close }) => {
                   />
 
                   <div className="ml-3 flex gap-2">
+                    <p className="flex items-center text-sm font-medium gap-1 text-white bg-green-600 w-fit py-0.5 px-2.5 rounded-full">
+                      <BsFileEarmarkCodeFill size={16} />
+                      {course.code || "No code"}
+                    </p>
                     <p className="font-medium text-zinc-900">
                       {course.name || "Unnamed Course"}
                     </p>
-                    <span className="text-zinc-600">
-                      (
-                      {course.code || course.description || "No code available"}
-                      )
-                    </span>
                   </div>
                 </label>
               ))}

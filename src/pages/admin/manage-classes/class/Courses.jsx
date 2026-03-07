@@ -3,7 +3,8 @@ import { Button } from "../../../../components/Button";
 import { Table } from "./Table";
 import { useState } from "react";
 import { AssignCourseDialog } from "./AssignCourseDialog";
-import { LuTrash2, LuBookText } from "react-icons/lu";
+import { LuTrash2 } from "react-icons/lu";
+import { BsFileEarmarkCodeFill } from "react-icons/bs";
 import { RemoveCourseDialog } from "./RemoveCourseDialog";
 
 export const Courses = ({ classData }) => {
@@ -25,13 +26,14 @@ export const Courses = ({ classData }) => {
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
             <div>{info.row.index + 1}.</div>
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="font-medium text-zinc-900">
-                  {info.row.original.name}
-                  {/* {info.row.original.teacher} */}
-                </p>
-              </div>
+            <div className="flex items-center gap-2">
+              <p className="flex items-center text-sm font-medium gap-1 text-white bg-green-600 w-fit py-0.5 px-2.5 rounded-full">
+                <BsFileEarmarkCodeFill size={16} />
+                {info.row.original.code}
+              </p>
+              <p className="font-medium text-zinc-900">
+                {info.row.original.name}
+              </p>
             </div>
           </div>
 
