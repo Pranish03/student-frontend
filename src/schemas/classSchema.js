@@ -27,7 +27,7 @@ export const createClassSchema = z.object({
 export const updateClassSchema = createClassSchema.partial().strict();
 
 // Validation schema for assigning courses
-export const assignCourses = z.object({
+export const assignCoursesSchema = z.object({
   courses: z
     .array(objectID)
     .min(1, "At least one course is required")

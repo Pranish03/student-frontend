@@ -36,3 +36,15 @@ export const removeStudents = async ({ classId, studentId }) => {
   });
   return res?.data;
 };
+
+export const assignCourses = async ({ id, data }) => {
+  const res = await axios.patch(`/classes/${id}/courses`, data);
+  return res?.data;
+};
+
+export const removeCourses = async ({ classId, courseId }) => {
+  const res = await axios.delete(`/classes/${classId}/courses`, {
+    data: { courses: [courseId] },
+  });
+  return res?.data;
+};

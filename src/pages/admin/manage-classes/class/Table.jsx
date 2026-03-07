@@ -45,7 +45,7 @@ export const Table = ({ data, columns, isLoading = false }) => {
         <div className="relative flex items-center">
           <Input
             className="px-10"
-            placeholder="Search students..."
+            placeholder="Search..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
@@ -69,18 +69,14 @@ export const Table = ({ data, columns, isLoading = false }) => {
           </div>
         ) : !hasData ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
-            <LuInbox size={64} className="text-zinc-400" />
-            <p className="text-zinc-500 font-bold text-xl">No data</p>
-            <p className="text-zinc-500 text-base">
-              Check back later or add new items
-            </p>
+            <LuInbox size={60} className="text-zinc-300" />
+            <p className="text-zinc-400 font-semibold text-lg">No data found</p>
           </div>
         ) : !hasSearchResults ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
-            <LuFilterX size={64} className="text-zinc-400" />
-            <p className="text-zinc-500 font-bold text-xl">No result found</p>
-            <p className="text-zinc-500 text-base mb-3">
-              Try adjusting your search terms
+            <LuFilterX size={60} className="text-zinc-300" />
+            <p className="text-zinc-400 font-semibold text-lg">
+              No result found
             </p>
           </div>
         ) : (

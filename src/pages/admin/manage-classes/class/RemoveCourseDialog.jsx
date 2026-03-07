@@ -3,15 +3,15 @@ import { toast } from "react-toastify";
 import { ImSpinner8 } from "react-icons/im";
 import { Dialog } from "../../../../components/Dialog";
 import { Button } from "../../../../components/Button";
-import { removeStudents } from "../../../../api/manageClasses";
+import { removeCourses } from "../../../../api/manageClasses";
 
-export const RemoveStudentDialog = ({ classId, studentId, close }) => {
+export const RemoveCourseDialog = ({ classId, courseId, close }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: removeStudents,
+    mutationFn: removeCourses,
     onSuccess: (data) => {
-      toast.success(data?.message || "Student removed successfully");
+      toast.success(data?.message || "Class deleted successfully");
 
       queryClient.invalidateQueries({ queryKey: ["classes"] });
       queryClient.invalidateQueries({ queryKey: ["class", classId] });
@@ -19,12 +19,12 @@ export const RemoveStudentDialog = ({ classId, studentId, close }) => {
     },
   });
 
-  const handleDelete = () => mutation.mutate({ classId, studentId });
+  const handleDelete = () => mutation.mutate({ classId, courseId });
 
   return (
     <Dialog
-      heading="Remove Student"
-      desc="Are you sure you want to remove this student from the class?"
+      heading="Remove Course"
+      desc="Are you sure you want to remove this course from the class?"
       close={close}
     >
       {mutation?.isError && (
@@ -59,7 +59,7 @@ export const RemoveStudentDialog = ({ classId, studentId, close }) => {
               <span>Removing...</span>
             </>
           ) : (
-            "Remove Student"
+            "Remove Course"
           )}
         </Button>
       </div>

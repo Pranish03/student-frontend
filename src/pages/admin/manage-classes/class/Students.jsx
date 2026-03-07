@@ -21,13 +21,13 @@ export const Students = ({ classData }) => {
       accessorKey: "name",
       cell: (info) => (
         <div className="flex justify-between">
-          <div className="flex items-center gap-6">
-            <div>{info.row.index + 1}</div>
-            <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
+            <div>{info.row.index + 1}.</div>
+            <div className="flex items-center gap-4">
               <Avatar
                 name={info.row.original.name}
                 value={info.row.original._id}
-                size={40}
+                size={45}
                 round
               />
               <div>

@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Avatar from "react-avatar";
-import { fetchAllStudents } from "../../../../api/manageUsers";
+import { fetchAllCourses } from "../../../../api/manageCourses";
 import { Dialog } from "../../../../components/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { enrollStudentsSchema } from "../../../../schemas/classSchema";
+import { assignCoursesSchema } from "../../../../schemas/classSchema";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { enrollStudents } from "../../../../api/manageClasses";
+import { assignCourses } from "../../../../api/manageClasses";
 import { toast } from "react-toastify";
 import { ImSpinner8 } from "react-icons/im";
 import { IoSearch, IoClose } from "react-icons/io5";
 
-export const EnrollStudentDialog = ({ classData, close }) => {
+export const AssignCourseDialog = ({ classData, close }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedCourses, setSelectedCourses] = useState([]);
   const queryClient = useQueryClient();
 
-  const { data: studentsData, isLoading } = useQuery({
-    queryKey: ["students"],
-    queryFn: fetchAllStudents,
+  const { data: coursesData, isLoading } = useQuery({
+    queryKey: ["courses"],
+    queryFn: fetchAllCourses,
   });
 
   const {
@@ -28,27 +28,28 @@ export const EnrollStudentDialog = ({ classData, close }) => {
     formState: { errors },
     setValue,
   } = useForm({
-    resolver: zodResolver(enrollStudentsSchema),
+    resolver: zodResolver(assignCoursesSchema),
     defaultValues: {
-      students: [],
+      courses: [],
     },
   });
 
-  const students = studentsData?.data || [];
-  const enrolledStudents = classData?.students || [];
-  const enrolledStudentIds = enrolledStudents.map((s) => s._id);
+  const allCourses = coursesData?.data || [];
+  const assignedCourses = classData?.courses || [];
+  const assignedCourseIds = assignedCourses.map((course) => course._id);
 
-  const filteredStudents = students.filter(
-    (student) =>
-      !enrolledStudentIds.includes(student._id) &&
-      (student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.email?.toLowerCase().includes(searchTerm.toLowerCase())),
+  const availableCourses = allCourses.filter(
+    (course) =>
+      !assignedCourseIds.includes(course._id) &&
+      (course.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.description?.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const mutation = useMutation({
-    mutationFn: enrollStudents,
+    mutationFn: assignCourses,
     onSuccess: (data) => {
-      toast.success(data?.message || "Student(s) enrolled successfully");
+      toast.success(data?.message || "Course(s) assigned successfully");
 
       queryClient.invalidateQueries({ queryKey: ["classes"] });
       queryClient.invalidateQueries({
@@ -57,42 +58,38 @@ export const EnrollStudentDialog = ({ classData, close }) => {
       close();
     },
     onError: (error) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to enroll students",
-      );
+      toast.error(error?.response?.data?.message || "Failed to assign courses");
     },
   });
 
-  const handleCheckboxChange = (studentId) => {
-    setSelectedStudents((prev) => {
-      const newSelection = prev.includes(studentId)
-        ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId];
+  const handleCheckboxChange = (courseId) => {
+    setSelectedCourses((prev) => {
+      const newSelection = prev.includes(courseId)
+        ? prev.filter((id) => id !== courseId)
+        : [...prev, courseId];
 
-      setValue("students", newSelection);
+      setValue("courses", newSelection);
       return newSelection;
     });
   };
 
   const handleSelectAll = () => {
-    if (selectedStudents.length === filteredStudents.length) {
-      setSelectedStudents([]);
-      setValue("students", []);
+    if (selectedCourses.length === availableCourses.length) {
+      setSelectedCourses([]);
+      setValue("courses", []);
     } else {
-      const allIds = filteredStudents.map((s) => s._id);
-      setSelectedStudents(allIds);
-      setValue("students", allIds);
+      const allIds = availableCourses.map((course) => course._id);
+      setSelectedCourses(allIds);
+      setValue("courses", allIds);
     }
   };
 
-  const onSubmit = (data) => {
-    mutation.mutate({ data, id: classData?._id });
-  };
+  const onSubmit = (data) => mutation.mutate({ data, id: classData?._id });
 
   return (
     <Dialog
-      heading="Enroll Students"
-      desc="Select students to enroll in this class"
+      heading="Assign Courses"
+      desc="Select courses to assign to this class"
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -112,7 +109,7 @@ export const EnrollStudentDialog = ({ classData, close }) => {
           />
           <Input
             type="text"
-            placeholder="Search students by name or email..."
+            placeholder="Search courses by name or code..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-10"
@@ -129,25 +126,25 @@ export const EnrollStudentDialog = ({ classData, close }) => {
           )}
         </div>
 
-        {filteredStudents.length > 0 && (
+        {availableCourses.length > 0 && (
           <div className="flex items-center justify-between px-2 py-2 bg-zinc-50 rounded-[10px]">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={
-                  selectedStudents.length === filteredStudents.length &&
-                  filteredStudents.length > 0
+                  selectedCourses.length === availableCourses.length &&
+                  availableCourses.length > 0
                 }
                 onChange={handleSelectAll}
                 className="w-4 h-4 text-green-600 rounded border-zinc-300 focus:ring-green-500 accent-green-600"
                 disabled={isLoading || mutation?.isPending}
               />
               <span className="text-sm font-medium text-zinc-700">
-                Select All Available Students
+                Select All Available Courses
               </span>
             </label>
             <span className="text-sm text-zinc-500">
-              {selectedStudents.length} selected
+              {selectedCourses.length} selected
             </span>
           </div>
         )}
@@ -163,22 +160,22 @@ export const EnrollStudentDialog = ({ classData, close }) => {
             <div className="flex justify-center items-center py-12">
               <ImSpinner8 className="animate-spin text-3xl text-zinc-400" />
             </div>
-          ) : filteredStudents.length === 0 ? (
+          ) : availableCourses.length === 0 ? (
             <div className="text-center py-12">
-              {students.length === 0 ? (
+              {allCourses.length === 0 ? (
                 <>
-                  <p className="text-zinc-500">No students available</p>
+                  <p className="text-zinc-500">No courses available</p>
                   <p className="text-sm text-zinc-400 mt-1">
-                    Add students first to enroll them in classes
+                    Add courses first to assign them to classes
                   </p>
                 </>
               ) : (
                 <>
                   {searchTerm ? (
-                    <p className="text-zinc-500">No available students found</p>
+                    <p className="text-zinc-500">No available courses found</p>
                   ) : (
                     <p className="text-zinc-500">
-                      All students are already enrolled in this class
+                      All courses are already assigned to this class
                     </p>
                   )}
                 </>
@@ -186,37 +183,32 @@ export const EnrollStudentDialog = ({ classData, close }) => {
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredStudents.map((student) => (
+              {availableCourses.map((course) => (
                 <label
-                  key={student._id}
+                  key={course._id}
                   className={`flex items-center border rounded-[10px] p-2.5 hover:bg-zinc-50 cursor-pointer transition-colors ${
-                    selectedStudents.includes(student._id)
+                    selectedCourses.includes(course._id)
                       ? "bg-green-50 border-green-200"
                       : "border-black/20"
                   }`}
                 >
                   <input
                     type="checkbox"
-                    checked={selectedStudents.includes(student._id)}
-                    onChange={() => handleCheckboxChange(student._id)}
+                    checked={selectedCourses.includes(course._id)}
+                    onChange={() => handleCheckboxChange(course._id)}
                     className="w-4 h-4 text-green-600 rounded border-zinc-300 focus:ring-green-500 accent-green-600"
                     disabled={mutation?.isPending}
                   />
 
-                  <div className="ml-3 flex items-center flex-1">
-                    <Avatar
-                      name={student.name}
-                      value={student._id}
-                      size={35}
-                      round
-                    />
-
-                    <div className="ml-3 flex-1">
-                      <p className="font-medium text-zinc-900">
-                        {student.name || "Unnamed Student"}
-                      </p>
-                      <p className="text-sm text-zinc-600">{student.email}</p>
-                    </div>
+                  <div className="ml-3 flex gap-2">
+                    <p className="font-medium text-zinc-900">
+                      {course.name || "Unnamed Course"}
+                    </p>
+                    <span className="text-zinc-600">
+                      (
+                      {course.code || course.description || "No code available"}
+                      )
+                    </span>
                   </div>
                 </label>
               ))}
@@ -224,8 +216,8 @@ export const EnrollStudentDialog = ({ classData, close }) => {
           )}
         </div>
 
-        {errors.students && (
-          <p className="text-red-600 text-sm mt-1">{errors.students.message}</p>
+        {errors.courses && (
+          <p className="text-red-600 text-sm mt-1">{errors.courses.message}</p>
         )}
 
         <div className="flex items-center gap-4 justify-end pt-4">
@@ -240,15 +232,15 @@ export const EnrollStudentDialog = ({ classData, close }) => {
           <Button
             className="flex items-center justify-center gap-3 min-w-30"
             type="submit"
-            disabled={mutation?.isPending || selectedStudents.length === 0}
+            disabled={mutation?.isPending || selectedCourses.length === 0}
           >
             {mutation?.isPending ? (
               <>
                 <ImSpinner8 className="animate-spin text-lg" />
-                <span>Enrolling...</span>
+                <span>Assigning...</span>
               </>
             ) : (
-              `Enroll Student${selectedStudents.length !== 1 ? "s" : ""} (${selectedStudents.length})`
+              `Assign Course${selectedCourses.length !== 1 ? "s" : ""} (${selectedCourses.length})`
             )}
           </Button>
         </div>

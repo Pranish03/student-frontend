@@ -8,6 +8,9 @@ import {
   LuLoader,
   LuClock,
 } from "react-icons/lu";
+import { IoPencil } from "react-icons/io5";
+import { FaPenNib } from "react-icons/fa";
+
 import { Link, useParams } from "react-router-dom";
 import { fetchClass } from "../../../../api/manageClasses";
 import { Button } from "../../../../components/Button";
@@ -146,7 +149,10 @@ export const ManageClass = () => {
             </div>
           </div>
 
-          <Button variant="secondary">Edit Class</Button>
+          <Button className="flex items-center gap-2">
+            <FaPenNib />
+            Edit Class
+          </Button>
         </div>
       </div>
 
