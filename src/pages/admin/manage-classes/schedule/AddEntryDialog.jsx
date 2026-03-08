@@ -8,31 +8,16 @@ import { Dialog } from "../../../../components/Dialog";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import {
-  addTimeTableEntrySchema,
+  createTimetableEntrySchema,
   daysOfWeek,
+  timeSlots,
 } from "../../../../schemas/scheduleSchema";
 import {
   fetchScheduleByClass,
   addScheduleEntry,
 } from "../../../../api/manageSchedule";
-
-const timeSlots = [
-  {
-    title: "First Period",
-    startTime: "06:30",
-    endTime: "08:00",
-  },
-  {
-    title: "Second Period",
-    startTime: "08:30",
-    endTime: "10:00",
-  },
-  {
-    title: "Third Period",
-    startTime: "10:00",
-    endTime: "11:30",
-  },
-];
+import { Select } from "../../../../components/form/Select";
+import { Label } from "../../../../components/form/Label";
 
 export const AddEntryDialog = ({ classData, close }) => {
   const queryClient = useQueryClient();
@@ -52,7 +37,7 @@ export const AddEntryDialog = ({ classData, close }) => {
     reset,
     setValue,
   } = useForm({
-    resolver: zodResolver(addTimeTableEntrySchema),
+    resolver: zodResolver(createTimetableEntrySchema),
     defaultValues: {
       course: "",
       day: "Sunday",
@@ -105,21 +90,17 @@ export const AddEntryDialog = ({ classData, close }) => {
           </div>
         )}
 
-        {/* Course */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Course *
-          </label>
+          <Label errors={errors?.course} htmlFor="course" required={true}>
+            Course
+          </Label>
 
           {courses.length === 0 ? (
             <div className="py-2 text-zinc-700">
               No course assigned to this class
             </div>
           ) : (
-            <select
-              {...register("course")}
-              className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
+            <Select errors={errors?.course} id="course" {...register("course")}>
               <option value="">Select a course</option>
 
               {courses.map((course) => (
@@ -127,45 +108,23 @@ export const AddEntryDialog = ({ classData, close }) => {
                   {course.name} ({course.code})
                 </option>
               ))}
-            </select>
-          )}
-
-          {errors.course && (
-            <p className="text-red-600 text-sm mt-1">{errors.course.message}</p>
+            </Select>
           )}
         </div>
 
-        {/* Day */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Day *
-          </label>
-
-          <select
-            {...register("day")}
-            className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
+          <Label
+            errors={errors?.startTime || errors?.endTime}
+            htmlFor="period"
+            required={true}
           >
-            {daysOfWeek.map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
-          </select>
-
-          {errors.day && (
-            <p className="text-red-600 text-sm mt-1">{errors.day.message}</p>
-          )}
-        </div>
-
-        {/* Period Selector */}
-        <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
             Period
-          </label>
+          </Label>
 
-          <select
+          <Select
+            errors={errors?.startTime || errors?.endTime}
+            id="period"
             onChange={handleSlotChange}
-            className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="">Select Period</option>
 
@@ -174,7 +133,21 @@ export const AddEntryDialog = ({ classData, close }) => {
                 {slot.title} ({slot.startTime} - {slot.endTime})
               </option>
             ))}
-          </select>
+          </Select>
+        </div>
+
+        <div>
+          <Label errors={errors?.day} htmlFor="day" required={true}>
+            Day
+          </Label>
+
+          <Select errors={errors?.day} id="day" {...register("day")}>
+            {daysOfWeek.map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
+            ))}
+          </Select>
         </div>
 
         <div className="hidden">
@@ -193,19 +166,18 @@ export const AddEntryDialog = ({ classData, close }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Room
-          </label>
+          <Label htmlFor="room">Room</Label>
 
           <Input
             type="text"
-            {...register("room")}
             placeholder="e.g., Room 101, Lab 2"
             className="w-full"
+            {...register("room")}
+            errors={errors?.room}
           />
 
-          {errors.room && (
-            <p className="text-red-600 text-sm mt-1">{errors.room.message}</p>
+          {errors?.room && (
+            <p className="text-red-600 text-sm mt-1">{errors?.room?.message}</p>
           )}
         </div>
 

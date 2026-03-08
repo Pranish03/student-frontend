@@ -31,9 +31,10 @@ export const timeSlots = [
 export const objectID = z.string().regex(/^[0-9a-fA-F]{24}$/);
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+const objectIDRegex = /^[0-9a-fA-F]{24}$/;
 
 export const timeTableEntry = z.object({
-  course: objectID,
+  course: z.string("Course is required"),
   day: z.enum(daysOfWeek),
   startTime: z.string().regex(timeRegex),
   endTime: z.string().regex(timeRegex),
@@ -49,7 +50,7 @@ export const updateScheduleSchema = createScheduleSchema.partial();
 
 export const addTimeTableEntrySchema = timeTableEntry;
 
-export const updateTimeTableEntrySchema = timeTableEntry.partial();
+// export const updateTimeTableEntrySchema = timeTableEntry.partial();
 
 export const scheduleIdSchema = z.object({
   id: objectID,
@@ -63,3 +64,15 @@ export const timeTableParamsSchema = z.object({
   id: objectID,
   entryId: objectID,
 });
+
+export const createTimetableEntrySchema = z.object({
+  course: z
+    .string("Course is required")
+    .regex(objectIDRegex, "Course is required"),
+  day: z.enum(daysOfWeek),
+  startTime: z.string().regex(timeRegex, "Period is required"),
+  endTime: z.string().regex(timeRegex, "Period is required"),
+  room: z.string().optional(),
+});
+
+export const updateTimeTableEntrySchema = createScheduleSchema.partial();
