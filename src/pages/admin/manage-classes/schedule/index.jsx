@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { LuClock, LuPlus } from "react-icons/lu";
-import { IoDuplicate } from "react-icons/io5";
+import { IoAddCircle } from "react-icons/io5";
+import { LuTrash2 } from "react-icons/lu";
 import { AnimatePresence } from "framer-motion";
 import { Button } from "../../../../components/Button";
-import { ScheduleGrid } from "./ScheduleGrid";
+import { ScheduleTable } from "./ScheduleTable";
 import { AddScheduleDialog } from "./AddScheduleDialog";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { EditEntryDialog } from "./EditEntryDialog";
@@ -54,7 +54,7 @@ export const Schedule = ({ classData }) => {
                 className="flex items-center gap-2"
                 onClick={() => setShowAddEntryDialog(true)}
               >
-                <LuPlus />
+                <IoAddCircle size={22} />
                 Add Entry
               </Button>
 
@@ -63,14 +63,14 @@ export const Schedule = ({ classData }) => {
                 className="flex items-center gap-2"
                 onClick={() => setShowDeleteScheduleDialog(true)}
               >
-                <IoDuplicate />
+                <LuTrash2 size={19} />
                 Delete Schedule
               </Button>
             </div>
           )}
         </div>
 
-        <ScheduleGrid
+        <ScheduleTable
           scheduleData={scheduleData?.data}
           ScheduleLoading={isLoading}
           scheduleError={error}
