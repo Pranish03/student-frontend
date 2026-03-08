@@ -71,7 +71,18 @@ export const ManageClasses = () => {
 
   const columns = [
     { header: "SN", cell: (info) => info.row.index + 1 },
-    { header: "Name", accessorKey: "name" },
+    {
+      header: "Name",
+      accessorKey: "name",
+      cell: (info) => (
+        <Link
+          className="cursor-pointer hover:underline"
+          to={`/admin/manage-classes/${info.row.original._id}`}
+        >
+          {info.getValue()}
+        </Link>
+      ),
+    },
     { header: "Department", accessorKey: "department" },
     { header: "Academic Year", accessorKey: "academicYear" },
     { header: "Capacity", accessorKey: "capacity" },
