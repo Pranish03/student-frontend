@@ -60,7 +60,7 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
   }, [entry, setValue]);
 
   const mutation = useMutation({
-    mutationFn: (data) => updateScheduleEntry(schedule._id, entry._id, data),
+    mutationFn: updateScheduleEntry,
     onSuccess: (data) => {
       toast.success(data?.message || "Entry updated successfully");
       queryClient.invalidateQueries({ queryKey: ["schedule", classData?._id] });
@@ -68,7 +68,8 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
     },
   });
 
-  const onSubmit = (data) => mutation.mutate(data);
+  const onSubmit = (data) =>
+    mutation.mutate({ scheduleId: schedule._id, entryId: entry._id, data });
 
   return (
     <Dialog
@@ -86,7 +87,6 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
           </div>
         )}
 
-        {/* Course Selection */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
             Course *
@@ -113,7 +113,6 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
           )}
         </div>
 
-        {/* Day Selection */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
             Day *
@@ -133,7 +132,6 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
           )}
         </div>
 
-        {/* Time Fields */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1">
@@ -170,7 +168,6 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
           </div>
         </div>
 
-        {/* Room */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
             Room

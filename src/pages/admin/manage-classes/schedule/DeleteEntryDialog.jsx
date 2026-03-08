@@ -19,7 +19,7 @@ export const DeleteEntryDialog = ({ classData, entry, close }) => {
   const schedule = scheduleData?.data;
 
   const mutation = useMutation({
-    mutationFn: () => deleteScheduleEntry(schedule._id, entry._id),
+    mutationFn: deleteScheduleEntry,
     onSuccess: (data) => {
       toast.success(data?.message || "Entry deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["schedule", classData?._id] });
@@ -27,7 +27,8 @@ export const DeleteEntryDialog = ({ classData, entry, close }) => {
     },
   });
 
-  const handleDelete = () => mutation.mutate();
+  const handleDelete = () =>
+    mutation.mutate({ scheduleId: schedule._id, entryId: entry._id });
 
   return (
     <Dialog

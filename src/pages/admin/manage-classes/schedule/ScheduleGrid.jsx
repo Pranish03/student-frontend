@@ -22,10 +22,6 @@ export const ScheduleGrid = ({
 
   const schedule = scheduleData?.data;
 
-  console.log(schedule, scheduleData);
-
-  console.log(classData?._id);
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">

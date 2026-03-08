@@ -47,7 +47,7 @@ export const Schedule = ({ classData }) => {
             <Button
               variant="danger"
               className="flex items-center gap-2"
-              //   onClick={() => setShowDeleteScheduleDialog(true)}
+              onClick={() => setShowDeleteScheduleDialog(true)}
             >
               <IoDuplicate />
               Delete Schedule
