@@ -1,6 +1,7 @@
 import { LuClock, LuTrash2, LuLoader, LuPencil } from "react-icons/lu";
 import { daysOfWeek } from "../../../../schemas/scheduleSchema";
 import { Button } from "../../../../components/Button";
+import { IoAddCircle } from "react-icons/io5";
 
 export const ScheduleTable = ({
   scheduleData,
@@ -20,7 +21,7 @@ export const ScheduleTable = ({
 
   if (scheduleError) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-[10px] p-6 text-center">
+      <div className="border border-red-200 rounded-[10px] p-6 text-center">
         <p className="text-red-600">
           Error loading schedule. Please try again.
         </p>
@@ -30,12 +31,12 @@ export const ScheduleTable = ({
 
   if (!scheduleData) {
     return (
-      <div className="text-center py-12 bg-zinc-50 rounded-[10px]">
-        <LuClock className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
+      <div className="text-center py-12">
+        <LuClock className="w-12 h-12 text-zinc-400 mx-auto mb-2" />
+        <h3 className="text-lg font-semibold text-zinc-900">
           No Schedule Created
         </h3>
-        <p className="text-zinc-600 mb-6">
+        <p className="text-zinc-600 mb-4">
           This class doesn't have a schedule yet.
         </p>
         <Button onClick={onAddSchedule} className="mx-auto">
@@ -83,17 +84,14 @@ export const ScheduleTable = ({
 
   if (daysWithEntries.length === 0) {
     return (
-      <div className="text-center py-12 bg-zinc-50 rounded-[10px]">
-        <LuClock className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-          No Schedule Entries
+      <div className="text-center py-12 rounded-[10px]">
+        <LuClock className="w-12 h-12 text-zinc-400 mx-auto mb-2" />
+        <h3 className="text-lg font-semibold text-zinc-900">
+          No Schedule Created
         </h3>
-        <p className="text-zinc-600 mb-6">
-          This class doesn't have any schedule entries yet.
+        <p className="text-zinc-600 mb-4">
+          This class doesn't have a schedule yet.
         </p>
-        <Button onClick={onAddSchedule} className="mx-auto">
-          Add Entry
-        </Button>
       </div>
     );
   }
