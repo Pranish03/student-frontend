@@ -28,7 +28,7 @@ export const AddEntryDialog = ({ classData, close }) => {
   });
 
   const schedule = scheduleData?.data;
-  const courses = classData.courses || [];
+  const courses = classData?.courses || [];
 
   const {
     register,
@@ -148,21 +148,6 @@ export const AddEntryDialog = ({ classData, close }) => {
               </option>
             ))}
           </Select>
-        </div>
-
-        <div className="hidden">
-          <Input
-            type="time"
-            {...register("startTime")}
-            placeholder="HH:MM"
-            className="w-full"
-          />
-          <Input
-            type="time"
-            {...register("endTime")}
-            placeholder="HH:MM"
-            className="w-full"
-          />
         </div>
 
         <div>

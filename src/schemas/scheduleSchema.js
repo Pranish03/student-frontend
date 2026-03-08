@@ -50,8 +50,6 @@ export const updateScheduleSchema = createScheduleSchema.partial();
 
 export const addTimeTableEntrySchema = timeTableEntry;
 
-// export const updateTimeTableEntrySchema = timeTableEntry.partial();
-
 export const scheduleIdSchema = z.object({
   id: objectID,
 });
@@ -75,4 +73,4 @@ export const createTimetableEntrySchema = z.object({
   room: z.string().optional(),
 });
 
-export const updateTimeTableEntrySchema = createScheduleSchema.partial();
+export const updateTimeTableEntrySchema = createTimetableEntrySchema.partial();

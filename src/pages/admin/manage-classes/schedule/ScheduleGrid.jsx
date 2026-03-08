@@ -51,15 +51,13 @@ export const ScheduleGrid = ({
     );
   }
 
-  // Define the complete schedule with your specified timing
   const timeSlots = [
-    "06:30 - 08:00", // Class 1 (1.5 hours)
-    "08:00 - 08:30", // Break
-    "08:30 - 10:00", // Class 2 (1.5 hours)
-    "10:00 - 11:30", // Final Class (1.5 hours)
+    "06:30 - 08:00",
+    "08:00 - 08:30",
+    "08:30 - 10:00",
+    "10:00 - 11:30",
   ];
 
-  // Define which time slots are breaks
   const breakSlots = ["08:00 - 08:30"];
 
   const breakLabels = {
@@ -70,10 +68,8 @@ export const ScheduleGrid = ({
     "08:00 - 08:30": <LuCoffee className="w-4 h-4" />,
   };
 
-  // Group entries by day and time
   const scheduleMatrix = daysOfWeek.reduce((acc, day) => {
     acc[day] = timeSlots.reduce((timeAcc, timeSlot) => {
-      // Skip creating entries for break slots
       if (breakSlots.includes(timeSlot)) {
         timeAcc[timeSlot] = "break";
         return timeAcc;
@@ -131,7 +127,6 @@ export const ScheduleGrid = ({
               {timeSlots.map((timeSlot) => {
                 const entry = scheduleMatrix[day][timeSlot];
 
-                // Handle break slots
                 if (entry === "break") {
                   return (
                     <td
@@ -152,7 +147,6 @@ export const ScheduleGrid = ({
                   );
                 }
 
-                // Regular entry or empty slot
                 return (
                   <td
                     key={`${day}-${timeSlot}`}

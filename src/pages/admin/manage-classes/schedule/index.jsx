@@ -103,6 +103,7 @@ export const Schedule = ({ classData }) => {
           <EditEntryDialog
             classData={classData}
             entry={selectedEntry}
+            scheduleId={scheduleData?.data?._id}
             close={() => {
               setShowEditEntryDialog(false);
               setSelectedEntry(null);
