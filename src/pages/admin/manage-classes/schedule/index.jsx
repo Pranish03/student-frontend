@@ -9,15 +9,28 @@ import { AddEntryDialog } from "./AddEntryDialog";
 import { EditEntryDialog } from "./EditEntryDialog";
 import { DeleteEntryDialog } from "./DeleteEntryDialog";
 import { DeleteScheduleDialog } from "./DeleteScheduleDialog";
+import { fetchScheduleByClass } from "../../../../api/manageSchedule";
+import { useQuery } from "@tanstack/react-query";
 
 export const Schedule = ({ classData }) => {
+  const [selectedEntry, setSelectedEntry] = useState(null);
+
   const [showAddScheduleDialog, setShowAddScheduleDialog] = useState(false);
   const [showAddEntryDialog, setShowAddEntryDialog] = useState(false);
   const [showEditEntryDialog, setShowEditEntryDialog] = useState(false);
   const [showDeleteEntryDialog, setShowDeleteEntryDialog] = useState(false);
   const [showDeleteScheduleDialog, setShowDeleteScheduleDialog] =
     useState(false);
-  const [selectedEntry, setSelectedEntry] = useState(null);
+
+  const {
+    data: scheduleData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["schedule", classData?._id],
+    queryFn: () => fetchScheduleByClass(classData?._id),
+    enabled: !!classData?._id,
+  });
 
   const handleEditEntry = (entry) => {
     setSelectedEntry(entry);
@@ -35,28 +48,32 @@ export const Schedule = ({ classData }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-semibold text-zinc-900">Schedule</h2>
 
-          <div className="flex items-center gap-2">
-            <Button
-              className="flex items-center gap-2"
-              onClick={() => setShowAddEntryDialog(true)}
-            >
-              <LuPlus />
-              Add Entry
-            </Button>
+          {scheduleData?.data && (
+            <div className="flex items-center gap-2">
+              <Button
+                className="flex items-center gap-2"
+                onClick={() => setShowAddEntryDialog(true)}
+              >
+                <LuPlus />
+                Add Entry
+              </Button>
 
-            <Button
-              variant="danger"
-              className="flex items-center gap-2"
-              onClick={() => setShowDeleteScheduleDialog(true)}
-            >
-              <IoDuplicate />
-              Delete Schedule
-            </Button>
-          </div>
+              <Button
+                variant="danger"
+                className="flex items-center gap-2"
+                onClick={() => setShowDeleteScheduleDialog(true)}
+              >
+                <IoDuplicate />
+                Delete Schedule
+              </Button>
+            </div>
+          )}
         </div>
 
         <ScheduleGrid
-          classData={classData}
+          scheduleData={scheduleData?.data}
+          ScheduleLoading={isLoading}
+          scheduleError={error}
           onEditEntry={handleEditEntry}
           onDeleteEntry={handleDeleteEntry}
           onAddSchedule={() => setShowAddScheduleDialog(true)}

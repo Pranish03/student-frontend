@@ -8,22 +8,34 @@ import { Dialog } from "../../../../components/Dialog";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import {
-  createScheduleEntrySchema,
+  addTimeTableEntrySchema,
   daysOfWeek,
 } from "../../../../schemas/scheduleSchema";
-import { fetchAllCourses } from "../../../../api/manageCourses";
 import {
   fetchScheduleByClass,
   addScheduleEntry,
 } from "../../../../api/manageSchedule";
 
+const timeSlots = [
+  {
+    title: "First Period",
+    startTime: "06:30",
+    endTime: "08:00",
+  },
+  {
+    title: "Second Period",
+    startTime: "08:30",
+    endTime: "10:00",
+  },
+  {
+    title: "Third Period",
+    startTime: "10:00",
+    endTime: "11:30",
+  },
+];
+
 export const AddEntryDialog = ({ classData, close }) => {
   const queryClient = useQueryClient();
-
-  const { data: coursesData, isLoading: coursesLoading } = useQuery({
-    queryKey: ["courses"],
-    queryFn: fetchAllCourses,
-  });
 
   const { data: scheduleData } = useQuery({
     queryKey: ["schedule", classData?._id],
@@ -31,19 +43,19 @@ export const AddEntryDialog = ({ classData, close }) => {
   });
 
   const schedule = scheduleData?.data;
-  const courses = coursesData?.data || [];
+  const courses = classData.courses || [];
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    setValue,
   } = useForm({
-    resolver: zodResolver(createScheduleEntrySchema),
+    resolver: zodResolver(addTimeTableEntrySchema),
     defaultValues: {
       course: "",
-      day: "Monday",
+      day: "Sunday",
       startTime: "",
       endTime: "",
       room: "TBD",
@@ -63,7 +75,19 @@ export const AddEntryDialog = ({ classData, close }) => {
     },
   });
 
-  const onSubmit = (data) => mutation.mutate(data);
+  const handleSlotChange = (e) => {
+    const slot = timeSlots.find((s) => s.title === e.target.value);
+
+    if (slot) {
+      setValue("startTime", slot.startTime);
+      setValue("endTime", slot.endTime);
+    }
+  };
+
+  const onSubmit = (data) => {
+    console.log(data);
+    mutation.mutate(data);
+  };
 
   return (
     <Dialog
@@ -81,21 +105,23 @@ export const AddEntryDialog = ({ classData, close }) => {
           </div>
         )}
 
-        {/* Course Selection */}
+        {/* Course */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
             Course *
           </label>
-          {coursesLoading ? (
-            <div className="flex items-center justify-center py-2">
-              <ImSpinner8 className="animate-spin text-zinc-400" />
+
+          {courses.length === 0 ? (
+            <div className="py-2 text-zinc-700">
+              No course assigned to this class
             </div>
           ) : (
             <select
               {...register("course")}
-              className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="">Select a course</option>
+
               {courses.map((course) => (
                 <option key={course._id} value={course._id}>
                   {course.name} ({course.code})
@@ -103,19 +129,21 @@ export const AddEntryDialog = ({ classData, close }) => {
               ))}
             </select>
           )}
+
           {errors.course && (
             <p className="text-red-600 text-sm mt-1">{errors.course.message}</p>
           )}
         </div>
 
-        {/* Day Selection */}
+        {/* Day */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
             Day *
           </label>
+
           <select
             {...register("day")}
-            className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             {daysOfWeek.map((day) => (
               <option key={day} value={day}>
@@ -123,59 +151,59 @@ export const AddEntryDialog = ({ classData, close }) => {
               </option>
             ))}
           </select>
+
           {errors.day && (
             <p className="text-red-600 text-sm mt-1">{errors.day.message}</p>
           )}
         </div>
 
-        {/* Time Fields */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Start Time *
-            </label>
-            <Input
-              type="time"
-              {...register("startTime")}
-              placeholder="HH:MM"
-              className="w-full"
-            />
-            {errors.startTime && (
-              <p className="text-red-600 text-sm mt-1">
-                {errors.startTime.message}
-              </p>
-            )}
-          </div>
+        {/* Period Selector */}
+        <div>
+          <label className="block text-sm font-medium text-zinc-700 mb-1">
+            Period
+          </label>
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
-              End Time *
-            </label>
-            <Input
-              type="time"
-              {...register("endTime")}
-              placeholder="HH:MM"
-              className="w-full"
-            />
-            {errors.endTime && (
-              <p className="text-red-600 text-sm mt-1">
-                {errors.endTime.message}
-              </p>
-            )}
-          </div>
+          <select
+            onChange={handleSlotChange}
+            className="w-full px-3 py-2 border border-zinc-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="">Select Period</option>
+
+            {timeSlots.map((slot) => (
+              <option key={slot.title} value={slot.title}>
+                {slot.title} ({slot.startTime} - {slot.endTime})
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Room */}
+        <div className="hidden">
+          <Input
+            type="time"
+            {...register("startTime")}
+            placeholder="HH:MM"
+            className="w-full"
+          />
+          <Input
+            type="time"
+            {...register("endTime")}
+            placeholder="HH:MM"
+            className="w-full"
+          />
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
             Room
           </label>
+
           <Input
             type="text"
             {...register("room")}
             placeholder="e.g., Room 101, Lab 2"
             className="w-full"
           />
+
           {errors.room && (
             <p className="text-red-600 text-sm mt-1">{errors.room.message}</p>
           )}
@@ -190,6 +218,7 @@ export const AddEntryDialog = ({ classData, close }) => {
           >
             Cancel
           </Button>
+
           <Button
             className="flex items-center justify-center gap-3 min-w-30"
             type="submit"

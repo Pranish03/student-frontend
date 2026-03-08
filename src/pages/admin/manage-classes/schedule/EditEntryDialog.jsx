@@ -8,8 +8,8 @@ import { Dialog } from "../../../../components/Dialog";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import {
-  createScheduleEntrySchema,
   daysOfWeek,
+  updateTimeTableEntrySchema,
 } from "../../../../schemas/scheduleSchema";
 import { fetchAllCourses } from "../../../../api/manageCourses";
 import {
@@ -39,7 +39,7 @@ export const EditEntryDialog = ({ classData, entry, close }) => {
     formState: { errors },
     setValue,
   } = useForm({
-    resolver: zodResolver(createScheduleEntrySchema),
+    resolver: zodResolver(updateTimeTableEntrySchema),
     defaultValues: {
       course: "",
       day: "Monday",

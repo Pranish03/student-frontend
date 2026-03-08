@@ -1,11 +1,5 @@
 import { z } from "zod";
 
-const objectID = z
-  .string()
-  .regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId")
-  .nullable()
-  .optional();
-
 export const daysOfWeek = [
   "Sunday",
   "Monday",
@@ -16,73 +10,56 @@ export const daysOfWeek = [
   "Saturday",
 ];
 
+export const timeSlots = [
+  {
+    title: "First Period",
+    startTime: "06:30",
+    endTime: "08:00",
+  },
+  {
+    title: "Second Period",
+    startTime: "08:30",
+    endTime: "10:00",
+  },
+  {
+    title: "Third Period",
+    startTime: "10:00",
+    endTime: "11:30",
+  },
+];
+
+export const objectID = z.string().regex(/^[0-9a-fA-F]{24}$/);
+
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-// Base timetable entry schema
-export const baseTimeTableEntrySchema = z.object({
-  course: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
+export const timeTableEntry = z.object({
+  course: objectID,
   day: z.enum(daysOfWeek),
-  startTime: z.string().regex(timeRegex, "Invalid time format (HH:MM)"),
-  endTime: z.string().regex(timeRegex, "Invalid time format (HH:MM)"),
-  room: z.string().default("TBD"),
+  startTime: z.string().regex(timeRegex),
+  endTime: z.string().regex(timeRegex),
+  room: z.string().optional(),
 });
 
-// Create schedule entry schema (for adding new entries)
-export const createScheduleEntrySchema = baseTimeTableEntrySchema.strict();
-
-// Update schedule entry schema (for editing existing entries)
-export const updateScheduleEntrySchema = baseTimeTableEntrySchema
-  .partial()
-  .strict();
-
-// Base schedule schema
-export const baseScheduleSchema = z.object({
-  class: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
-  timeTable: z.array(baseTimeTableEntrySchema).default([]),
+export const createScheduleSchema = z.object({
+  class: objectID,
+  timeTable: z.array(timeTableEntry).optional(),
 });
 
-// Create schedule validation schema
-export const createScheduleSchema = baseScheduleSchema.strict();
+export const updateScheduleSchema = createScheduleSchema.partial();
 
-// Update schedule validation schema
-export const updateScheduleSchema = baseScheduleSchema.partial().strict();
+export const addTimeTableEntrySchema = timeTableEntry;
 
-// Get schedule by id validation schema
+export const updateTimeTableEntrySchema = timeTableEntry.partial();
+
 export const scheduleIdSchema = z.object({
   id: objectID,
 });
 
-// Get schedule by class validation schema
 export const scheduleByClassSchema = z.object({
   classId: objectID,
 });
 
-// Add timetable entry validation schema
-export const addTimeTableEntrySchema = baseTimeTableEntrySchema.strict();
-
-// Update timetable entry validation schema (for updating specific entries)
-export const updateTimeTableEntrySchema = baseTimeTableEntrySchema
-  .partial()
-  .strict()
-  .extend({
-    entryId: z
-      .string()
-      .regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId")
-      .optional(),
-  });
-
-// Remove timetable entry validation schema
-export const removeTimeTableEntrySchema = z.object({
-  entryId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
+export const timeTableParamsSchema = z.object({
+  id: objectID,
+  entryId: objectID,
 });
-
-// Validate time order schema
-export const validateTimeOrderSchema = baseTimeTableEntrySchema.refine(
-  (data) => {
-    return data.startTime < data.endTime;
-  },
-  {
-    message: "Start time must be before end time",
-    path: ["startTime"],
-  },
-);
