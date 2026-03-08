@@ -6,9 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import Avatar from "react-avatar";
 import {
-  LuCalendar,
-  LuBookCopy,
   LuChartColumnBig,
+  LuSchool,
   LuEllipsisVertical,
   LuList,
 } from "react-icons/lu";
@@ -61,12 +60,12 @@ export const StudentLayout = () => {
               </NavButton>
             </div>
             <CollapsibleMenu
-              icon={LuBookCopy}
+              icon={LuSchool}
               size={21}
               label="Class"
               defaultOpen={true}
             >
-              <NavButton to="/student/manage-courses">courses</NavButton>
+              <NavButton to="/student/manage-courses"> courses</NavButton>
               <NavButton to="/student/manage-assignments">Assignments</NavButton>
                <NavButton to="/student/manage-notes">Notes</NavButton>
             </CollapsibleMenu>
@@ -153,7 +152,7 @@ export const StudentLayout = () => {
                       </div>
                     </div>
 
-                    <Link to="/teacher/account">
+                    <Link to="/student/account">
                       <Button
                         variant="ghost"
                         className="text-left text-zinc-900 w-full"
