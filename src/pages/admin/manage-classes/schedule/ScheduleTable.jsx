@@ -1,7 +1,6 @@
 import { LuClock, LuTrash2, LuLoader, LuPencil } from "react-icons/lu";
 import { daysOfWeek } from "../../../../schemas/scheduleSchema";
 import { Button } from "../../../../components/Button";
-import { IoAddCircle } from "react-icons/io5";
 
 export const ScheduleTable = ({
   scheduleData,

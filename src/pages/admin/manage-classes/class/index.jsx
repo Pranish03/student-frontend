@@ -17,10 +17,14 @@ import { Courses } from "./Courses";
 import { Students } from "./Students";
 import { useState } from "react";
 import { Schedule } from "../schedule";
+import { AnimatePresence } from "framer-motion";
+import { EditClassDialog } from "../EditClassDialog";
 
 export const ManageClass = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("courses");
+
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["class", id],
@@ -75,65 +79,69 @@ export const ManageClass = () => {
   };
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center gap-1 mb-6 text-[15px]">
-        <Link
-          className="text-zinc-500 hover:text-zinc-900 transition-colors"
-          to="/admin"
-        >
-          Admin
-        </Link>
-        <LuChevronRight className="w-4 h-4 text-zinc-400" />
-        <Link
-          className="text-zinc-500 hover:text-zinc-900 transition-colors"
-          to="/admin/manage-classes"
-        >
-          Classes
-        </Link>
-        <LuChevronRight className="w-4 h-4 text-zinc-400" />
-        <span className="text-zinc-900 font-medium">{classData.name}</span>
-      </div>
+    <>
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center gap-1 mb-6 text-[15px]">
+          <Link
+            className="text-zinc-500 hover:text-zinc-900 transition-colors"
+            to="/admin"
+          >
+            Admin
+          </Link>
+          <LuChevronRight className="w-4 h-4 text-zinc-400" />
+          <Link
+            className="text-zinc-500 hover:text-zinc-900 transition-colors"
+            to="/admin/manage-classes"
+          >
+            Classes
+          </Link>
+          <LuChevronRight className="w-4 h-4 text-zinc-400" />
+          <span className="text-zinc-900 font-medium">{classData.name}</span>
+        </div>
 
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-zinc-900 mb-2">
-              {classData.name}
-            </h1>
-            <div className="flex items-center gap-4 text-zinc-600">
-              <div className="flex items-center gap-1">
-                <LuBuilding className="w-4 h-4" />
-                <span>{classData.department}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <LuCalendar className="w-4 h-4" />
-                <span>Academic Year: {classData.academicYear}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <LuUsers className="w-4 h-4" />
-                <span>Capacity: {classData.capacity} students</span>
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-zinc-900 mb-2">
+                {classData.name}
+              </h1>
+              <div className="flex items-center gap-4 text-zinc-600">
+                <div className="flex items-center gap-1">
+                  <LuBuilding className="w-4 h-4" />
+                  <span>{classData.department}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <LuCalendar className="w-4 h-4" />
+                  <span>Academic Year: {classData.academicYear}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <LuUsers className="w-4 h-4" />
+                  <span>Capacity: {classData.capacity} students</span>
+                </div>
               </div>
             </div>
+
+            <Button
+              onClick={() => setShowEditDialog(true)}
+              className="flex items-center gap-2"
+            >
+              <FaPenNib />
+              Edit Class
+            </Button>
           </div>
-
-          <Button className="flex items-center gap-2">
-            <FaPenNib />
-            Edit Class
-          </Button>
         </div>
-      </div>
 
-      <div className="bg-zinc-100 p-1 mb-6 rounded-[14px] w-min border border-zinc-200">
-        <nav className="flex gap-1" aria-label="Tabs">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+        <div className="bg-zinc-100 p-1 mb-6 rounded-[14px] w-min border border-zinc-200">
+          <nav className="flex gap-1" aria-label="Tabs">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
 
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
                   flex items-center gap-2 px-3 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer
                   ${
                     isActive
@@ -141,29 +149,38 @@ export const ManageClass = () => {
                       : "text-zinc-700 hover:text-zinc-800 hover:bg-zinc-50"
                   }
                 `}
-              >
-                <Icon
-                  size={18}
-                  className={`${isActive ? "text-green-600" : "text-zinc-400"}`}
-                />
-                {tab.label}
-                {tab.id === "students" && classData.students?.length > 0 && (
-                  <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
-                    {classData.students.length}
-                  </span>
-                )}
-                {tab.id === "courses" && classData.courses?.length > 0 && (
-                  <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
-                    {classData.courses.length}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+                >
+                  <Icon
+                    size={18}
+                    className={`${isActive ? "text-green-600" : "text-zinc-400"}`}
+                  />
+                  {tab.label}
+                  {tab.id === "students" && classData.students?.length > 0 && (
+                    <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                      {classData.students.length}
+                    </span>
+                  )}
+                  {tab.id === "courses" && classData.courses?.length > 0 && (
+                    <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                      {classData.courses.length}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
 
-      <div className="min-h-100">{renderTabContent()}</div>
-    </div>
+        <div className="min-h-100">{renderTabContent()}</div>
+      </div>
+      <AnimatePresence>
+        {showEditDialog && classData && (
+          <EditClassDialog
+            classData={classData}
+            close={() => setShowEditDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 };

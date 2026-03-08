@@ -45,6 +45,8 @@ export const EditClassDialog = ({ classData, close }) => {
       toast.success(data?.message || "Class updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["classes"] });
+      queryClient.invalidateQueries({ queryKey: ["class", classData?._id] });
+
       close();
     },
   });
