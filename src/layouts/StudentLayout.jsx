@@ -66,7 +66,7 @@ export const StudentLayout = () => {
               label="Class"
               defaultOpen={true}
             >
-              <NavButton to="//student/manage-courses">courses</NavButton>
+              <NavButton to="/student/manage-courses">courses</NavButton>
               <NavButton to="/student/manage-assignments">Assignments</NavButton>
                <NavButton to="/student/manage-notes">Notes</NavButton>
             </CollapsibleMenu>
