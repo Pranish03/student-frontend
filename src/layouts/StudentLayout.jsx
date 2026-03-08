@@ -74,7 +74,7 @@ export const StudentLayout = () => {
             
 
             <div>
-              <NavButton to="/teacher/manage-notices">
+              <NavButton to="/student/manage-notices">
                 <span className="flex items-center gap-3">
                   <LuList size={20} />
                   Notices
