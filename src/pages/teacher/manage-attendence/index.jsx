@@ -1,9 +1,108 @@
-import React from 'react'
+import React, { useState, useMemo } from "react";
+import { Table } from "../../../components/table/Table";
+import { Button } from "../../../components/Button";
+import mData from "./mockData.json";
 
-export const ManageAttandence = () => {
+export const ManageAttendence = () => {
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const [date, setDate] = useState(today);
+  const [sheetData, setSheetData] = useState([]);
+  const [attendance, setAttendance] = useState({});
+
+  const data = useMemo(() => mData || [], []);
+
+  const toggleAttendance = (id) => {
+    setAttendance((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const columns = [
+    {
+      header: "SN",
+      cell: ({ row }) => row.index + 1,
+    },
+    {
+      header: "Name",
+      accessorKey: "name",
+    },
+    {
+      header: "Status",
+      cell: ({ row }) =>
+        attendance[row.original.id] ? "Present" : "Absent",
+    },
+    {
+      header: "Tick",
+      cell: ({ row }) => (
+        <input
+          type="checkbox"
+          checked={attendance[row.original.id] || false}
+          onChange={() => toggleAttendance(row.original.id)}
+        />
+      ),
+    },
+    {
+      header: "Date",
+      cell: () => date,
+    },
+  ];
+
+  const handleGenerate = () => {
+
+    if (!data.length) {
+      alert("No students found");
+      return;
+    }
+
+    setSheetData(data);
+
+    const initial = {};
+    data.forEach((student) => {
+      initial[student.id] = false;
+    });
+
+    setAttendance(initial);
+  };
+
+  const handleSubmit = () => {
+    console.log("Attendance:", attendance);
+    alert("Attendance Submitted");
+  };
+
   return (
-    <div>
-      Manage-Attandence-page
+    <div className="p-8">
+
+      <div className="flex gap-4 mb-6">
+
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="border rounded-lg px-4 py-2"
+        />
+
+        <Button onClick={handleGenerate}>
+          Generate Sheet
+        </Button>
+
+      </div>
+
+      {sheetData.length > 0 && (
+        <>
+          <Table data={sheetData} columns={columns} />
+
+          <Button
+            className="mt-6 bg-green-600 text-white"
+            onClick={handleSubmit}
+          >
+            Submit Attendance
+          </Button>
+        </>
+      )}
+
     </div>
-  )
-}
+  );
+};

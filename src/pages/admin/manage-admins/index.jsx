@@ -141,7 +141,7 @@ export const ManageAdmins = () => {
           globalFilterFn={filterSpecificColumns("name", "email")}
           isLoading={isLoading}
         />
-      </div>
+      </div>  
 
       <AnimatePresence>
         {selectedAdmin && (
