@@ -41,6 +41,7 @@ export const EditAdminDialog = ({ admin, close }) => {
       toast.success(data?.message || "Admin updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["admins"] });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
 
       close();
     },
