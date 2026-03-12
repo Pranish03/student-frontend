@@ -5,7 +5,7 @@ import mData from "./mockData.json";
 import { IoAddCircle } from "react-icons/io5";
 
 
-export const ManageAttendence = () => {
+export const ManageAttendance = () => {
   const today = new Date().toISOString().split("T")[0];
 
   const [date, setDate] = useState(today);

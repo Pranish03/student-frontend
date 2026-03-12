@@ -61,10 +61,10 @@ export const TeacherLayout = () => {
               </NavButton>
             </div>
             <div>
-              <NavButton to="/teacher/manage-attandence">
+              <NavButton to="/teacher/manage-attendance">
                 <span className="flex items-center gap-3">
                   <LuCalendar size={20} />
-                  Attandence
+                  Attendance
                 </span>
               </NavButton>
             </div>
