@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { DateTime } from "luxon";
 import { LuChevronRight, LuEllipsis } from "react-icons/lu";
 import { IoAddCircle } from "react-icons/io5";
@@ -28,6 +28,13 @@ export const ManageNotes = () => {
         file: "/notes/react.pdf",
         createdAt: "2026-03-10T10:00:00Z",
         updatedAt: "2026-03-11T10:00:00Z",
+      },
+      {
+        _id: "2",
+        title: "OS Basics",
+        file: "/notes/OS.pdf",
+        createdAt: "2026-02-10T10:00:00Z",
+        updatedAt: "2026-02-11T10:00:00Z",
       },
     ],
   };
@@ -164,7 +171,7 @@ export const ManageNotes = () => {
 
       <AnimatePresence>
         {showEditDialog && editingNote && (
-          <EditNoteDialog
+          <EditNotesDialog
             note={editingNote}
             close={() => {
               setShowEditDialog(false);
