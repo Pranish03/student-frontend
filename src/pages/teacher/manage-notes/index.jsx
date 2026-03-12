@@ -43,6 +43,7 @@ export const ManageNotes = () => {
 
   const handleActionClick = (event, note) => {
     event.stopPropagation();
+    
     const rect = event.currentTarget.getBoundingClientRect();
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
@@ -97,7 +98,7 @@ export const ManageNotes = () => {
       cell: (info) => (
         <button
           onClick={(e) => handleActionClick(e, info.row.original)}
-          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer"
+          className="p-1.5 hover:bg-zinc-100 rounded-[12px] cursor-pointer"
         >
           <LuEllipsis size={18} />
         </button>

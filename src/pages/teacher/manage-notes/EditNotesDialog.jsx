@@ -32,11 +32,11 @@ export const EditNotesDialog = ({ note, close }) => {
     close();
   };
 
-  // Determine the preview URL
+ 
   const previewUrl =
     file && file.length > 0
-      ? URL.createObjectURL(file[0]) // New uploaded file
-      : note?.file || null; // Existing file URL
+      ? URL.createObjectURL(file[0]) 
+      : note?.file || null; 
 
   return (
     <Dialog
