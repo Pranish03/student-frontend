@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { Button } from "../../../components/Button";
 import { StatCard } from "./StatCard";
 import { Chart } from "./Chart";
+import { Container } from "../../../components/ui/Container";
 
 const useDashboardData = () => {
   return {
@@ -92,7 +93,7 @@ export const AdminDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8">
+    <Container>
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
@@ -264,6 +265,6 @@ export const AdminDashboard = () => {
           System is online
         </span>
       </div>
-    </div>
+    </Container>
   );
 };

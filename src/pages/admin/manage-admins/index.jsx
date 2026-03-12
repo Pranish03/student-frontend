@@ -15,6 +15,8 @@ import { EditAdminDialog } from "./EditAdminDialog";
 import { ToggleAdminDialog } from "./ToggleAdminDialog";
 import { DeleteAdminDialog } from "./DeleteAdminDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
+import { Heading } from "../../../components/ui/Heading";
+import { Container } from "../../../components/ui/Container";
 
 export const ManageAdmins = () => {
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -104,7 +106,7 @@ export const ManageAdmins = () => {
 
   return (
     <>
-      <div>
+      <Container>
         <div className="flex items-center gap-1 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
@@ -119,7 +121,9 @@ export const ManageAdmins = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 mb-1">Admins</h1>
+          <Heading className="text-3xl font-bold text-zinc-900 mb-1">
+            Admins
+          </Heading>
           <p className="text-zinc-800">
             {data?.data?.length || 0} total courses
           </p>
@@ -141,7 +145,7 @@ export const ManageAdmins = () => {
           globalFilterFn={filterSpecificColumns("name", "email")}
           isLoading={isLoading}
         />
-      </div>  
+      </Container>
 
       <AnimatePresence>
         {selectedAdmin && (
