@@ -109,7 +109,7 @@ export const ManageNotes = () => {
   return (
     <>
       <div>
-        <div className="flex items-center gap-1 mb-4">
+        <div className="flex items-center gap-2 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
             to="/teacher"
@@ -121,7 +121,7 @@ export const ManageNotes = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 mb-1">Notes</h1>
+          <h1 className="text-3xl font-bold text-zinc-800 mb-1">Notes</h1>
           <p className="text-zinc-800">{data?.data?.length || 0} total notes</p>
         </div>
 
