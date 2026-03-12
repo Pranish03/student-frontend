@@ -19,6 +19,8 @@ import { useState } from "react";
 import { Schedule } from "../schedule";
 import { AnimatePresence } from "framer-motion";
 import { EditClassDialog } from "../EditClassDialog";
+import { Container } from "../../../../components/ui/Container";
+import { Heading } from "../../../../components/ui/Heading";
 
 export const ManageClass = () => {
   const { id } = useParams();
@@ -80,7 +82,7 @@ export const ManageClass = () => {
 
   return (
     <>
-      <div className="px-4 sm:px-6 lg:px-8 py-8">
+      <Container>
         <div className="flex items-center gap-1 mb-6 text-[15px]">
           <Link
             className="text-zinc-500 hover:text-zinc-900 transition-colors"
@@ -102,9 +104,9 @@ export const ManageClass = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-zinc-900 mb-2">
+              <Heading className="mb-2">
                 {classData.name}
-              </h1>
+              </Heading>
               <div className="flex items-center gap-4 text-zinc-600">
                 <div className="flex items-center gap-1">
                   <LuBuilding className="w-4 h-4" />
@@ -172,7 +174,7 @@ export const ManageClass = () => {
         </div>
 
         <div className="min-h-100">{renderTabContent()}</div>
-      </div>
+      </Container>
       <AnimatePresence>
         {showEditDialog && classData && (
           <EditClassDialog
