@@ -17,6 +17,7 @@ import { DeleteAdminDialog } from "./DeleteAdminDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
 import { Heading } from "../../../components/ui/Heading";
 import { Container } from "../../../components/ui/Container";
+import { Paragraph } from "../../../components/ui/Paragraph";
 
 export const ManageAdmins = () => {
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -124,9 +125,9 @@ export const ManageAdmins = () => {
           <Heading className="text-3xl font-bold text-zinc-900 mb-1">
             Admins
           </Heading>
-          <p className="text-zinc-800">
+          <Paragraph>
             {data?.data?.length || 0} total courses
-          </p>
+          </Paragraph>
         </div>
 
         <div className="float-end">
