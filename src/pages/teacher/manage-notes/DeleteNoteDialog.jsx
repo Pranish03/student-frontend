@@ -17,7 +17,7 @@ export const DeleteNoteDialog = ({ note, close }) => {
       close={close}
     >
 
-      <div className="flex items-center gap-4 justify-end">
+      <div className="flex items-center gap-5 justify-end">
 
         <Button
           variant="secondary"
