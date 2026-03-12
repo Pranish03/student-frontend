@@ -2,9 +2,10 @@ import React, { useState, useMemo } from "react";
 import { Table } from "../../../components/table/Table";
 import { Button } from "../../../components/Button";
 import mData from "./mockData.json";
+import { IoAddCircle } from "react-icons/io5";
+
 
 export const ManageAttendence = () => {
-
   const today = new Date().toISOString().split("T")[0];
 
   const [date, setDate] = useState(today);
@@ -30,22 +31,22 @@ export const ManageAttendence = () => {
       accessorKey: "name",
     },
     {
-   header: "Status",
-    cell: ({ row }) => {
-      const isPresent = attendance[row.original.id] || false;
+      header: "Status",
+      cell: ({ row }) => {
+        const isPresent = attendance[row.original.id] || false;
 
-      return (
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isPresent}
-            onChange={() => toggleAttendance(row.original.id)}
-          />
-          <span>{isPresent ? "Present" : "Absent"}</span>
-        </div>
-      );
+        return (
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isPresent}
+              onChange={() => toggleAttendance(row.original.id)}
+            />
+            <span>{isPresent ? "Present" : "Absent"}</span>
+          </div>
+        );
+      },
     },
-  },
     {
       header: "Date",
       cell: () => date,
@@ -53,7 +54,6 @@ export const ManageAttendence = () => {
   ];
 
   const handleGenerate = () => {
-
     if (!data.length) {
       alert("No students found");
       return;
@@ -76,9 +76,7 @@ export const ManageAttendence = () => {
 
   return (
     <div className="p-8">
-
       <div className="flex gap-4 mb-6">
-
         <input
           type="date"
           value={date}
@@ -86,10 +84,10 @@ export const ManageAttendence = () => {
           className="border rounded-lg px-4 py-2"
         />
 
-        <Button onClick={handleGenerate}>
+        <Button className="flex items-center gap-2" onClick={handleGenerate}>
+          <IoAddCircle size={22} />
           Generate Sheet
         </Button>
-
       </div>
 
       {sheetData.length > 0 && (
@@ -104,7 +102,6 @@ export const ManageAttendence = () => {
           </Button>
         </>
       )}
-
     </div>
   );
 };
