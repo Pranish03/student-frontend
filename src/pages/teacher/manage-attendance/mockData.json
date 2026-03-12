@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Isador Kruger",
+    "email": "ikruger0@huffingtonpost.com",
+    "gender": "Male",
+    "status": "Absent"
+  },
+  {
+    "id": 2,
+    "name": "Brady Gommery",
+    "email": "bgommery1@amazon.de",
+    "gender": "Male",
+    "status": "Absent"
+  },
+  {
+    "id": 3,
+    "name": "Boycie Drei",
+    "email": "bdrei2@uol.com.br",
+    "gender": "Male",
+    "status": "Absent"
+  },
+  {
+    "id": 4,
+    "name": "Connie Wooffinden",
+    "email": "cwooffinden3@desdev.cn",
+    "gender": "Male",
+    "status": "Absent"
+  },
+  {
+    "id": 5,
+    "name": "Denni Huie",
+    "email": "dhuie4@toplist.cz",
+    "gender": "Female",
+    "status": "Absent"
+  },
+  {
+    "id": 6,
+    "name": "Denney Moncarr",
+    "email": "dmoncarr5@jigsy.com",
+    "gender": "Male",
+    "status": "Absent"
+  },
+  {
+    "id": 7,
+    "name": "Nowell Leeburn",
+    "email": "nleeburn6@reddit.com",
+    "gender": "Male",
+    "status": "Absent"
+  },
+  {
+    "id": 8,
+    "name": "Rosie Mattaus",
+    "email": "rmattaus7@google.co.uk",
+    "gender": "Female",
+    "status": "Absent"
+  },
+  {
+    "id": 9,
+    "name": "Hetti Capnor",
+    "email": "hcapnor8@google.ru",
+    "gender": "Female",
+    "status": "Absent"
+  },
+  {
+    "id": 10,
+    "name": "Sayre Moriarty",
+    "email": "smoriarty9@usa.gov",
+    "gender": "Male",
+    "status": "Absent"
+  }
+]

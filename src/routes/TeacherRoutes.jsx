@@ -1,6 +1,6 @@
 import { RequireAuth } from "../components/auth/RequireAuth";
 import { TeacherLayout } from "../layouts/TeacherLayout.jsx";
-import { ManageAttandence } from "../pages/teacher/manage-attendence";
+import { ManageAttendance } from "../pages/teacher/manage-attendance";
 import { ManageNotes } from "../pages/teacher/manage-notes";
 import { ManageAssignment } from "../pages/teacher/manage-assignment";
 import { ManageNotices } from "../pages/teacher/manage-notices";
@@ -16,7 +16,7 @@ export const TeacherRoutes = {
       element: <TeacherLayout />,
       children: [
         { element: <TeacherDashboard />, index: true },
-        { element: <ManageAttandence />, path: "manage-attandence" },
+        { element: <ManageAttendance />, path: "manage-attendance" },
         { element: <ManageNotes />, path: "manage-notes" },
         { element: <ManageAssignment />, path: "manage-assignment" },
         { element: <ManageNotices />, path: "manage-notices" },
