@@ -130,7 +130,7 @@ export const ManageNotes = () => {
             onClick={() => setShowAddDialog(true)}
           >
             <IoAddCircle size={22} />
-            Add Notes
+            Add New Notes
           </Button>
         </div>
 
