@@ -30,20 +30,22 @@ export const ManageAttendence = () => {
       accessorKey: "name",
     },
     {
-      header: "Status",
-      cell: ({ row }) =>
-        attendance[row.original.id] ? "Present" : "Absent",
+   header: "Status",
+    cell: ({ row }) => {
+      const isPresent = attendance[row.original.id] || false;
+
+      return (
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={isPresent}
+            onChange={() => toggleAttendance(row.original.id)}
+          />
+          <span>{isPresent ? "Present" : "Absent"}</span>
+        </div>
+      );
     },
-    {
-      header: "Tick",
-      cell: ({ row }) => (
-        <input
-          type="checkbox"
-          checked={attendance[row.original.id] || false}
-          onChange={() => toggleAttendance(row.original.id)}
-        />
-      ),
-    },
+  },
     {
       header: "Date",
       cell: () => date,
