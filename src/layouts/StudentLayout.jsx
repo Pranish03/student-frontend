@@ -7,9 +7,9 @@ import { toast } from "react-toastify";
 import Avatar from "react-avatar";
 import {
   LuChartColumnBig,
-  LuSchool,
   LuEllipsisVertical,
-  LuList,
+  LuMessageCircleMore,
+  LuGraduationCap,
 } from "react-icons/lu";
 import { useAuth } from "../hooks/useAuth";
 import { CollapsibleMenu } from "../components/CollapsibleMenu";
@@ -60,22 +60,22 @@ export const StudentLayout = () => {
               </NavButton>
             </div>
             <CollapsibleMenu
-              icon={LuSchool}
+              icon={LuGraduationCap}
               size={21}
-              label="Class"
+              label="Academics"
               defaultOpen={true}
             >
-              <NavButton to="/student/manage-courses"> courses</NavButton>
-              <NavButton to="/student/manage-assignments">Assignments</NavButton>
-               <NavButton to="/student/manage-notes">Notes</NavButton>
+              <NavButton to="/student/manage-courses">Courses</NavButton>
+              <NavButton to="/student/manage-assignments">
+                Assignments
+              </NavButton>
+              <NavButton to="/student/manage-notes">Notes</NavButton>
             </CollapsibleMenu>
-
-            
 
             <div>
               <NavButton to="/student/manage-notices">
                 <span className="flex items-center gap-3">
-                  <LuList size={20} />
+                  <LuMessageCircleMore size={20} />
                   Notices
                 </span>
               </NavButton>
