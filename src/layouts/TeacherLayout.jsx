@@ -6,11 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import Avatar from "react-avatar";
 import {
-  LuCalendar,
-  LuBookCopy,
   LuChartColumnBig,
   LuEllipsisVertical,
-  LuList,
+  LuMessageCircleMore,
+  LuFiles,
+  LuClipboardPenLine,
 } from "react-icons/lu";
 import { useAuth } from "../hooks/useAuth";
 import { CollapsibleMenu } from "../components/CollapsibleMenu";
@@ -63,16 +63,16 @@ export const TeacherLayout = () => {
             <div>
               <NavButton to="/teacher/manage-attendance">
                 <span className="flex items-center gap-3">
-                  <LuCalendar size={20} />
+                  <LuClipboardPenLine size={20} />
                   Attendance
                 </span>
               </NavButton>
             </div>
 
             <CollapsibleMenu
-              icon={LuBookCopy}
+              icon={LuFiles}
               size={21}
-              label="Materials"
+              label="Resources"
               defaultOpen={true}
             >
               <NavButton to="/teacher/manage-notes">Notes</NavButton>
@@ -82,12 +82,11 @@ export const TeacherLayout = () => {
             <div>
               <NavButton to="/teacher/manage-notices">
                 <span className="flex items-center gap-3">
-                  <LuList size={20} />
+                  <LuMessageCircleMore size={20} />
                   Notices
                 </span>
               </NavButton>
             </div>
-           
           </div>
 
           <div className="relative" ref={buttonRef}>
@@ -197,4 +196,3 @@ export const TeacherLayout = () => {
     </div>
   );
 };
-
