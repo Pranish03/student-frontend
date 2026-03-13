@@ -13,6 +13,9 @@ import { AddClassDialog } from "./AddClassDialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { EditClassDialog } from "./EditClassDialog";
 import { DeleteClassDialog } from "./DeleteClassDialog";
+import { Container } from "../../../components/ui/Container";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
 
 export const ManageClasses = () => {
   const [selectedClass, setSelectedClass] = useState(null);
@@ -111,7 +114,7 @@ export const ManageClasses = () => {
 
   return (
     <>
-      <div className="px-4 sm:px-6 lg:px-8 py-8">
+      <Container>
         <div className="flex items-center gap-1 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
@@ -126,10 +129,10 @@ export const ManageClasses = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 mb-1">Classes</h1>
-          <p className="text-zinc-800">
+          <Heading className="mb-1">Classes</Heading>
+          <Paragraph>
             Total {data?.data?.length || 0} classes
-          </p>
+          </Paragraph>
         </div>
 
         <div className="float-end">
@@ -148,7 +151,7 @@ export const ManageClasses = () => {
           globalFilterFn={filterSpecificColumns("name", "department")}
           isLoading={isLoading}
         />
-      </div>
+      </Container>
 
       <AnimatePresence>
         {selectedClass && (

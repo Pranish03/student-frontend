@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -75,7 +76,7 @@ export const ManageNotes = () => {
       accessorKey: "title",
       cell: (info) => (
         <a
-          href={info.row.original.file}
+          href="/os1.pdf"
           target="_blank"
           className="text-blue-600 underline"
         >
@@ -98,7 +99,7 @@ export const ManageNotes = () => {
       cell: (info) => (
         <button
           onClick={(e) => handleActionClick(e, info.row.original)}
-          className="p-1.5 hover:bg-zinc-100 rounded-[12px] cursor-pointer"
+          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer"
         >
           <LuEllipsis size={18} />
         </button>

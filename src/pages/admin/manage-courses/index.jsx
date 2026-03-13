@@ -15,6 +15,9 @@ import { filterSpecificColumns } from "../../../utils/tableFilters";
 import { DeleteCourseDialog } from "./DeleteCourseDialog";
 import { AssignTeacherDialog } from "./AssignTeacherDialog";
 import { RemoveTeacherDialog } from "./RemoveTeacherDialog";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
+import { Container } from "../../../components/ui/Container";
 
 export const ManageCourses = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -114,7 +117,7 @@ export const ManageCourses = () => {
 
   return (
     <>
-      <div>
+      <Container>
         <div className="flex items-center gap-1 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
@@ -129,10 +132,10 @@ export const ManageCourses = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 mb-1">Courses</h1>
-          <p className="text-zinc-800">
+          <Heading className="mb-1">Courses</Heading>
+          <Paragraph>
             {data?.data?.length || 0} total courses
-          </p>
+          </Paragraph>
         </div>
 
         <div className="float-end">
@@ -151,7 +154,7 @@ export const ManageCourses = () => {
           globalFilterFn={filterSpecificColumns("name", "code")}
           isLoading={isLoading}
         />
-      </div>
+      </Container>
 
       <AnimatePresence>
         {selectedCourse && (

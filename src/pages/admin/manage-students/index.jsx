@@ -15,6 +15,9 @@ import { EditStudentDialog } from "./EditStudentDialog";
 import { DeleteStudentDialog } from "./DeleteStudentDialog";
 import { ToggleStudentDialog } from "./ToggleStudentDialog";
 import { filterSpecificColumns } from "../../../utils/tableFilters";
+import { Container } from "../../../components/ui/Container";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
 
 export const ManageStudents = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -104,7 +107,7 @@ export const ManageStudents = () => {
 
   return (
     <>
-      <div>
+      <Container>
         <div className="flex items-center gap-1 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
@@ -119,10 +122,10 @@ export const ManageStudents = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 mb-1">Students</h1>
-          <p className="text-zinc-800">
+          <Heading className="mb-1">Students</Heading>
+          <Paragraph>
             {data?.data?.length || 0} total students
-          </p>
+          </Paragraph>
         </div>
 
         <div className="float-end">
@@ -141,7 +144,7 @@ export const ManageStudents = () => {
           globalFilterFn={filterSpecificColumns("name", "email")}
           isLoading={isLoading}
         />
-      </div>
+      </Container>
 
       <AnimatePresence>
         {selectedId && (

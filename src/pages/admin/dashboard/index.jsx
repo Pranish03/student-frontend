@@ -17,6 +17,8 @@ import { Button } from "../../../components/Button";
 import { StatCard } from "./StatCard";
 import { Chart } from "./Chart";
 import { Container } from "../../../components/ui/Container";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
 
 const useDashboardData = () => {
   return {
@@ -98,16 +100,16 @@ export const AdminDashboard = () => {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold text-zinc-900">
+              <Heading>
                 Admin Dashboard
-              </h1>
+              </Heading>
               <span className="px-2 py-1 text-xs font-medium bg-green-50 text-green-600 rounded-full">
                 Live
               </span>
             </div>
-            <p className="text-zinc-500">
+            <Paragraph>
               Welcome back! Here's what's happening with your institution today.
-            </p>
+            </Paragraph>
           </div>
 
           <button
@@ -244,12 +246,12 @@ export const AdminDashboard = () => {
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-zinc-900 line-clamp-1">
+                    <Paragraph className="line-clamp-1">
                       {activity.action}
-                    </p>
-                    <p className="text-xs text-zinc-500">
+                    </Paragraph>
+                    <Paragraph>
                       {activity.user} • {activity.time}
-                    </p>
+                    </Paragraph>
                   </div>
                 </div>
               ))}
