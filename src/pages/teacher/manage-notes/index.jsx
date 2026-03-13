@@ -25,15 +25,15 @@ export const ManageNotes = () => {
     data: [
       {
         _id: "1",
-        title: "React Basics",
-        file: "/notes/react.pdf",
+        title: "Javascript Basics",
+        file: "/DomManipulation-A.pdf",
         createdAt: "2026-03-10T10:00:00Z",
         updatedAt: "2026-03-11T10:00:00Z",
       },
       {
         _id: "2",
         title: "OS Basics",
-        file: "/notes/OS.pdf",
+        file: "/os1.pdf",
         createdAt: "2026-02-10T10:00:00Z",
         updatedAt: "2026-02-11T10:00:00Z",
       },
@@ -75,7 +75,7 @@ export const ManageNotes = () => {
       accessorKey: "title",
       cell: (info) => (
         <a
-          href="/os1.pdf"
+          href={info.row.original.file}
           target="_blank"
           className="text-blue-600 underline"
         >
