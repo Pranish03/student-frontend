@@ -43,7 +43,7 @@ export const ManageNotes = () => {
 
   const handleActionClick = (event, note) => {
     event.stopPropagation();
-    
+
     const rect = event.currentTarget.getBoundingClientRect();
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
@@ -54,7 +54,7 @@ export const ManageNotes = () => {
 
   const handleCloseDropdown = () => setSelectedNote(null);
 
-   const handleEditClick = () => {
+  const handleEditClick = () => {
     setEditingNote(selectedNote);
     handleCloseDropdown();
     setShowEditDialog(true);
@@ -65,7 +65,6 @@ export const ManageNotes = () => {
     handleCloseDropdown();
     setShowDeleteDialog(true);
   };
-
 
   const columns = [
     { header: "SN", cell: (info) => info.row.index + 1 },
@@ -162,7 +161,7 @@ export const ManageNotes = () => {
             </motion.div>
           </>
         )}
-       </AnimatePresence>
+      </AnimatePresence>
 
       <AnimatePresence>
         {showAddDialog && (
