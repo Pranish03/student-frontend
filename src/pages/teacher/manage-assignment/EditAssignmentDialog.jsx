@@ -9,6 +9,8 @@ export const EditAssignmentDialog = ({ assignment, close }) => {
     defaultValues: {
       title: "",
       file: null,
+      deadline: ""
+
     },
   });
 
@@ -21,6 +23,7 @@ export const EditAssignmentDialog = ({ assignment, close }) => {
       reset({
         title: assignment?.title || "",
         file: null,
+        
       });
     }
   }, [assignment, reset]);
@@ -55,6 +58,14 @@ export const EditAssignmentDialog = ({ assignment, close }) => {
             {...register("file")}
           />
         </div>
+        <div className="mb-4">
+        <label className="block mb-2">Deadline</label>
+  <Input
+    type="date"
+    className="w-full"
+    {...register("deadline")}
+  />
+</div>
 
         {title && previewUrl && (
           <div className="mb-5 p-3 border rounded bg-zinc-50">
