@@ -10,6 +10,9 @@ import { Table } from "../../../components/table/Table";
 import { AddAssignmentDialog } from "./AddAssignmentDialog";
 import { EditAssignmentDialog } from "./EditAssignmentDialog";
 import { DeleteAssignmentDialog } from "./DeleteAssignmentDialog";
+import { Container } from "../../../components/ui/Container";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
 
 
 export const ManageAssignment = () => {
@@ -27,7 +30,7 @@ export const ManageAssignment = () => {
   data: [
     {
       _id: "1",
-      title: "React Assignment 1",
+      title: "React Assignment",
       file: "/react-assignment.pdf",
       deadline: "2026-03-25",
       createdAt: "2026-03-10T10:00:00Z",
@@ -128,7 +131,7 @@ export const ManageAssignment = () => {
 
   return (
     <>
-      <div>
+      <Container>
         <div className="flex items-center gap-2 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
@@ -143,13 +146,13 @@ export const ManageAssignment = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-800 mb-1">
+          <Heading className="mb-1">
             Assignments
-          </h1>
+          </Heading>
 
-          <p className="text-zinc-800">
+          <Paragraph>
             {data?.data?.length || 0} total assignments
-          </p>
+          </Paragraph>
         </div>
 
         <div className="float-end">
@@ -163,7 +166,7 @@ export const ManageAssignment = () => {
         </div>
 
         <Table data={data?.data} columns={columns} isLoading={isLoading} />
-      </div>
+      </Container>
 
       <AnimatePresence>
         {selectedAssignment && (
