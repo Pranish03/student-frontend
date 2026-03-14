@@ -7,7 +7,9 @@ import { LuChevronRight, LuEllipsis } from "react-icons/lu";
 import { IoAddCircle } from "react-icons/io5";
 import { Button } from "../../../components/Button";
 import { Table } from "../../../components/table/Table";
-
+import { AddAssignmentDialog } from "./AddAssignmentDialog";
+import { EditAssignmentDialog } from "./EditAssignmentDialog";
+// import { DeleteAssignmentDialog } from "./DeleteAssignmentDialog";
 
 
 export const ManageAssignment = () => {
@@ -22,23 +24,25 @@ export const ManageAssignment = () => {
   const [deletingAssignment, setDeletingAssignment] = useState(null);
 
   const data = {
-    data: [
-      {
-        _id: "1",
-        title: "React Assignment 1",
-        file: "/react-assignment.pdf",
-        createdAt: "2026-03-10T10:00:00Z",
-        updatedAt: "2026-03-11T10:00:00Z",
-      },
-      {
-        _id: "2",
-        title: "OS Assignment",
-        file: "/os-assignment.pdf",
-        createdAt: "2026-02-10T10:00:00Z",
-        updatedAt: "2026-02-11T10:00:00Z",
-      },
-    ],
-  };
+  data: [
+    {
+      _id: "1",
+      title: "React Assignment 1",
+      file: "/react-assignment.pdf",
+      deadline: "2026-03-25",
+      createdAt: "2026-03-10T10:00:00Z",
+      updatedAt: "2026-03-11T10:00:00Z",
+    },
+    {
+      _id: "2",
+      title: "OS Assignment",
+      file: "/os-assignment.pdf",
+      deadline: "2026-03-30",
+      createdAt: "2026-02-10T10:00:00Z",
+      updatedAt: "2026-02-11T10:00:00Z",
+    },
+  ],
+};
 
   const isLoading = false;
 
@@ -90,18 +94,24 @@ export const ManageAssignment = () => {
         </a>
       ),
     },
-
+    
     {
       header: "Created At",
       accessorKey: "createdAt",
       cell: (info) => DateTime.fromISO(info.getValue()).toRelative(),
     },
-
+    
     {
       header: "Updated At",
       accessorKey: "updatedAt",
       cell: (info) => DateTime.fromISO(info.getValue()).toRelative(),
     },
+    {
+  header: "Deadline",
+  accessorKey: "deadline",
+  cell: (info) => DateTime.fromISO(info.getValue()).toFormat("dd LLL yyyy"),
+},
+    
 
     {
       header: "Action",
