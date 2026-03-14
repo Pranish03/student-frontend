@@ -10,6 +10,9 @@ import { Table } from "../../../components/table/Table";
 import { AddNoteDialog } from "./AddNoteDialog";
 import { EditNotesDialog } from "./EditNotesDialog";
 import { DeleteNoteDialog } from "./DeleteNoteDialog";
+import { Container } from "../../../components/ui/Container";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
 
 export const ManageNotes = () => {
   const [selectedNote, setSelectedNote] = useState(null);
@@ -108,7 +111,7 @@ export const ManageNotes = () => {
 
   return (
     <>
-      <div>
+      <Container>
         <div className="flex items-center gap-2 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
@@ -121,8 +124,8 @@ export const ManageNotes = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-800 mb-1">Notes</h1>
-          <p className="text-zinc-800">{data?.data?.length || 0} total notes</p>
+          <Heading className="mb-1">Notes</Heading>
+          <Paragraph>{data?.data?.length || 0} total notes</Paragraph>
         </div>
 
         <div className="float-end">
@@ -136,7 +139,7 @@ export const ManageNotes = () => {
         </div>
 
         <Table data={data?.data} columns={columns} isLoading={isLoading} />
-      </div>
+      </Container>
 
       <AnimatePresence>
         {selectedNote && (
