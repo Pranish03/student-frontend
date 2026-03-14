@@ -9,7 +9,7 @@ import { Button } from "../../../components/Button";
 import { Table } from "../../../components/table/Table";
 import { AddAssignmentDialog } from "./AddAssignmentDialog";
 import { EditAssignmentDialog } from "./EditAssignmentDialog";
-// import { DeleteAssignmentDialog } from "./DeleteAssignmentDialog";
+import { DeleteAssignmentDialog } from "./DeleteAssignmentDialog";
 
 
 export const ManageAssignment = () => {
