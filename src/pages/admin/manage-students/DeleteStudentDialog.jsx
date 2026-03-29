@@ -15,6 +15,12 @@ export const DeleteStudentDialog = ({ student, close }) => {
 
       queryClient.invalidateQueries({ queryKey: ["students"] });
 
+      if (student?.class) {
+        queryClient.invalidateQueries({
+          queryKey: ["classes", student?.class?._id],
+        });
+      }
+
       close();
     },
   });

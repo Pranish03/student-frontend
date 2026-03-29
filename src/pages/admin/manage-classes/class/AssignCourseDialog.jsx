@@ -50,11 +50,8 @@ export const AssignCourseDialog = ({ classData, close }) => {
     mutationFn: assignCourses,
     onSuccess: (data) => {
       toast.success(data?.message || "Course(s) assigned successfully");
+      queryClient.invalidateQueries();
 
-      queryClient.invalidateQueries({ queryKey: ["classes"] });
-      queryClient.invalidateQueries({
-        queryKey: ["class", classData?._id],
-      });
       close();
     },
   });

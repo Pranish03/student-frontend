@@ -12,9 +12,7 @@ export const RemoveCourseDialog = ({ classId, courseId, close }) => {
     mutationFn: removeCourses,
     onSuccess: (data) => {
       toast.success(data?.message || "Class deleted successfully");
-
-      queryClient.invalidateQueries({ queryKey: ["classes"] });
-      queryClient.invalidateQueries({ queryKey: ["class", classId] });
+      queryClient.invalidateQueries();
       close();
     },
   });

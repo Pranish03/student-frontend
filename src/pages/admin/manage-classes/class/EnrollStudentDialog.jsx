@@ -49,11 +49,8 @@ export const EnrollStudentDialog = ({ classData, close }) => {
     mutationFn: enrollStudents,
     onSuccess: (data) => {
       toast.success(data?.message || "Student(s) enrolled successfully");
+      queryClient.invalidateQueries();
 
-      queryClient.invalidateQueries({ queryKey: ["classes"] });
-      queryClient.invalidateQueries({
-        queryKey: ["class", classData?._id],
-      });
       close();
     },
   });
