@@ -1,107 +1,123 @@
-import React, { useState, useMemo } from "react";
-import { Table } from "../../../components/table/Table";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAllCourses } from "../../../api/manageCourses";
+import { useAuth } from "../../../hooks/useAuth";
 import { Button } from "../../../components/Button";
-import mData from "./mockData.json";
-import { IoAddCircle } from "react-icons/io5";
-
+import { Container } from "../../../components/ui/Container";
+import { Heading } from "../../../components/ui/Heading";
+import { Paragraph } from "../../../components/ui/Paragraph";
+import { Link } from "react-router-dom";
+import { LuChevronRight } from "react-icons/lu";
 
 export const ManageAttendance = () => {
-  const today = new Date().toISOString().split("T")[0];
+  const { data, isLoading } = useQuery({
+    queryKey: ["courses"],
+    queryFn: fetchAllCourses,
+  });
 
-  const [date, setDate] = useState(today);
-  const [sheetData, setSheetData] = useState([]);
-  const [attendance, setAttendance] = useState({});
+  const courseData = data?.data;
+  const { user } = useAuth();
 
-  const data = useMemo(() => mData || [], []);
+  const filteredCourse =
+    user?.course && courseData
+      ? courseData.filter((course) => user.course.includes(course._id))
+      : [];
 
-  const toggleAttendance = (id) => {
-    setAttendance((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-gray-500">Loading courses...</div>
+      </div>
+    );
+  }
 
-  const columns = [
-    {
-      header: "SN",
-      cell: ({ row }) => row.index + 1,
-    },
-    {
-      header: "Name",
-      accessorKey: "name",
-    },
-    {
-      header: "Status",
-      cell: ({ row }) => {
-        const isPresent = attendance[row.original.id] || false;
-
-        return (
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isPresent}
-              onChange={() => toggleAttendance(row.original.id)}
-            />
-            <span>{isPresent ? "Present" : "Absent"}</span>
-          </div>
-        );
-      },
-    },
-    {
-      header: "Date",
-      cell: () => date,
-    },
-  ];
-
-  const handleGenerate = () => {
-    if (!data.length) {
-      alert("No students found");
-      return;
-    }
-
-    setSheetData(data);
-
-    const initial = {};
-    data.forEach((student) => {
-      initial[student.id] = false;
-    });
-
-    setAttendance(initial);
-  };
-
-  const handleSubmit = () => {
-    console.log("Attendance:", attendance);
-    alert("Attendance Submitted");
-  };
+  console.log(filteredCourse);
 
   return (
-    <div className="p-8">
-      <div className="flex gap-4 mb-6">
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="border rounded-lg px-4 py-2"
-        />
+    <Container>
+      <div className="flex items-center gap-1 mb-4">
+        <Link
+          className="text-zinc-500 hover:underline hover:text-zinc-900"
+          to="/teacher"
+        >
+          Teacher
+        </Link>
 
-        <Button className="flex items-center gap-2" onClick={handleGenerate}>
-          <IoAddCircle size={22} />
-          Generate Sheet
-        </Button>
+        <LuChevronRight />
+
+        <span className="text-zinc-900">Attendence</span>
       </div>
 
-      {sheetData.length > 0 && (
-        <>
-          <Table data={sheetData} columns={columns} />
+      <div className="mb-8">
+        <Heading className="mb-1">Manage Attendance</Heading>
+        <Paragraph>Total {filteredCourse.length || 0} Classes</Paragraph>
+      </div>
 
-          <Button
-            className="mt-6 bg-green-600 text-white"
-            onClick={handleSubmit}
-          >
-            Submit Attendance
-          </Button>
-        </>
+      {filteredCourse.length === 0 ? (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <p className="text-yellow-700 text-lg">
+            You are not assigned to any course at the moment.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCourse.map((course) => (
+            <div
+              key={course._id}
+              className="bg-white rounded-[10px] overflow-hidden border border-zinc-300"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-semibold text-zinc-800">
+                    {course.name || course.title}
+                  </h3>
+                  {course.code && (
+                    <span className="px-2 py-1 bg-green-200 text-green-600 text-sm font-medium rounded-[10px]">
+                      {course.code}
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-2 mb-4">
+                  <p className="text-md text-zinc-500">
+                    <span className="font-medium text-zinc-700">
+                      Department:{" "}
+                    </span>
+                    {course.class.department ? (
+                      course.class.department
+                    ) : (
+                      <i>Not assigned</i>
+                    )}
+                  </p>
+
+                  <p className="text-md text-zinc-500">
+                    <span className="font-medium text-zinc-700">Class: </span>
+                    {course.class.name ? (
+                      course.class.name
+                    ) : (
+                      <i>Not assigned</i>
+                    )}
+                  </p>
+
+                  <p className="text-md text-zinc-500">
+                    <span className="font-medium text-zinc-700">
+                      Academic Year:{" "}
+                    </span>
+                    {course.class.academicYear ? (
+                      course.class.academicYear
+                    ) : (
+                      <i>Not assigned</i>
+                    )}
+                  </p>
+                </div>
+
+                <Link to={`/teacher/manage-attendance/${course._id}`}>
+                  <Button className="w-full">Attend</Button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
-    </div>
+    </Container>
   );
 };
