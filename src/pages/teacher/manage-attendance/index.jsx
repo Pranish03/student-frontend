@@ -111,7 +111,7 @@ export const ManageAttendance = () => {
                 </div>
 
                 <Link to={`/teacher/manage-attendance/${course._id}`}>
-                  <Button className="w-full">Attend</Button>
+                  <Button className="w-full">Mark Attendance</Button>
                 </Link>
               </div>
             </div>

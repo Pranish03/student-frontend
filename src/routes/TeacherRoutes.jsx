@@ -7,7 +7,7 @@ import { ManageNotices } from "../pages/teacher/manage-notices";
 
 import { Account } from "../pages/shared/account";
 import { TeacherDashboard } from "../pages/teacher/dashboard";
-import { Attend } from "../pages/teacher/manage-attendance/Attend.jsx";
+import { Attendance } from "../pages/teacher/manage-attendance/Attendance";
 
 export const TeacherRoutes = {
   path: "/teacher",
@@ -18,7 +18,7 @@ export const TeacherRoutes = {
       children: [
         { element: <TeacherDashboard />, index: true },
         { element: <ManageAttendance />, path: "manage-attendance" },
-        { element: <Attend />, path: "manage-attendance/:id" },
+        { element: <Attendance />, path: "manage-attendance/:id" },
         { element: <ManageNotes />, path: "manage-notes" },
         { element: <ManageAssignment />, path: "manage-assignment" },
         { element: <ManageNotices />, path: "manage-notices" },

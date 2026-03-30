@@ -1,26 +1,21 @@
-export const formatDate = (date) => {
+export const parseLocalDate = (dateStr) => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+export const isTodayLocal = (dateStr) => {
+  const d = parseLocalDate(dateStr);
   const now = new Date();
-  const past = new Date(date);
-  const seconds = Math.floor((now - past) / 1000);
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
+};
 
-  const intervals = [
-    { label: "year", seconds: 31536000 },
-    { label: "month", seconds: 2592000 },
-    { label: "day", seconds: 86400 },
-    { label: "hour", seconds: 3600 },
-    { label: "minute", seconds: 60 },
-    { label: "second", seconds: 1 },
-  ];
-
-  for (const interval of intervals) {
-    const count = Math.floor(seconds / interval.seconds);
-    if (count >= 1) {
-      return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(
-        -count,
-        interval.label,
-      );
-    }
-  }
-
-  return "just now";
+export const isFutureDateLocal = (dateStr) => {
+  const d = parseLocalDate(dateStr);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return d > today;
 };
