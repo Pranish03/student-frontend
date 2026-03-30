@@ -25,7 +25,6 @@ export const Table = ({
                     onChange={(e) => handleSelectAll(e.target.checked)}
                     className="w-4 h-4 rounded-[10px] accent-green-600"
                   />
-                  <span>Select All</span>
                 </div>
               ) : (
                 <span>Status</span>
@@ -38,8 +37,11 @@ export const Table = ({
         </thead>
 
         <tbody className="divide-y divide-zinc-300 border-t border-zinc-300 text-zinc-800">
-          {attendanceData.map((record, i) => (
-            <tr key={record.student} className="text-left">
+          {attendanceData.map((record, index) => (
+            <tr
+              key={record.id || record.studentId || index}
+              className="text-left"
+            >
               <td className="pl-20 pr-3 py-2.5">
                 {canEdit && isEditing ? (
                   <input
@@ -58,7 +60,7 @@ export const Table = ({
                   />
                 )}
               </td>
-              <td className="px-3 py-2.5">{++i}</td>
+              <td className="px-3 py-2.5">{index + 1}</td>
               <td className="px-3 py-2.5">{record.studentName}</td>
               <td className="px-3 py-2.5">{record.studentEmail}</td>
             </tr>

@@ -3,6 +3,7 @@ import { fetchAllCourses } from "../../../api/manageCourses";
 import { useAuth } from "../../../hooks/useAuth";
 import { Button } from "../../../components/Button";
 import { Container } from "../../../components/ui/Container";
+import { Alert } from "../../../components/ui/Alert";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
 import { Link } from "react-router-dom";
@@ -53,11 +54,9 @@ export const ManageAttendance = () => {
       </div>
 
       {filteredCourse.length === 0 ? (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <p className="text-yellow-700 text-lg">
-            You are not assigned to any course at the moment.
-          </p>
-        </div>
+        <Alert variant="warning">
+          You are not assigned to any course at the moment.
+        </Alert>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourse.map((course) => (

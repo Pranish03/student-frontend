@@ -1,7 +1,7 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { fetchClass } from "../../../../api/manageClasses";
 import { useCourse } from "../../../../hooks/useCourse";
 import {
@@ -23,6 +23,7 @@ import {
   parseLocalDate,
 } from "../../../../utils/formatDate";
 import { AlertStatus } from "./AlertStatus";
+import { Alert } from "../../../../components/ui/Alert";
 
 export const Attendance = () => {
   const { id: courseId } = useParams();
@@ -31,23 +32,16 @@ export const Attendance = () => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), "yyyy-MM-dd"),
   );
-  const [attendanceData, setAttendanceData] = useState([]);
-  const [existingAttendanceId, setExistingAttendanceId] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+
   const [isEditing, setIsEditing] = useState(false);
+  const [localAttendance, setLocalAttendance] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFutureDate = isFutureDateLocal(selectedDate);
   const isTodayDate = isTodayLocal(selectedDate);
-
   const canEdit = isTodayDate && !isFutureDate;
 
-  useEffect(() => {
-    setAttendanceData([]);
-    setExistingAttendanceId(null);
-    setIsEditing(false);
-  }, [selectedDate]);
-
+  // 📦 Queries
   const { data: courseData, isLoading: courseLoading } = useCourse(courseId);
   const classId = courseData?.data?.class;
 
@@ -61,61 +55,43 @@ export const Attendance = () => {
     enabled: !!classId,
   });
 
-  const { data: attendanceQueryData, refetch: refetchAttendance } = useQuery({
+  const { data: attendanceQueryData } = useQuery({
     queryKey: ["attendance", courseId, selectedDate],
     queryFn: () => fetchAttendanceByCourseAndDate(courseId, selectedDate),
     enabled: !!courseId && !!selectedDate,
     retry: false,
   });
 
-  useEffect(() => {
-    if (!attendanceQueryData) return;
+  // 🧠 Derived Data (NO STATE)
+  const existingRecord = attendanceQueryData?.data?.[0] || null;
+  const existingAttendanceId = existingRecord?._id || null;
 
-    if (attendanceQueryData?.data && attendanceQueryData.data.length > 0) {
-      const attendanceRecord = attendanceQueryData.data[0];
-      setExistingAttendanceId(attendanceRecord._id);
+  const serverAttendance = existingRecord
+    ? existingRecord.attendance.map((r) => ({
+        student: r.student._id,
+        isPresent: r.isPresent,
+        studentName: r.student.name,
+        studentEmail: r.student.email,
+      }))
+    : [];
 
-      const mappedAttendance = attendanceRecord.attendance.map((record) => ({
-        student: record.student._id,
-        isPresent: record.isPresent,
-        studentName: record.student.name,
-        studentEmail: record.student.email,
-      }));
+  const initialAttendance =
+    classData?.data?.students?.map((student) => ({
+      student: student._id,
+      isPresent: false,
+      studentName: student.name,
+      studentEmail: student.email,
+    })) || [];
 
-      setAttendanceData(mappedAttendance);
+  // 🔥 FINAL SOURCE OF TRUTH
+  const attendanceData = isEditing
+    ? localAttendance
+    : existingAttendanceId
+      ? serverAttendance
+      : initialAttendance;
 
-      if (isTodayDate) {
-        setIsEditing(false);
-      }
-    } else {
-      setExistingAttendanceId(null);
-
-      if (isTodayDate) {
-        setIsEditing(true);
-      }
-    }
-  }, [attendanceQueryData, isTodayDate]);
-
-  useEffect(() => {
-    if (courseId && selectedDate) {
-      refetchAttendance();
-    }
-  }, [selectedDate, courseId, refetchAttendance]);
-
-  useEffect(() => {
-    if (classData?.data?.students && !existingAttendanceId && isEditing) {
-      const initialAttendance = classData.data.students.map((student) => ({
-        student: student._id,
-        isPresent: false,
-        studentName: student.name,
-        studentEmail: student.email,
-      }));
-
-      setAttendanceData(initialAttendance);
-    }
-  }, [classData, existingAttendanceId, isEditing]);
-
-  const attendanceMutation = useMutation({
+  // 🚀 Mutation
+  const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingAttendanceId) {
         return updateAttendance(existingAttendanceId, { attendance: data });
@@ -129,139 +105,91 @@ export const Attendance = () => {
     },
     onSuccess: () => {
       setIsSubmitting(false);
-      setSaveSuccess(true);
       setIsEditing(false);
-      setTimeout(() => setSaveSuccess(false), 3000);
-      refetchAttendance();
-      queryClient.invalidateQueries({ queryKey: ["attendance", courseId] });
-    },
-    onError: (error) => {
-      setIsSubmitting(false);
-      console.error("Error saving attendance:", error);
-      alert(
-        error.response?.data?.message ||
-          "Failed to save attendance. Please try again.",
+      setLocalAttendance([]);
+
+      toast.success(
+        `Attendance ${existingAttendanceId ? "updated" : "saved"} successfully!`,
       );
+
+      queryClient.invalidateQueries({
+        queryKey: ["attendance", courseId, selectedDate],
+      });
+    },
+    onError: (err) => {
+      setIsSubmitting(false);
+      toast(err.response?.data?.message || "Something went wrong");
     },
   });
 
+  // 🧠 Handlers
+  const handleEdit = () => {
+    setLocalAttendance(attendanceData);
+    setIsEditing(true);
+  };
+
   const handleAttendanceChange = (studentId, isChecked) => {
     if (!canEdit || !isEditing) return;
-    setAttendanceData((prevData) =>
-      prevData.map((record) =>
-        record.student === studentId
-          ? { ...record, isPresent: isChecked }
-          : record,
+
+    setLocalAttendance((prev) =>
+      prev.map((r) =>
+        r.student === studentId ? { ...r, isPresent: isChecked } : r,
       ),
     );
   };
 
   const handleSelectAll = (isChecked) => {
     if (!canEdit || !isEditing) return;
-    setAttendanceData((prevData) =>
-      prevData.map((record) => ({ ...record, isPresent: isChecked })),
+
+    setLocalAttendance((prev) =>
+      prev.map((r) => ({ ...r, isPresent: isChecked })),
     );
   };
 
-  const handleSaveAttendance = () => {
+  const handleSave = () => {
     if (!attendanceData.length) {
-      alert("No students to mark attendance for");
+      toast.warning("No students found");
       return;
     }
 
     setIsSubmitting(true);
 
-    const formattedAttendance = attendanceData.map((record) => ({
-      student: record.student,
-      isPresent: record.isPresent,
-    }));
-
-    attendanceMutation.mutate(formattedAttendance);
+    mutation.mutate(
+      attendanceData.map((r) => ({
+        student: r.student,
+        isPresent: r.isPresent,
+      })),
+    );
   };
 
-  const handleEdit = () => {
-    if (attendanceData.length > 0) {
-      setIsEditing(true);
-    } else if (classData?.data?.students) {
-      const editableAttendance = classData.data.students.map((student) => ({
-        student: student._id,
-        isPresent: false,
-        studentName: student.name,
-        studentEmail: student.email,
-      }));
-      setAttendanceData(editableAttendance);
-      setIsEditing(true);
-    }
-  };
-
-  const presentCount = attendanceData.filter(
-    (record) => record.isPresent,
-  ).length;
-
+  // 📊 Stats
+  const presentCount = attendanceData.filter((r) => r.isPresent).length;
   const totalStudents = attendanceData.length;
 
-  const attendancePercentage =
-    totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(1) : 0;
-
+  // 🧱 UI states
   if (courseLoading || classLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-zinc-500">Loading course and student data...</div>
-      </div>
-    );
+    return <div className="text-center mt-10">Loading...</div>;
   }
 
   if (classError) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <p className="text-red-700">Error loading class data</p>
-          <p className="text-red-600 mt-2">Please try again later</p>
-        </div>
-      </div>
-    );
+    return <Alert variant="Danger">Error loading class</Alert>;
   }
 
-  if (!classData?.data?.students || classData.data.students.length === 0) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
-          <p className="text-yellow-700">No students found in this class</p>
-        </div>
-      </div>
-    );
+  if (!classData?.data?.students?.length) {
+    return <Alert variant="warning">No students found</Alert>;
   }
 
   return (
     <Container>
       <div className="flex items-center gap-1 mb-4">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/teacher"
-        >
-          Teacher
-        </Link>
-
+        <Link to="/teacher">Teacher</Link>
         <LuChevronRight />
-
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/teacher/manage-attendance"
-        >
-          Attendance
-        </Link>
-
+        <Link to="/teacher/manage-attendance">Attendance</Link>
         <LuChevronRight />
-
-        <span className="text-zinc-900">{courseData?.data?.name}</span>
+        <span>{courseData?.data?.name}</span>
       </div>
 
-      <div className="mb-8">
-        <Heading className="mb-1">Mark Attendance</Heading>
-        <Paragraph>
-          {classData?.data?.name}, {courseData?.data?.name}
-        </Paragraph>
-      </div>
+      <Heading>Mark Attendance</Heading>
 
       <AlertStatus
         existingAttendanceId={existingAttendanceId}
@@ -269,57 +197,41 @@ export const Attendance = () => {
         selectedDate={selectedDate}
       />
 
-      <div className="p-6 mb-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <label className="font-medium text-zinc-700 ">Select Date:</label>
-            <Input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              max={format(new Date(), "yyyy-MM-dd")}
-            />
-          </div>
+      {/* Controls */}
+      <div className="flex justify-between mt-4">
+        <Input
+          type="date"
+          value={selectedDate}
+          onChange={(e) => {
+            setSelectedDate(e.target.value);
+            setIsEditing(false);
+            setLocalAttendance([]);
+          }}
+          max={format(new Date(), "yyyy-MM-dd")}
+        />
 
-          <div className="flex items-center gap-4">
-            <div className=" text-zinc-600">
-              <span className="font-medium">Present: </span> {presentCount}/
-              {totalStudents}
-              <span className="ml-2 text-green-500">
-                ({attendancePercentage}%)
-              </span>
-            </div>
+        <div>
+          {canEdit && !isEditing && (
+            <Button onClick={handleEdit}>
+              {existingAttendanceId ? "Edit" : "Take Attendance"}
+            </Button>
+          )}
 
-            {canEdit && !isEditing && existingAttendanceId && (
-              <Button onClick={handleEdit}>Edit Attendance</Button>
-            )}
-
-            {canEdit && isEditing && (
-              <Button onClick={handleSaveAttendance} disabled={isSubmitting}>
-                {isSubmitting
-                  ? "Saving..."
-                  : existingAttendanceId
-                    ? "Update Attendance"
-                    : "Save Attendance"}
-              </Button>
-            )}
-          </div>
+          {canEdit && isEditing && (
+            <Button onClick={handleSave} disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save"}
+            </Button>
+          )}
         </div>
-
-        {saveSuccess && (
-          <div className="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-md">
-            Attendance {existingAttendanceId ? "updated" : "saved"}{" "}
-            successfully!
-          </div>
-        )}
       </div>
 
+      {/* Table */}
       <Table
         canEdit={canEdit}
+        isEditing={isEditing}
         attendanceData={attendanceData}
         handleAttendanceChange={handleAttendanceChange}
         handleSelectAll={handleSelectAll}
-        isEditing={isEditing}
         presentCount={presentCount}
         totalStudents={totalStudents}
       />
