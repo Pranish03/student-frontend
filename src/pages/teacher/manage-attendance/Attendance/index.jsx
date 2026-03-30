@@ -41,7 +41,6 @@ export const Attendance = () => {
   const isTodayDate = isTodayLocal(selectedDate);
   const canEdit = isTodayDate && !isFutureDate;
 
-  // 📦 Queries
   const { data: courseData, isLoading: courseLoading } = useCourse(courseId);
   const classId = courseData?.data?.class;
 
@@ -62,7 +61,6 @@ export const Attendance = () => {
     retry: false,
   });
 
-  // 🧠 Derived Data (NO STATE)
   const existingRecord = attendanceQueryData?.data?.[0] || null;
   const existingAttendanceId = existingRecord?._id || null;
 
@@ -83,14 +81,12 @@ export const Attendance = () => {
       studentEmail: student.email,
     })) || [];
 
-  // 🔥 FINAL SOURCE OF TRUTH
   const attendanceData = isEditing
     ? localAttendance
     : existingAttendanceId
       ? serverAttendance
       : initialAttendance;
 
-  // 🚀 Mutation
   const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingAttendanceId) {
@@ -122,7 +118,6 @@ export const Attendance = () => {
     },
   });
 
-  // 🧠 Handlers
   const handleEdit = () => {
     setLocalAttendance(attendanceData);
     setIsEditing(true);
@@ -162,11 +157,9 @@ export const Attendance = () => {
     );
   };
 
-  // 📊 Stats
   const presentCount = attendanceData.filter((r) => r.isPresent).length;
   const totalStudents = attendanceData.length;
 
-  // 🧱 UI states
   if (courseLoading || classLoading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
