@@ -68,11 +68,7 @@ export const EditNoteDialog = ({ close, note, courseId }) => {
       desc="Enter new information below to update the note."
       close={close}
     >
-      <form
-        onSubmit={handleSubmit(onSubmit, (errors) =>
-          console.log("Validation errors:", errors),
-        )}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         {mutation?.isError && (
           <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-600 text-base">

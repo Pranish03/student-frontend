@@ -36,7 +36,6 @@ export const Notes = () => {
   });
 
   const handleActionClick = (event, id) => {
-    console.log(id);
     event.stopPropagation();
 
     const rect = event.currentTarget.getBoundingClientRect();
