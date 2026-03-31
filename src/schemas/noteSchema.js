@@ -17,16 +17,7 @@ export const createResourceSchema = z.object({
   deadline: z.coerce.date().optional(),
 });
 
-export const editResourceSchema = z
-  .object({
-    course: objectID,
-    type: z.enum(["note", "assignment"]),
-    title: z.string(),
-    description: z.string(),
-    file: z.string(),
-    deadline: z.coerce.date(),
-  })
-  .partial();
+export const editResourceSchema = createResourceSchema.partial();
 
 export const resourceParamsSchema = z.object({
   id: objectID,

@@ -15,6 +15,7 @@ import { Button } from "../../../../components/Button";
 import { useState } from "react";
 import { AddNoteDialog } from "./AddNoteDialog";
 import { DeleteNoteDialog } from "./DeleteNoteDailog";
+import { EditNoteDialog } from "./EditNoteDailog";
 
 export const Notes = () => {
   const [selectedNote, setSelectedNote] = useState(null);
@@ -50,6 +51,12 @@ export const Notes = () => {
 
   const handleCloseDropdown = () => {
     setSelectedNote(null);
+  };
+
+  const handleEditClick = () => {
+    setEditingNote(selectedNote);
+    handleCloseDropdown();
+    setShowEditDialog(true);
   };
 
   const handleDeleteClick = () => {
@@ -175,7 +182,7 @@ export const Notes = () => {
               <Button
                 variant="ghost"
                 className="text-left text-zinc-900"
-                // onClick={handleEditClick}
+                onClick={handleEditClick}
               >
                 Edit Note
               </Button>
@@ -196,6 +203,19 @@ export const Notes = () => {
           <AddNoteDialog
             close={() => setShowAddDialog(false)}
             courseId={courseId}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showEditDialog && editingNote && (
+          <EditNoteDialog
+            note={editingNote}
+            courseId={courseId}
+            close={() => {
+              setShowEditDialog(false);
+              setEditingNote(null);
+            }}
           />
         )}
       </AnimatePresence>

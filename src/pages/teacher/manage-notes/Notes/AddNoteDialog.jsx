@@ -52,8 +52,8 @@ export const AddNoteDialog = ({ close, courseId }) => {
 
   return (
     <Dialog
-      heading="Add Admin"
-      desc="Enter admin information below to create a new admin."
+      heading="Add Note"
+      desc="Enter note information below to create a new note."
       close={close}
     >
       <form
