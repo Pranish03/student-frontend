@@ -8,3 +8,7 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.filepond--credits {
+  display: none;
+}
