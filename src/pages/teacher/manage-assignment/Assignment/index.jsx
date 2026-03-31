@@ -13,26 +13,26 @@ import { Heading } from "../../../../components/ui/Heading";
 import { Paragraph } from "../../../../components/ui/Paragraph";
 import { Button } from "../../../../components/Button";
 import { useState } from "react";
-import { AddNoteDialog } from "./AddNoteDialog";
-import { DeleteNoteDialog } from "./DeleteNoteDailog";
-import { EditNoteDialog } from "./EditNoteDailog";
+import { AddAssignmentDialog } from "./AddAssignmentDialog";
+import { DeleteAssignmentDialog } from "./DeleteAssignmentDailog";
+import { EditAssignmentDialog } from "./EditAssignmentDailog";
 
-export const Notes = () => {
-  const [selectedNote, setSelectedNote] = useState(null);
+export const Assignment = () => {
+  const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const [editingNote, setEditingNote] = useState(null);
-  const [deletingNote, setDeletingNote] = useState(null);
+  const [editingAssignment, setEditingAssignment] = useState(null);
+  const [deletingAssignment, setDeletingAssignment] = useState(null);
 
   const { id: courseId } = useParams();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["notes", courseId],
-    queryFn: () => fetchCourseResources({ courseId, type: "note" }),
+    queryKey: ["assignment", courseId],
+    queryFn: () => fetchCourseResources({ courseId, type: "assignment" }),
   });
 
   const handleActionClick = (event, id) => {
@@ -45,21 +45,21 @@ export const Notes = () => {
       left: rect.left + window.scrollX - 125 + rect.width,
     });
 
-    setSelectedNote((prevId) => (prevId === id ? null : id));
+    setSelectedAssignment((prevId) => (prevId === id ? null : id));
   };
 
   const handleCloseDropdown = () => {
-    setSelectedNote(null);
+    setSelectedAssignment(null);
   };
 
   const handleEditClick = () => {
-    setEditingNote(selectedNote);
+    setEditingAssignment(selectedAssignment);
     handleCloseDropdown();
     setShowEditDialog(true);
   };
 
   const handleDeleteClick = () => {
-    setDeletingNote(selectedNote);
+    setDeletingAssignment(selectedAssignment);
     handleCloseDropdown();
     setShowDeleteDialog(true);
   };
@@ -103,6 +103,8 @@ export const Notes = () => {
     },
   ];
 
+  const rows = data ? data?.resources : [];
+
   return (
     <>
       <Container>
@@ -118,23 +120,23 @@ export const Notes = () => {
 
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
-            to="/teacher/manage-notes"
+            to="/teacher/manage-assignment"
           >
-            Notes
+            Assignment
           </Link>
 
           <LuChevronRight />
 
           <span className="text-zinc-900">
-            {data?.resources[0]?.course?.name}
+            {data?.resources[0]?.course?.name || ""}
           </span>
         </div>
 
         <div className="mb-8">
           <Heading className="text-3xl font-bold text-zinc-900 mb-1">
-            Notes
+            Assignments
           </Heading>
-          <Paragraph>Total {data?.data?.length || 0} Notes</Paragraph>
+          <Paragraph>Total {data?.data?.length || 0} Assignments</Paragraph>
         </div>
 
         <div className="float-end">
@@ -143,12 +145,12 @@ export const Notes = () => {
             onClick={() => setShowAddDialog(true)}
           >
             <IoAddCircle size={22} />
-            Add Note
+            Add Assignment
           </Button>
         </div>
 
         <Table
-          data={data?.resources}
+          data={rows}
           columns={columns}
           globalFilterFn={filterSpecificColumns("title")}
           isLoading={isLoading}
@@ -156,7 +158,7 @@ export const Notes = () => {
       </Container>
 
       <AnimatePresence>
-        {selectedNote && (
+        {selectedAssignment && (
           <>
             <motion.div
               className="fixed inset-0 z-40"
@@ -185,14 +187,14 @@ export const Notes = () => {
                 className="text-left text-zinc-900"
                 onClick={handleEditClick}
               >
-                Edit Note
+                Edit Assignment
               </Button>
               <Button
                 variant="ghost-danger"
                 className="text-left"
                 onClick={handleDeleteClick}
               >
-                Delete Note
+                Delete Assignment
               </Button>
             </motion.div>
           </>
@@ -201,7 +203,7 @@ export const Notes = () => {
 
       <AnimatePresence>
         {showAddDialog && (
-          <AddNoteDialog
+          <AddAssignmentDialog
             close={() => setShowAddDialog(false)}
             courseId={courseId}
           />
@@ -209,26 +211,25 @@ export const Notes = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showEditDialog && editingNote && (
-          <EditNoteDialog
-            note={editingNote}
+        {showEditDialog && editingAssignment && (
+          <EditAssignmentDialog
+            assignment={editingAssignment}
             courseId={courseId}
             close={() => {
               setShowEditDialog(false);
-              setEditingNote(null);
+              setEditingAssignment(null);
             }}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showDeleteDialog && deletingNote && (
-          <DeleteNoteDialog
-            courseId={courseId}
-            note={deletingNote}
+        {showDeleteDialog && deletingAssignment && (
+          <DeleteAssignmentDialog
+            assignment={deletingAssignment}
             close={() => {
               setShowDeleteDialog(false);
-              setDeletingNote(null);
+              setDeletingAssignment(null);
             }}
           />
         )}

@@ -7,7 +7,7 @@ import { Input } from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { ImSpinner8 } from "react-icons/im";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { editNote } from "../../../../api/notes";
+import { editResource } from "../../../../api/resources";
 import { FileInput } from "../../../../components/form/FileInput";
 import { useEffect } from "react";
 
@@ -44,7 +44,7 @@ export const EditNoteDialog = ({ close, note, courseId }) => {
   }, [note, courseId, reset]);
 
   const mutation = useMutation({
-    mutationFn: editNote,
+    mutationFn: editResource,
     onSuccess: (data) => {
       toast.success(data?.message);
 

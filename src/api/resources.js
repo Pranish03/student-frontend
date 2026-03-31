@@ -1,19 +1,26 @@
 import { axios } from "../lib/axios";
 
-export const fetchCourseNotes = async (courseId) => {
-  const { data } = await axios.get(`/resources/course/${courseId}`);
+export const fetchCourseResources = async ({ courseId, type }) => {
+  const { data } = await axios.get(
+    `/resources/course/${courseId}?type=${type}`,
+  );
   return data;
 };
 
-export const createNote = async (data) => {
+export const createResource = async (data) => {
   const formData = new FormData();
 
   formData.append("course", data.course);
   formData.append("type", data.type);
   formData.append("title", data.title);
   if (data.description) formData.append("description", data.description);
-  if (data.file && data.file[0]) {
-    formData.append("file", data.file[0]);
+  if (data.file && data.file[0]) formData.append("file", data.file[0]);
+  if (data.deadline) {
+    let deadlineValue = data.deadline;
+    if (deadlineValue instanceof Date && !isNaN(deadlineValue)) {
+      deadlineValue = deadlineValue.toISOString();
+    }
+    formData.append("deadline", deadlineValue);
   }
 
   try {
@@ -29,7 +36,7 @@ export const createNote = async (data) => {
   }
 };
 
-export const editNote = async ({ id, data }) => {
+export const editResource = async ({ id, data }) => {
   const hasFile = data.file && data.file[0];
 
   if (hasFile) {
@@ -39,7 +46,16 @@ export const editNote = async ({ id, data }) => {
     formData.append("type", data.type);
     formData.append("title", data.title);
     if (data.description) formData.append("description", data.description);
-    formData.append("file", data.file[0]);
+    if (hasFile) formData.append("file", data.file[0]);
+    if (data.deadline) {
+      let deadlineValue = data.deadline;
+
+      if (deadlineValue instanceof Date && !isNaN(deadlineValue)) {
+        deadlineValue = deadlineValue.toISOString();
+      }
+
+      formData.append("deadline", deadlineValue);
+    }
 
     const res = await axios.patch(`/resources/${id}`, formData, {
       headers: {
@@ -49,12 +65,17 @@ export const editNote = async ({ id, data }) => {
 
     return res?.data;
   } else {
-    const res = await axios.patch(`/resources/${id}`, data);
+    const jsonData = { ...data };
+    if (jsonData.deadline instanceof Date && !isNaN(jsonData.deadline)) {
+      jsonData.deadline = jsonData.deadline.toISOString();
+    }
+
+    const res = await axios.patch(`/resources/${id}`, jsonData);
     return res?.data;
   }
 };
 
-export const deleteNote = async (id) => {
+export const deleteResource = async (id) => {
   const res = await axios.delete(`/resources/${id}`);
   return res?.data;
 };

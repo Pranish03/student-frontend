@@ -1,229 +1,124 @@
-/* eslint-disable no-unused-vars */
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
-import { DateTime } from "luxon";
-import { LuChevronRight, LuEllipsis } from "react-icons/lu";
-import { IoAddCircle } from "react-icons/io5";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAllCourses } from "../../../api/manageCourses";
+import { useAuth } from "../../../hooks/useAuth";
 import { Button } from "../../../components/Button";
-import { Table } from "../../../components/table/Table";
-import { AddAssignmentDialog } from "./AddAssignmentDialog";
-import { EditAssignmentDialog } from "./EditAssignmentDialog";
-import { DeleteAssignmentDialog } from "./DeleteAssignmentDialog";
 import { Container } from "../../../components/ui/Container";
+import { Alert } from "../../../components/ui/Alert";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
-
+import { Link } from "react-router-dom";
+import { LuChevronRight } from "react-icons/lu";
 
 export const ManageAssignment = () => {
-  const [selectedAssignment, setSelectedAssignment] = useState(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const { data, isLoading } = useQuery({
+    queryKey: ["courses"],
+    queryFn: fetchAllCourses,
+  });
 
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const courseData = data?.data;
+  const { user } = useAuth();
 
-  const [editingAssignment, setEditingAssignment] = useState(null);
-  const [deletingAssignment, setDeletingAssignment] = useState(null);
+  const filteredCourse =
+    user?.course && courseData
+      ? courseData.filter((course) => user.course.includes(course._id))
+      : [];
 
-  const data = {
-  data: [
-    {
-      _id: "1",
-      title: "React Assignment",
-      file: "/react-assignment.pdf",
-      deadline: "2026-03-25",
-      createdAt: "2026-03-10T10:00:00Z",
-      updatedAt: "2026-03-11T10:00:00Z",
-    },
-    {
-      _id: "2",
-      title: "OS Assignment",
-      file: "/os-assignment.pdf",
-      deadline: "2026-03-30",
-      createdAt: "2026-02-10T10:00:00Z",
-      updatedAt: "2026-02-11T10:00:00Z",
-    },
-  ],
-};
-
-  const isLoading = false;
-
-  const handleActionClick = (event, assignment) => {
-    event.stopPropagation();
-
-    const rect = event.currentTarget.getBoundingClientRect();
-
-    setDropdownPosition({
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX,
-    });
-
-    setSelectedAssignment((prev) =>
-      prev === assignment ? null : assignment
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-gray-500">Loading courses...</div>
+      </div>
     );
-  };
+  }
 
-  const handleCloseDropdown = () => setSelectedAssignment(null);
-
-  const handleEditClick = () => {
-    setEditingAssignment(selectedAssignment);
-    handleCloseDropdown();
-    setShowEditDialog(true);
-  };
-
-  const handleDeleteClick = () => {
-    setDeletingAssignment(selectedAssignment);
-    handleCloseDropdown();
-    setShowDeleteDialog(true);
-  };
-
-  const columns = [
-    {
-      header: "SN",
-      cell: (info) => info.row.index + 1,
-    },
-
-    {
-      header: "Title",
-      accessorKey: "title",
-      cell: (info) => (
-        <a
-          href={info.row.original.file}
-          target="_blank"
-          className="text-blue-600 underline"
-        >
-          {info.getValue()}
-        </a>
-      ),
-    },
-    
-    {
-      header: "Created At",
-      accessorKey: "createdAt",
-      cell: (info) => DateTime.fromISO(info.getValue()).toRelative(),
-    },
-    
-    {
-      header: "Updated At",
-      accessorKey: "updatedAt",
-      cell: (info) => DateTime.fromISO(info.getValue()).toRelative(),
-    },
-    {
-  header: "Deadline",
-  accessorKey: "deadline",
-  cell: (info) => DateTime.fromISO(info.getValue()).toFormat("dd LLL yyyy"),
-},
-    
-
-    {
-      header: "Action",
-      cell: (info) => (
-        <button
-          onClick={(e) => handleActionClick(e, info.row.original)}
-          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer"
-        >
-          <LuEllipsis size={18} />
-        </button>
-      ),
-    },
-  ];
+  console.log(filteredCourse);
 
   return (
-    <>
-      <Container>
-        <div className="flex items-center gap-2 mb-4">
-          <Link
-            className="text-zinc-500 hover:underline hover:text-zinc-900"
-            to="/teacher"
-          >
-            Teacher
-          </Link>
+    <Container>
+      <div className="flex items-center gap-1 mb-4">
+        <Link
+          className="text-zinc-500 hover:underline hover:text-zinc-900"
+          to="/teacher"
+        >
+          Teacher
+        </Link>
 
-          <LuChevronRight />
+        <LuChevronRight />
 
-          <span className="text-zinc-900">Assignments</span>
-        </div>
+        <span className="text-zinc-900">Assignment</span>
+      </div>
 
-        <div className="mb-8">
-          <Heading className="mb-1">
-            Assignments
-          </Heading>
+      <div className="mb-8">
+        <Heading className="mb-1">Manage Assignment</Heading>
+        <Paragraph>Total {filteredCourse.length || 0} Courses</Paragraph>
+      </div>
 
-          <Paragraph>
-            {data?.data?.length || 0} total assignments
-          </Paragraph>
-        </div>
-
-        <div className="float-end">
-          <Button
-            className="flex items-center gap-2"
-            onClick={() => setShowAddDialog(true)}
-          >
-            <IoAddCircle size={22} />
-            Add New Assignment
-          </Button>
-        </div>
-
-        <Table data={data?.data} columns={columns} isLoading={isLoading} />
-      </Container>
-
-      <AnimatePresence>
-        {selectedAssignment && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-40"
-              onClick={handleCloseDropdown}
-            />
-
-            <motion.div
-              className="fixed z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
-              style={{
-                top: dropdownPosition.top,
-                left: dropdownPosition.left,
-              }}
+      {filteredCourse.length === 0 ? (
+        <Alert variant="warning">
+          You are not assigned to any course at the moment.
+        </Alert>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCourse.map((course) => (
+            <div
+              key={course._id}
+              className="bg-white rounded-[10px] overflow-hidden border border-zinc-300"
             >
-              <Button variant="ghost" onClick={handleEditClick}>
-                Edit
-              </Button>
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-semibold text-zinc-800">
+                    {course.name || course.title}
+                  </h3>
+                  {course.code && (
+                    <span className="px-2 py-1 bg-green-200 text-green-600 text-sm font-medium rounded-[10px]">
+                      {course.code}
+                    </span>
+                  )}
+                </div>
 
-              <Button variant="ghost-danger" onClick={handleDeleteClick}>
-                Delete
-              </Button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                <div className="space-y-2 mb-4">
+                  <p className="text-md text-zinc-500">
+                    <span className="font-medium text-zinc-700">
+                      Department:{" "}
+                    </span>
+                    {course.class.department ? (
+                      course.class.department
+                    ) : (
+                      <i>Not assigned</i>
+                    )}
+                  </p>
 
-      <AnimatePresence>
-        {showAddDialog && (
-          <AddAssignmentDialog close={() => setShowAddDialog(false)} />
-        )}
-      </AnimatePresence>
+                  <p className="text-md text-zinc-500">
+                    <span className="font-medium text-zinc-700">Class: </span>
+                    {course.class.name ? (
+                      course.class.name
+                    ) : (
+                      <i>Not assigned</i>
+                    )}
+                  </p>
 
-      <AnimatePresence>
-        {showEditDialog && editingAssignment && (
-          <EditAssignmentDialog
-            assignment={editingAssignment}
-            close={() => {
-              setShowEditDialog(false);
-              setEditingAssignment(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
+                  <p className="text-md text-zinc-500">
+                    <span className="font-medium text-zinc-700">
+                      Academic Year:{" "}
+                    </span>
+                    {course.class.academicYear ? (
+                      course.class.academicYear
+                    ) : (
+                      <i>Not assigned</i>
+                    )}
+                  </p>
+                </div>
 
-      <AnimatePresence>
-        {showDeleteDialog && deletingAssignment && (
-          <DeleteAssignmentDialog
-            assignment={deletingAssignment}
-            close={() => {
-              setShowDeleteDialog(false);
-              setDeletingAssignment(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
-    </>
+                <Link to={`/teacher/manage-assignment/${course._id}`}>
+                  <Button className="w-full">
+                    Upload or Browse Assignment
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Container>
   );
 };

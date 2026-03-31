@@ -5,7 +5,7 @@ import { deleteResource } from "../../../../api/resources";
 import { toast } from "sonner";
 import { ImSpinner8 } from "react-icons/im";
 
-export const DeleteNoteDialog = ({ courseId, note, close }) => {
+export const DeleteAssignmentDialog = ({ assignment, close }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -13,18 +13,18 @@ export const DeleteNoteDialog = ({ courseId, note, close }) => {
     onSuccess: (data) => {
       toast.success(data?.message || "Note deleted successfully");
 
-      queryClient.invalidateQueries({ queryKey: ["notes", courseId] });
+      queryClient.invalidateQueries();
 
       close();
     },
   });
 
-  const handleDelete = () => mutation.mutate(note?._id);
+  const handleDelete = () => mutation.mutate(assignment?._id);
 
   return (
     <Dialog
-      heading="Delete Note"
-      desc="Are you sure you want to delete this note?"
+      heading="Delete Assignment"
+      desc="Are you sure you want to delete this assignment?"
       close={close}
     >
       {mutation?.isError && (
@@ -59,7 +59,7 @@ export const DeleteNoteDialog = ({ courseId, note, close }) => {
               <span>Delete...</span>
             </>
           ) : (
-            "Delete Note"
+            "Delete Assignment"
           )}
         </Button>
       </div>

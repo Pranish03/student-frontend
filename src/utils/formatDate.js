@@ -19,3 +19,21 @@ export const isFutureDateLocal = (dateStr) => {
   today.setHours(0, 0, 0, 0);
   return d > today;
 };
+
+export const formatDateForInput = (date) => {
+  if (!date) return "";
+
+  if (typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
+  }
+
+  const d = new Date(date);
+
+  if (isNaN(d.getTime())) return "";
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};

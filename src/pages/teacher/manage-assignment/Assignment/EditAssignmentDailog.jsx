@@ -1,16 +1,18 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createResourceSchema } from "../../../../schemas/noteSchema";
+import { editResourceSchema } from "../../../../schemas/noteSchema";
 import { toast } from "sonner";
 import { Dialog } from "../../../../components/Dialog";
 import { Input } from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { ImSpinner8 } from "react-icons/im";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createResource } from "../../../../api/resources";
+import { editResource } from "../../../../api/resources";
 import { FileInput } from "../../../../components/form/FileInput";
+import { useEffect } from "react";
+import { formatDateForInput } from "../../../../utils/formatDate";
 
-export const AddNoteDialog = ({ close, courseId }) => {
+export const EditAssignmentDialog = ({ close, assignment, courseId }) => {
   const queryClient = useQueryClient();
 
   const {
@@ -21,21 +23,34 @@ export const AddNoteDialog = ({ close, courseId }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      course: courseId,
-      type: "note",
+      course: "",
+      type: "",
       title: "",
       description: "",
       file: null,
     },
-    resolver: zodResolver(createResourceSchema),
+    resolver: zodResolver(editResourceSchema),
   });
 
+  useEffect(() => {
+    if (assignment) {
+      reset({
+        course: courseId,
+        type: "assignment",
+        title: assignment?.title || "",
+        deadline: formatDateForInput(assignment?.deadline) || null,
+        description: assignment?.description || "",
+        file: assignment?.file || null,
+      });
+    }
+  }, [assignment, courseId, reset]);
+
   const mutation = useMutation({
-    mutationFn: createResource,
+    mutationFn: editResource,
     onSuccess: (data) => {
       toast.success(data?.message);
 
-      queryClient.invalidateQueries({ queryKey: ["notes", courseId] });
+      queryClient.invalidateQueries({ queryKey: ["assignment", courseId] });
 
       close();
       reset();
@@ -43,16 +58,16 @@ export const AddNoteDialog = ({ close, courseId }) => {
   });
 
   const onSubmit = (data) => {
-    if (data.file && !Array.isArray(data.file)) {
+    if (data?.file && !Array.isArray(data.file)) {
       data.file = [data.file];
     }
-    mutation.mutate(data);
+    mutation.mutate({ id: assignment?._id, data });
   };
 
   return (
     <Dialog
-      heading="Add Note"
-      desc="Enter note information below to create a new note."
+      heading="Edit Assignment"
+      desc="Enter new information below to update the assignment."
       close={close}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -78,7 +93,7 @@ export const AddNoteDialog = ({ close, courseId }) => {
             className="w-full"
             type="text"
             id="title"
-            placeholder="OS Unit 1"
+            placeholder="Assignment 1"
             disabled={mutation?.isPending}
             {...register("title")}
             errors={errors?.title}
@@ -86,6 +101,30 @@ export const AddNoteDialog = ({ close, courseId }) => {
 
           {errors?.title && (
             <p className="text-red-600 mt-2">{errors?.title?.message}</p>
+          )}
+        </div>
+
+        <div className="mb-5">
+          <label
+            htmlFor="deadline"
+            className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.deadline ? "text-red-600" : "text-zinc-900"}`}
+          >
+            Deadline
+            <span className="text-red-600">*</span>
+          </label>
+
+          <Input
+            className="w-full"
+            type="date"
+            id="deadline"
+            placeholder="OS Unit 1"
+            disabled={mutation?.isPending}
+            {...register("deadline")}
+            errors={errors?.deadline}
+          />
+
+          {errors?.deadline && (
+            <p className="text-red-600 mt-2">{errors?.deadline?.message}</p>
           )}
         </div>
 
@@ -124,7 +163,7 @@ export const AddNoteDialog = ({ close, courseId }) => {
             }`}
             id="description"
             rows={4}
-            placeholder="Write your note description..."
+            placeholder="Write your assignment description..."
             disabled={mutation?.isPending}
             {...register("description")}
             errors={errors?.description}
@@ -150,10 +189,10 @@ export const AddNoteDialog = ({ close, courseId }) => {
             {mutation?.isPending ? (
               <>
                 <ImSpinner8 className="animate-spin text-lg" />
-                <span>Adding...</span>
+                <span>Updating...</span>
               </>
             ) : (
-              "Add Note"
+              "Update Assignment"
             )}
           </Button>
         </div>
