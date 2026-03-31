@@ -125,7 +125,9 @@ export const Notes = () => {
 
           <LuChevronRight />
 
-          <span className="text-zinc-900"></span>
+          <span className="text-zinc-900">
+            {data?.resources[0]?.course?.name}
+          </span>
         </div>
 
         <div className="mb-8">

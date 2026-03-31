@@ -38,7 +38,7 @@ export const EditNoteDialog = ({ close, note, courseId }) => {
         type: "note",
         title: note?.title || "",
         description: note?.description || "",
-        file: null,
+        file: note?.file,
       });
     }
   }, [note, courseId, reset]);
@@ -91,7 +91,7 @@ export const EditNoteDialog = ({ close, note, courseId }) => {
             className="w-full"
             type="text"
             id="title"
-            placeholder="John Doe"
+            placeholder="OS Unit 1"
             disabled={mutation?.isPending}
             {...register("title")}
             errors={errors?.title}
@@ -118,6 +118,30 @@ export const EditNoteDialog = ({ close, note, courseId }) => {
             error={errors?.file}
             disabled={mutation?.isPending}
           />
+        </div>
+
+        <div className="mb-5">
+          <label
+            htmlFor="description"
+            className={`block max-w-fit text-sm sm:text-base font-medium mb-2 ${errors.description ? "text-red-600" : "text-zinc-900"}`}
+          >
+            Description
+          </label>
+
+          <textarea
+            className={`w-full border rounded-[10px] text-base py-1.5 px-2.5 focus:outline-3 placeholder:text-zinc-500 text-zinc-900
+            ${
+              errors.description
+                ? "border-red-600 focus:border-red-600 focus:outline-red-200"
+                : "border-zinc-300 focus:border-green-600 focus:outline-green-300"
+            }`}
+            id="description"
+            rows={4}
+            placeholder="Write your note description..."
+            disabled={mutation?.isPending}
+            {...register("description")}
+            errors={errors?.description}
+          ></textarea>
         </div>
 
         <div className="flex items-center gap-4 justify-end">

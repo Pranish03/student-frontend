@@ -9,6 +9,7 @@ export const FileInput = ({ onChange, error, disabled }) => {
   return (
     <div>
       <FilePond
+        className={`border overflow-hidden rounded-[10px] ${error ? "border-red-600" : "border-zinc-300"}`}
         onupdatefiles={(fileItems) => {
           const files = fileItems.map((f) => f.file);
           onChange(files.length > 0 ? files : null);
@@ -24,7 +25,7 @@ export const FileInput = ({ onChange, error, disabled }) => {
         disabled={disabled}
         labelIdle='Drag & Drop your file or <span class="filepond--label-action">Browse</span>'
       />
-      {error && <p className="text-red-600 mt-2">{error.message}</p>}
+      {error && <p className="text-red-600">{error.message}</p>}
     </div>
   );
 };

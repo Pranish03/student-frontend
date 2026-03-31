@@ -8,7 +8,7 @@ export const createResourceSchema = z.object({
   course: objectID,
   type: z.enum(["note", "assignment"]),
   title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
+  description: z.string().optional().nullable(),
   file: z
     .any()
     .refine((val) => val !== null && val !== undefined && val?.length > 0, {
@@ -17,7 +17,27 @@ export const createResourceSchema = z.object({
   deadline: z.coerce.date().optional(),
 });
 
-export const editResourceSchema = createResourceSchema.partial();
+export const editResourceSchema = z
+  .object({
+    course: objectID,
+    type: z.enum(["note", "assignment"]),
+    title: z.string().min(1, "Title is required"),
+    description: z.string().optional().nullable(),
+    file: z
+      .any()
+      .optional()
+      .refine(
+        (val) => {
+          if (!val) return true;
+          return val !== null && val !== undefined && val?.length > 0;
+        },
+        {
+          message: "File is required",
+        },
+      ),
+    deadline: z.coerce.date().optional(),
+  })
+  .partial();
 
 export const resourceParamsSchema = z.object({
   id: objectID,
