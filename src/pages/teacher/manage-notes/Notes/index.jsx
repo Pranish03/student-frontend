@@ -14,6 +14,7 @@ import { Paragraph } from "../../../../components/ui/Paragraph";
 import { Button } from "../../../../components/Button";
 import { useState } from "react";
 import { AddNoteDialog } from "./AddNoteDialog";
+import { DeleteNoteDialog } from "./DeleteNoteDailog";
 
 export const Notes = () => {
   const [selectedNote, setSelectedNote] = useState(null);
@@ -22,6 +23,9 @@ export const Notes = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const [editingNote, setEditingNote] = useState(null);
+  const [deletingNote, setDeletingNote] = useState(null);
 
   const { id: courseId } = useParams();
 
@@ -46,6 +50,12 @@ export const Notes = () => {
 
   const handleCloseDropdown = () => {
     setSelectedNote(null);
+  };
+
+  const handleDeleteClick = () => {
+    setDeletingNote(selectedNote);
+    handleCloseDropdown();
+    setShowDeleteDialog(true);
   };
 
   const columns = [
@@ -172,7 +182,7 @@ export const Notes = () => {
               <Button
                 variant="ghost-danger"
                 className="text-left"
-                // onClick={handleDeleteClick}
+                onClick={handleDeleteClick}
               >
                 Delete Note
               </Button>
@@ -186,6 +196,19 @@ export const Notes = () => {
           <AddNoteDialog
             close={() => setShowAddDialog(false)}
             courseId={courseId}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showDeleteDialog && deletingNote && (
+          <DeleteNoteDialog
+            courseId={courseId}
+            note={deletingNote}
+            close={() => {
+              setShowDeleteDialog(false);
+              setDeletingNote(null);
+            }}
           />
         )}
       </AnimatePresence>
