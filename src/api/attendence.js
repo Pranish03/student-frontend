@@ -1,10 +1,17 @@
 import { axios } from "../lib/axios";
 
 export const fetchAttendanceByCourseAndDate = async (courseId, date) => {
-  const response = await axios.get(`/attendances/${courseId}`, {
-    params: { date },
-  });
-  return response.data;
+  try {
+    const response = await axios.get(`/attendances/${courseId}`, {
+      params: { date },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return { data: [] };
+    }
+    throw error;
+  }
 };
 
 export const createAttendance = async (data) => {
