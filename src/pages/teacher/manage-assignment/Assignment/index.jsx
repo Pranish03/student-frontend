@@ -1,12 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { Link, useParams } from "react-router-dom";
 import { DateTime } from "luxon";
-import { LuChevronRight, LuEllipsis, LuPaperclip } from "react-icons/lu";
+import {
+  LuChevronRight,
+  LuEllipsis,
+  LuPaperclip,
+  LuInbox,
+} from "react-icons/lu";
 import { IoAddCircle } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { filterSpecificColumns } from "../../../../utils/tableFilters";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCourseResources } from "../../../../api/resources";
 import { Table } from "../../../../components/table/Table";
 import { Container } from "../../../../components/ui/Container";
 import { Heading } from "../../../../components/ui/Heading";
@@ -16,6 +20,21 @@ import { useState } from "react";
 import { AddAssignmentDialog } from "./AddAssignmentDialog";
 import { DeleteAssignmentDialog } from "./DeleteAssignmentDailog";
 import { EditAssignmentDialog } from "./EditAssignmentDailog";
+import { axios } from "../../../../lib/axios";
+
+const fetchAssignments = async (courseId) => {
+  try {
+    const { data } = await axios.get(
+      `/resources/course/${courseId}?type=assignment`,
+    );
+    return data;
+  } catch (err) {
+    if (err.response?.status === 404) {
+      return { resources: [] };
+    }
+    throw err;
+  }
+};
 
 export const Assignment = () => {
   const [selectedAssignment, setSelectedAssignment] = useState(null);
@@ -30,27 +49,26 @@ export const Assignment = () => {
 
   const { id: courseId } = useParams();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["assignment", courseId],
-    queryFn: () => fetchCourseResources({ courseId, type: "assignment" }),
+    queryFn: () => fetchAssignments(courseId),
+    retry: false,
+    staleTime: 2 * 60 * 1000,
   });
 
-  const handleActionClick = (event, id) => {
+  const handleActionClick = (event, assignment) => {
     event.stopPropagation();
-
     const rect = event.currentTarget.getBoundingClientRect();
-
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX - 125 + rect.width,
     });
-
-    setSelectedAssignment((prevId) => (prevId === id ? null : id));
+    setSelectedAssignment((prev) =>
+      prev?._id === assignment._id ? null : assignment,
+    );
   };
 
-  const handleCloseDropdown = () => {
-    setSelectedAssignment(null);
-  };
+  const handleCloseDropdown = () => setSelectedAssignment(null);
 
   const handleEditClick = () => {
     setEditingAssignment(selectedAssignment);
@@ -64,6 +82,8 @@ export const Assignment = () => {
     setShowDeleteDialog(true);
   };
 
+  const courseName = data?.resources?.[0]?.course?.name ?? null;
+
   const columns = [
     { header: "SN", cell: (info) => info.row.index + 1 },
     {
@@ -73,12 +93,23 @@ export const Assignment = () => {
         <a
           href={info.row.original.file}
           target="_blank"
-          className="flex items-center gap-2"
+          rel="noreferrer"
+          className="flex items-center gap-2 text-green-700 hover:underline"
         >
-          <LuPaperclip />
+          <LuPaperclip size={14} />
           {info.getValue()}
         </a>
       ),
+    },
+    {
+      header: "Deadline",
+      accessorKey: "deadline",
+      cell: (info) =>
+        info.getValue() ? (
+          DateTime.fromISO(info.getValue()).toFormat("dd LLL yyyy")
+        ) : (
+          <span className="text-zinc-400 italic">No deadline</span>
+        ),
     },
     {
       header: "Created At",
@@ -95,7 +126,7 @@ export const Assignment = () => {
       cell: (info) => (
         <button
           onClick={(e) => handleActionClick(e, info.row.original)}
-          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer relative"
+          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer"
         >
           <LuEllipsis size={18} />
         </button>
@@ -103,7 +134,7 @@ export const Assignment = () => {
     },
   ];
 
-  const rows = data ? data?.resources : [];
+  const rows = data?.resources ?? [];
 
   return (
     <>
@@ -115,33 +146,35 @@ export const Assignment = () => {
           >
             Teacher
           </Link>
-
           <LuChevronRight />
-
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
             to="/teacher/manage-assignment"
           >
             Assignment
           </Link>
-
           <LuChevronRight />
-
           <span className="text-zinc-900">
-            {data?.resources[0]?.course?.name || ""}
+            {isLoading ? (
+              <span className="inline-block h-4 w-24 bg-zinc-200 rounded animate-pulse" />
+            ) : (
+              (courseName ?? courseId)
+            )}
           </span>
         </div>
 
-        <div className="mb-8">
-          <Heading className="text-3xl font-bold text-zinc-900 mb-1">
-            Assignments
-          </Heading>
-          <Paragraph>Total {data?.data?.length || 0} Assignments</Paragraph>
-        </div>
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <Heading className="mb-1">Assignments</Heading>
+            <Paragraph>
+              {isLoading
+                ? "Loading..."
+                : `${rows.length} total assignment${rows.length !== 1 ? "s" : ""}`}
+            </Paragraph>
+          </div>
 
-        <div className="float-end">
           <Button
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 mt-1"
             onClick={() => setShowAddDialog(true)}
           >
             <IoAddCircle size={22} />
@@ -149,12 +182,20 @@ export const Assignment = () => {
           </Button>
         </div>
 
-        <Table
-          data={rows}
-          columns={columns}
-          globalFilterFn={filterSpecificColumns("title")}
-          isLoading={isLoading}
-        />
+        {error ? (
+          <div className="rounded-[10px] border border-red-200 bg-red-50 p-6 text-center">
+            <p className="text-red-600">
+              Failed to load assignments. Please refresh and try again.
+            </p>
+          </div>
+        ) : (
+          <Table
+            data={rows}
+            columns={columns}
+            globalFilterFn={filterSpecificColumns("title")}
+            isLoading={isLoading}
+          />
+        )}
       </Container>
 
       <AnimatePresence>
@@ -170,17 +211,11 @@ export const Assignment = () => {
             />
             <motion.div
               className="fixed z-50 flex flex-col bg-white border border-zinc-300 rounded-[10px] shadow p-1 text-base"
-              style={{
-                top: dropdownPosition.top,
-                left: dropdownPosition.left,
-              }}
+              style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
               initial={{ opacity: 0, scale: 0.95, y: -8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -8 }}
-              transition={{
-                duration: 0.18,
-                ease: "easeOut",
-              }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
             >
               <Button
                 variant="ghost"

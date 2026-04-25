@@ -13,7 +13,6 @@ import { format } from "date-fns";
 import { LuChevronRight } from "react-icons/lu";
 import { Container } from "../../../../components/ui/Container";
 import { Heading } from "../../../../components/ui/Heading";
-import { Paragraph } from "../../../../components/ui/Paragraph";
 import { Input } from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Table } from "./Table";
@@ -24,6 +23,7 @@ import {
 } from "../../../../utils/formatDate";
 import { AlertStatus } from "./AlertStatus";
 import { Alert } from "../../../../components/ui/Alert";
+import { ImSpinner8 } from "react-icons/im";
 
 export const Attendance = () => {
   const { id: courseId } = useParams();
@@ -32,7 +32,6 @@ export const Attendance = () => {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), "yyyy-MM-dd"),
   );
-
   const [isEditing, setIsEditing] = useState(false);
   const [localAttendance, setLocalAttendance] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,14 +53,26 @@ export const Attendance = () => {
     enabled: !!classId,
   });
 
-  const { data: attendanceQueryData } = useQuery({
+  const {
+    data: attendanceQueryData,
+    isLoading: attendanceLoading,
+    error: attendanceError,
+  } = useQuery({
     queryKey: ["attendance", courseId, selectedDate],
     queryFn: () => fetchAttendanceByCourseAndDate(courseId, selectedDate),
-    enabled: !!courseId && !!selectedDate,
+    enabled: !!courseId && !!selectedDate && !!classId,
     retry: false,
+    throwOnError: false,
   });
 
-  const existingRecord = attendanceQueryData?.data?.[0] || null;
+  const isNotFound =
+    attendanceError?.response?.status === 404 ||
+    attendanceQueryData?.data?.length === 0;
+
+  const existingRecord =
+    !isNotFound && attendanceQueryData?.data?.[0]
+      ? attendanceQueryData.data[0]
+      : null;
   const existingAttendanceId = existingRecord?._id || null;
 
   const serverAttendance = existingRecord
@@ -92,9 +103,17 @@ export const Attendance = () => {
       if (existingAttendanceId) {
         return updateAttendance(existingAttendanceId, { attendance: data });
       } else {
+        const localDate = parseLocalDate(selectedDate);
+        const utcDate = new Date(
+          Date.UTC(
+            localDate.getFullYear(),
+            localDate.getMonth(),
+            localDate.getDate(),
+          ),
+        );
         return createAttendance({
           course: courseId,
-          date: parseLocalDate(selectedDate),
+          date: utcDate.toISOString(),
           attendance: data,
         });
       }
@@ -103,29 +122,32 @@ export const Attendance = () => {
       setIsSubmitting(false);
       setIsEditing(false);
       setLocalAttendance([]);
-
       toast.success(
         `Attendance ${existingAttendanceId ? "updated" : "saved"} successfully!`,
       );
-
       queryClient.invalidateQueries({
         queryKey: ["attendance", courseId, selectedDate],
       });
     },
     onError: (err) => {
       setIsSubmitting(false);
-      toast(err.response?.data?.message || "Something went wrong");
+      toast.error(err.response?.data?.message || "Something went wrong");
     },
   });
 
   const handleEdit = () => {
-    setLocalAttendance(attendanceData);
+    const base = existingAttendanceId ? serverAttendance : initialAttendance;
+    setLocalAttendance(base);
     setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setLocalAttendance([]);
   };
 
   const handleAttendanceChange = (studentId, isChecked) => {
     if (!canEdit || !isEditing) return;
-
     setLocalAttendance((prev) =>
       prev.map((r) =>
         r.student === studentId ? { ...r, isPresent: isChecked } : r,
@@ -135,22 +157,19 @@ export const Attendance = () => {
 
   const handleSelectAll = (isChecked) => {
     if (!canEdit || !isEditing) return;
-
     setLocalAttendance((prev) =>
       prev.map((r) => ({ ...r, isPresent: isChecked })),
     );
   };
 
   const handleSave = () => {
-    if (!attendanceData.length) {
+    if (!localAttendance.length) {
       toast.warning("No students found");
       return;
     }
-
     setIsSubmitting(true);
-
     mutation.mutate(
-      attendanceData.map((r) => ({
+      localAttendance.map((r) => ({
         student: r.student,
         isPresent: r.isPresent,
       })),
@@ -161,37 +180,101 @@ export const Attendance = () => {
   const totalStudents = attendanceData.length;
 
   if (courseLoading || classLoading) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-100">
+        <ImSpinner8 size={35} className="animate-spin text-green-600" />
+      </div>
+    );
   }
 
   if (classError) {
-    return <Alert variant="Danger">Error loading class</Alert>;
+    return (
+      <Container>
+        <Alert variant="danger">
+          Error loading class data. Please try again.
+        </Alert>
+      </Container>
+    );
   }
 
   if (!classData?.data?.students?.length) {
-    return <Alert variant="warning">No students found</Alert>;
+    return (
+      <Container>
+        <Alert variant="warning">
+          No students are enrolled in this class yet.
+        </Alert>
+      </Container>
+    );
   }
 
   return (
     <Container>
       <div className="flex items-center gap-1 mb-4">
-        <Link to="/teacher">Teacher</Link>
+        <Link
+          className="text-zinc-500 hover:underline hover:text-zinc-900"
+          to="/teacher"
+        >
+          Teacher
+        </Link>
         <LuChevronRight />
-        <Link to="/teacher/manage-attendance">Attendance</Link>
+        <Link
+          className="text-zinc-500 hover:underline hover:text-zinc-900"
+          to="/teacher/manage-attendance"
+        >
+          Attendance
+        </Link>
         <LuChevronRight />
-        <span>{courseData?.data?.name}</span>
+        <span className="text-zinc-900">{courseData?.data?.name}</span>
       </div>
 
-      <Heading>Mark Attendance</Heading>
+      <div className="mb-6">
+        <Heading>Mark Attendance</Heading>
+        <p className="text-base text-zinc-600 mt-1">
+          {courseData?.data?.name} &mdash; {classData?.data?.name}
+        </p>
+      </div>
 
-      <AlertStatus
-        existingAttendanceId={existingAttendanceId}
-        isEditing={isEditing}
-        selectedDate={selectedDate}
-      />
+      {(existingAttendanceId || isEditing) && (
+        <div className="flex items-center gap-6 mb-4 p-4 bg-zinc-50 border border-zinc-200 rounded-[10px]">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-zinc-900">{totalStudents}</p>
+            <p className="text-sm text-zinc-500">Total</p>
+          </div>
+          <div className="w-px h-10 bg-zinc-200" />
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-600">{presentCount}</p>
+            <p className="text-sm text-zinc-500">Present</p>
+          </div>
+          <div className="w-px h-10 bg-zinc-200" />
+          <div className="text-center">
+            <p className="text-2xl font-bold text-red-500">
+              {totalStudents - presentCount}
+            </p>
+            <p className="text-sm text-zinc-500">Absent</p>
+          </div>
+          {totalStudents > 0 && (
+            <>
+              <div className="w-px h-10 bg-zinc-200" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-zinc-900">
+                  {Math.round((presentCount / totalStudents) * 100)}%
+                </p>
+                <p className="text-sm text-zinc-500">Attendance</p>
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
-      {/* Controls */}
-      <div className="flex justify-between mt-4">
+      <div className="mb-4">
+        <AlertStatus
+          existingAttendanceId={existingAttendanceId}
+          selectedDate={selectedDate}
+          isEditing={isEditing}
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
         <Input
           type="date"
           value={selectedDate}
@@ -201,33 +284,56 @@ export const Attendance = () => {
             setLocalAttendance([]);
           }}
           max={format(new Date(), "yyyy-MM-dd")}
+          className="w-auto"
         />
 
-        <div>
+        <div className="flex items-center gap-2">
           {canEdit && !isEditing && (
             <Button onClick={handleEdit}>
-              {existingAttendanceId ? "Edit" : "Take Attendance"}
+              {existingAttendanceId ? "Edit Attendance" : "Take Attendance"}
             </Button>
           )}
 
           {canEdit && isEditing && (
-            <Button onClick={handleSave} disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save"}
-            </Button>
+            <>
+              <Button
+                variant="secondary"
+                onClick={handleCancel}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isSubmitting}
+                className="flex items-center gap-2"
+              >
+                {isSubmitting && (
+                  <ImSpinner8 className="animate-spin text-lg" />
+                )}
+                {isSubmitting ? "Saving..." : "Save Attendance"}
+              </Button>
+            </>
           )}
         </div>
       </div>
 
-      {/* Table */}
-      <Table
-        canEdit={canEdit}
-        isEditing={isEditing}
-        attendanceData={attendanceData}
-        handleAttendanceChange={handleAttendanceChange}
-        handleSelectAll={handleSelectAll}
-        presentCount={presentCount}
-        totalStudents={totalStudents}
-      />
+      {attendanceLoading ? (
+        <div className="flex flex-col items-center justify-center py-16">
+          <ImSpinner8 size={35} className="animate-spin text-green-600" />
+          <p className="mt-2 text-zinc-600">Loading attendance...</p>
+        </div>
+      ) : (
+        <Table
+          canEdit={canEdit}
+          isEditing={isEditing}
+          attendanceData={attendanceData}
+          handleAttendanceChange={handleAttendanceChange}
+          handleSelectAll={handleSelectAll}
+          presentCount={presentCount}
+          totalStudents={totalStudents}
+        />
+      )}
     </Container>
   );
 };
