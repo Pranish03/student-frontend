@@ -12,14 +12,20 @@ import { Button } from "../../../components/Button";
 import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
-import { AddNoticeDialog } from "../../notices/AddNoticeDialog";
-import { EditNoticeDialog } from "../../notices/EditNoticeDialog";
-import { DeleteNoticeDialog } from "../../notices/DeleteNoticeDialog";
-import { NoticeCard } from "../../notices/NoticeCard";
-import { useAuth } from "../../../hooks/useAuth";
+import { AddNoticeDialog } from "./AddNoticeDialog";
+import { EditNoticeDialog } from "./EditNoticeDialog";
+import { DeleteNoticeDialog } from "./DeleteNoticeDialog";
+import { NoticeCard } from "./NoticeCard";
+
+const FILTERS = [
+  { label: "All", value: "all-filter" },
+  { label: "Everyone", value: "all" },
+  { label: "Students", value: "student" },
+  { label: "Teachers", value: "teacher" },
+];
 
 export const ManageNotices = () => {
-  const { user } = useAuth();
+  const [activeFilter, setActiveFilter] = useState("all-filter");
 
   const [selectedNotice, setSelectedNotice] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
@@ -37,6 +43,11 @@ export const ManageNotices = () => {
   });
 
   const notices = data?.data ?? [];
+
+  const filtered =
+    activeFilter === "all-filter"
+      ? notices
+      : notices.filter((n) => n.targetRole === activeFilter);
 
   const handleActionClick = (e, notice) => {
     e.stopPropagation();
@@ -62,31 +73,29 @@ export const ManageNotices = () => {
     setShowDeleteDialog(true);
   };
 
-  // Can the logged-in teacher act on this notice?
-  const canModify = (notice) =>
-    notice.postedBy?._id === user?._id || notice.postedBy === user?._id;
-
   return (
     <>
       <Container>
+        {/* Breadcrumb */}
         <div className="flex items-center gap-1 mb-4">
           <Link
             className="text-zinc-500 hover:underline hover:text-zinc-900"
-            to="/teacher"
+            to="/admin"
           >
-            Teacher
+            Admin
           </Link>
           <LuChevronRight />
           <span className="text-zinc-900">Notices</span>
         </div>
 
-        <div className="flex items-start justify-between mb-8">
+        {/* Page header */}
+        <div className="flex items-start justify-between mb-6">
           <div>
             <Heading className="mb-1">Notices</Heading>
             <Paragraph>
               {isLoading
                 ? "Loading..."
-                : `${notices.length} notice${notices.length !== 1 ? "s" : ""} visible to you`}
+                : `${notices.length} total notice${notices.length !== 1 ? "s" : ""}`}
             </Paragraph>
           </div>
           <Button
@@ -98,36 +107,57 @@ export const ManageNotices = () => {
           </Button>
         </div>
 
+        {/* Filter tabs */}
+        <div className="bg-zinc-100 p-1 mb-6 rounded-[14px] w-min border border-zinc-200">
+          <nav className="flex gap-1">
+            {FILTERS.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => setActiveFilter(f.value)}
+                className={`px-3 py-1.5 rounded-[10px] text-sm font-medium transition-all cursor-pointer whitespace-nowrap
+                  ${
+                    activeFilter === f.value
+                      ? "text-green-600 bg-white border-zinc-200 shadow"
+                      : "text-zinc-700 hover:text-zinc-800 hover:bg-zinc-50"
+                  }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* Notice list */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <ImSpinner8 size={35} className="animate-spin text-green-600" />
             <p className="mt-3 text-zinc-500">Loading notices...</p>
           </div>
-        ) : notices.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
             <LuInbox size={64} className="text-zinc-300" />
             <p className="text-zinc-500 font-semibold text-lg mt-2">
-              No notices yet
+              No notices found
             </p>
             <p className="text-zinc-400 text-sm">
-              Click 'Add Notice' to broadcast to your class
+              {activeFilter !== "all-filter"
+                ? "Try selecting a different filter"
+                : "Click 'Add Notice' to publish your first one"}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {notices.map((notice) => (
+            {filtered.map((notice) => (
               <NoticeCard
                 key={notice._id}
                 notice={notice}
                 actions={
-                  canModify(notice) ? (
-                    <button
-                      onClick={(e) => handleActionClick(e, notice)}
-                      className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer text-zinc-500"
-                    >
-                      <LuEllipsis size={18} />
-                    </button>
-                  ) : null
+                  <button
+                    onClick={(e) => handleActionClick(e, notice)}
+                    className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer text-zinc-500"
+                  >
+                    <LuEllipsis size={18} />
+                  </button>
                 }
               />
             ))}
@@ -135,6 +165,7 @@ export const ManageNotices = () => {
         )}
       </Container>
 
+      {/* Dropdown menu */}
       <AnimatePresence>
         {selectedNotice && (
           <>
@@ -173,6 +204,7 @@ export const ManageNotices = () => {
         )}
       </AnimatePresence>
 
+      {/* Dialogs */}
       <AnimatePresence>
         {showAddDialog && (
           <AddNoticeDialog close={() => setShowAddDialog(false)} />
