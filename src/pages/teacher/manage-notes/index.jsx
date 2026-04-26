@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllCourses } from "../../../api/manageCourses";
 import { useAuth } from "../../../hooks/useAuth";
 import { Button } from "../../../components/Button";
 import { Container } from "../../../components/ui/Container";
@@ -8,30 +7,49 @@ import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
 import { Link } from "react-router-dom";
 import { LuChevronRight } from "react-icons/lu";
+import { BsFileEarmarkCodeFill } from "react-icons/bs";
+import { axios } from "../../../lib/axios";
+import { ImSpinner8 } from "react-icons/im";
+
+const fetchTeacherCourses = async (teacherId) => {
+  const { data } = await axios.get(`/courses?teacher=${teacherId}`);
+  return data;
+};
 
 export const ManageNotes = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["courses"],
-    queryFn: fetchAllCourses,
-  });
-
-  const courseData = data?.data;
   const { user } = useAuth();
 
-  const filteredCourse =
-    user?.course && courseData
-      ? courseData.filter((course) => user.course.includes(course._id))
-      : [];
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["courses", "teacher", user?._id],
+    queryFn: () => fetchTeacherCourses(user._id),
+    enabled: !!user?._id,
+    staleTime: 2 * 60 * 1000,
+  });
+
+  const courses = data?.data ?? [];
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-gray-500">Loading courses...</div>
-      </div>
+      <Container>
+        <div className="flex items-center justify-center min-h-60">
+          <div className="flex flex-col items-center gap-3">
+            <ImSpinner8 size={32} className="animate-spin text-green-600" />
+            <p className="text-zinc-500 text-sm">Loading your courses...</p>
+          </div>
+        </div>
+      </Container>
     );
   }
 
-  console.log(filteredCourse);
+  if (error) {
+    return (
+      <Container>
+        <Alert variant="danger">
+          Failed to load courses. Please try again.
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -50,73 +68,86 @@ export const ManageNotes = () => {
 
       <div className="mb-8">
         <Heading className="mb-1">Manage Notes</Heading>
-        <Paragraph>Total {filteredCourse.length || 0} Classes</Paragraph>
+        <Paragraph>
+          Total {courses.length} course{courses.length !== 1 ? "s" : ""}
+        </Paragraph>
       </div>
 
-      {filteredCourse.length === 0 ? (
+      {courses.length === 0 ? (
         <Alert variant="warning">
           You are not assigned to any course at the moment.
         </Alert>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourse.map((course) => (
-            <div
-              key={course._id}
-              className="bg-white rounded-[10px] overflow-hidden border border-zinc-300"
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold text-zinc-800">
-                    {course.name || course.title}
-                  </h3>
-                  {course.code && (
-                    <span className="px-2 py-1 bg-green-200 text-green-600 text-sm font-medium rounded-[10px]">
-                      {course.code}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <p className="text-md text-zinc-500">
-                    <span className="font-medium text-zinc-700">
-                      Department:{" "}
-                    </span>
-                    {course.class.department ? (
-                      course.class.department
-                    ) : (
-                      <i>Not assigned</i>
-                    )}
-                  </p>
-
-                  <p className="text-md text-zinc-500">
-                    <span className="font-medium text-zinc-700">Class: </span>
-                    {course.class.name ? (
-                      course.class.name
-                    ) : (
-                      <i>Not assigned</i>
-                    )}
-                  </p>
-
-                  <p className="text-md text-zinc-500">
-                    <span className="font-medium text-zinc-700">
-                      Academic Year:{" "}
-                    </span>
-                    {course.class.academicYear ? (
-                      course.class.academicYear
-                    ) : (
-                      <i>Not assigned</i>
-                    )}
-                  </p>
-                </div>
-
-                <Link to={`/teacher/manage-notes/${course._id}`}>
-                  <Button className="w-full">Upload or Browse Notes</Button>
-                </Link>
-              </div>
-            </div>
+          {courses.map((course) => (
+            <CourseCard key={course._id} course={course} />
           ))}
         </div>
       )}
     </Container>
   );
 };
+
+const CourseCard = ({ course }) => {
+  const { data: resourceData } = useQuery({
+    queryKey: ["notes", course._id],
+    queryFn: () =>
+      axios
+        .get(`/resources/course/${course._id}?type=note`)
+        .then((r) => r.data)
+        .catch((e) => {
+          if (e.response?.status === 404) return { resources: [] };
+          throw e;
+        }),
+    staleTime: 2 * 60 * 1000,
+  });
+
+  const noteCount = resourceData?.resources?.length ?? null;
+
+  return (
+    <div className="bg-white rounded-[10px] overflow-hidden border border-zinc-300 flex flex-col">
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-4">
+          <h3 className="text-xl font-semibold text-zinc-800 leading-tight pr-2">
+            {course.name}
+          </h3>
+          {course.code && (
+            <span className="flex items-center gap-1 text-sm font-medium text-green-700 bg-green-100 px-2.5 py-1 rounded-[10px] whitespace-nowrap shrink-0">
+              <BsFileEarmarkCodeFill size={13} />
+              {course.code}
+            </span>
+          )}
+        </div>
+
+        <div className="space-y-2 mb-4 flex-1">
+          <InfoRow label="Department" value={course.class?.department} />
+          <InfoRow label="Class" value={course.class?.name} />
+          <InfoRow label="Academic Year" value={course.class?.academicYear} />
+        </div>
+
+        <div className="mb-4">
+          {noteCount === null ? (
+            <div className="h-6 w-24 bg-zinc-100 rounded-full animate-pulse" />
+          ) : (
+            <span className="text-sm text-zinc-500">
+              {noteCount === 0
+                ? "No notes yet"
+                : `${noteCount} note${noteCount !== 1 ? "s" : ""}`}
+            </span>
+          )}
+        </div>
+
+        <Link to={`/teacher/manage-notes/${course._id}`}>
+          <Button className="w-full">Upload or Browse Notes</Button>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const InfoRow = ({ label, value }) => (
+  <p className="text-sm text-zinc-500">
+    <span className="font-medium text-zinc-700">{label}: </span>
+    {value ?? <i className="text-zinc-400">Not assigned</i>}
+  </p>
+);
