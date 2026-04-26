@@ -12,10 +12,10 @@ import { Button } from "../../../components/Button";
 import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
-import { AddNoticeDialog } from "./AddNoticeDialog";
-import { EditNoticeDialog } from "./EditNoticeDialog";
-import { DeleteNoticeDialog } from "./DeleteNoticeDialog";
-import { NoticeCard } from "./NoticeCard";
+import { AddNoticeDialog } from "../../notices/AddNoticeDialog";
+import { EditNoticeDialog } from "../../notices/EditNoticeDialog";
+import { DeleteNoticeDialog } from "../../notices/DeleteNoticeDialog";
+import { NoticeCard } from "../../notices/NoticeCard";
 
 const FILTERS = [
   { label: "All", value: "all-filter" },

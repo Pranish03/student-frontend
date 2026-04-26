@@ -10,6 +10,7 @@ import {
   LuGraduationCap,
   LuChartColumnBig,
   LuEllipsisVertical,
+  LuMessageCircleMore,
 } from "react-icons/lu";
 import { useAuth } from "../hooks/useAuth";
 import { CollapsibleMenu } from "../components/CollapsibleMenu";
@@ -81,6 +82,15 @@ export const AdminLayout = () => {
               <NavButton to="/admin/manage-teachers">Teachers</NavButton>
               <NavButton to="/admin/manage-admins">Admins</NavButton>
             </CollapsibleMenu>
+
+            <div>
+              <NavButton to="/admin/manage-notices">
+                <span className="flex items-center gap-3">
+                  <LuMessageCircleMore size={20} />
+                  Notices
+                </span>
+              </NavButton>
+            </div>
           </div>
 
           <div className="relative" ref={buttonRef}>

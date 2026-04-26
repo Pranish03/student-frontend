@@ -8,6 +8,7 @@ import { ManageStudents } from "../pages/admin/manage-students";
 import { ManageTeachers } from "../pages/admin/manage-teachers";
 import { ManageAdmins } from "../pages/admin/manage-admins";
 import { Account } from "../pages/shared/account";
+import { ManageNotices } from "../pages/admin/manage-notices/index.jsx";
 
 export const AdminRoutes = {
   path: "/admin",
@@ -17,6 +18,7 @@ export const AdminRoutes = {
       element: <AdminLayout />,
       children: [
         { element: <AdminDashboard />, index: true },
+        { element: <ManageNotices />, path: "manage-notices" },
         { element: <ManageClasses />, path: "manage-classes" },
         { element: <ManageClass />, path: "manage-classes/:id" },
         { element: <ManageCourses />, path: "manage-courses" },
