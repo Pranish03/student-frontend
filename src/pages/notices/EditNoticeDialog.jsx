@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { ImSpinner8 } from "react-icons/im";
-import { Dialog } from "../../../components/Dialog";
-import { Input } from "../../../components/Input";
-import { Button } from "../../../components/Button";
-import { Label } from "../../../components/form/Label";
-import { Select } from "../../../components/form/Select";
-import { updateNoticeSchema } from "../../../schemas/noticeSchema";
-import { editNotice } from "../../../api/notices";
+import { Dialog } from "../../components/Dialog";
+import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
+import { Label } from "../../components/form/Label";
+import { Select } from "../../components/form/Select";
+import { updateNoticeSchema } from "../../schemas/noticeSchema";
+import { editNotice } from "../../api/notices";
 
 export const EditNoticeDialog = ({ notice, close }) => {
   const queryClient = useQueryClient();

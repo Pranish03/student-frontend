@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { ImSpinner8 } from "react-icons/im";
-import { Dialog } from "../../../components/Dialog";
-import { Button } from "../../../components/Button";
-import { deleteNotice } from "../../../api/notices";
+import { Dialog } from "../../components/Dialog";
+import { Button } from "../../components/Button";
+import { deleteNotice } from "../../api/notices";
 
 export const DeleteNoticeDialog = ({ notice, close }) => {
   const queryClient = useQueryClient();
