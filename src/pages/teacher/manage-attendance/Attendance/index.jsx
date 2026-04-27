@@ -10,20 +10,189 @@ import {
   updateAttendance,
 } from "../../../../api/attendence";
 import { format } from "date-fns";
-import { LuChevronRight } from "react-icons/lu";
+import {
+  LuChevronRight,
+  LuChevronLeft,
+  LuChevronRight as LuChevronRightIcon,
+  LuPencil,
+  LuCheck,
+  LuX,
+  LuCalendar,
+  LuUsers,
+  LuSave,
+} from "react-icons/lu";
+import { ImSpinner8 } from "react-icons/im";
 import { Container } from "../../../../components/ui/Container";
-import { Heading } from "../../../../components/ui/Heading";
-import { Input } from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
-import { Table } from "./Table";
+import { Alert } from "../../../../components/ui/Alert";
 import {
   isFutureDateLocal,
   isTodayLocal,
   parseLocalDate,
 } from "../../../../utils/formatDate";
-import { AlertStatus } from "./AlertStatus";
-import { Alert } from "../../../../components/ui/Alert";
-import { ImSpinner8 } from "react-icons/im";
+
+const stepDate = (dateStr, days) => {
+  const d = parseLocalDate(dateStr);
+  d.setDate(d.getDate() + days);
+  return format(d, "yyyy-MM-dd");
+};
+
+const formatDisplayDate = (dateStr) => {
+  const d = parseLocalDate(dateStr);
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const ProgressRing = ({ percent, size = 72, stroke = 6 }) => {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (percent / 100) * circ;
+  const color =
+    percent >= 75 ? "#16a34a" : percent >= 50 ? "#d97706" : "#dc2626";
+
+  return (
+    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="#e4e4e7"
+        strokeWidth={stroke}
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke={color}
+        strokeWidth={stroke}
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        style={{ transition: "stroke-dashoffset 0.5s ease, stroke 0.3s ease" }}
+      />
+    </svg>
+  );
+};
+
+const StatPill = ({ label, value, color }) => (
+  <div className="flex flex-col items-center justify-center px-5 py-3 rounded-[10px] bg-zinc-50 border border-zinc-200 min-w-20">
+    <span className="text-2xl font-bold" style={{ color }}>
+      {value}
+    </span>
+    <span className="text-xs text-zinc-500 mt-0.5 font-medium">{label}</span>
+  </div>
+);
+
+const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
+  const present = record.isPresent;
+
+  return (
+    <tr
+      className={`
+        border-b border-zinc-100 last:border-0 transition-colors duration-150
+        ${isEditing && canEdit ? "cursor-pointer hover:bg-zinc-50/80" : ""}
+        ${isEditing && present ? "bg-green-50/40" : ""}
+        ${isEditing && !present ? "bg-red-50/20" : ""}
+      `}
+      onClick={() => {
+        if (isEditing && canEdit) onChange(record.student, !present);
+      }}
+    >
+      {/* Checkbox / status indicator */}
+      <td className="px-5 py-3.5 w-14">
+        {isEditing && canEdit ? (
+          <div
+            className={`
+              w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-150
+              ${
+                present
+                  ? "bg-green-600 border-green-600"
+                  : "bg-white border-zinc-300"
+              }
+            `}
+          >
+            {present && (
+              <LuCheck size={13} className="text-white" strokeWidth={3} />
+            )}
+          </div>
+        ) : (
+          <div
+            className={`
+              w-2.5 h-2.5 rounded-full mx-auto
+              ${present ? "bg-green-500" : "bg-red-400"}
+            `}
+          />
+        )}
+      </td>
+
+      <td className="px-4 py-3.5 text-sm text-zinc-400 font-mono w-12">
+        {index + 1}
+      </td>
+
+      <td className="px-4 py-3.5">
+        <span className="font-medium text-zinc-900 text-sm">
+          {record.studentName}
+        </span>
+      </td>
+
+      <td className="px-4 py-3.5 text-sm text-zinc-500 hidden sm:table-cell">
+        {record.studentEmail}
+      </td>
+
+      <td className="px-5 py-3.5 text-right">
+        {isEditing && canEdit ? (
+          <span
+            className={`
+              inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border
+              ${
+                present
+                  ? "bg-green-50 text-green-700 border-green-200"
+                  : "bg-zinc-100 text-zinc-500 border-zinc-200"
+              }
+            `}
+          >
+            {present ? (
+              <>
+                <LuCheck size={11} strokeWidth={3} /> Present
+              </>
+            ) : (
+              <>
+                <LuX size={11} strokeWidth={3} /> Absent
+              </>
+            )}
+          </span>
+        ) : (
+          <span
+            className={`
+              inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border
+              ${
+                present
+                  ? "bg-green-50 text-green-700 border-green-200"
+                  : "bg-red-50 text-red-600 border-red-200"
+              }
+            `}
+          >
+            {present ? (
+              <>
+                <LuCheck size={11} strokeWidth={3} /> Present
+              </>
+            ) : (
+              <>
+                <LuX size={11} strokeWidth={3} /> Absent
+              </>
+            )}
+          </span>
+        )}
+      </td>
+    </tr>
+  );
+};
 
 export const Attendance = () => {
   const { id: courseId } = useParams();
@@ -53,11 +222,7 @@ export const Attendance = () => {
     enabled: !!classId,
   });
 
-  const {
-    data: attendanceQueryData,
-    isLoading: attendanceLoading,
-    error: attendanceError,
-  } = useQuery({
+  const { data: attendanceQueryData, isLoading: attendanceLoading } = useQuery({
     queryKey: ["attendance", courseId, selectedDate],
     queryFn: () => fetchAttendanceByCourseAndDate(courseId, selectedDate),
     enabled: !!courseId && !!selectedDate && !!classId,
@@ -66,14 +231,13 @@ export const Attendance = () => {
   });
 
   const isNotFound =
-    attendanceError?.response?.status === 404 ||
-    attendanceQueryData?.data?.length === 0;
+    !attendanceQueryData?.data || attendanceQueryData?.data?.length === 0;
 
   const existingRecord =
     !isNotFound && attendanceQueryData?.data?.[0]
       ? attendanceQueryData.data[0]
       : null;
-  const existingAttendanceId = existingRecord?._id || null;
+  const existingAttendanceId = existingRecord?._id ?? null;
 
   const serverAttendance = existingRecord
     ? existingRecord.attendance.map((r) => ({
@@ -85,12 +249,12 @@ export const Attendance = () => {
     : [];
 
   const initialAttendance =
-    classData?.data?.students?.map((student) => ({
-      student: student._id,
+    classData?.data?.students?.map((s) => ({
+      student: s._id,
       isPresent: false,
-      studentName: student.name,
-      studentEmail: student.email,
-    })) || [];
+      studentName: s.name,
+      studentEmail: s.email,
+    })) ?? [];
 
   const attendanceData = isEditing
     ? localAttendance
@@ -98,32 +262,36 @@ export const Attendance = () => {
       ? serverAttendance
       : initialAttendance;
 
+  const presentCount = attendanceData.filter((r) => r.isPresent).length;
+  const totalStudents = attendanceData.length;
+  const percent =
+    totalStudents > 0 ? Math.round((presentCount / totalStudents) * 100) : 0;
+
   const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingAttendanceId) {
         return updateAttendance(existingAttendanceId, { attendance: data });
-      } else {
-        const localDate = parseLocalDate(selectedDate);
-        const utcDate = new Date(
-          Date.UTC(
-            localDate.getFullYear(),
-            localDate.getMonth(),
-            localDate.getDate(),
-          ),
-        );
-        return createAttendance({
-          course: courseId,
-          date: utcDate.toISOString(),
-          attendance: data,
-        });
       }
+      const localDate = parseLocalDate(selectedDate);
+      const utcDate = new Date(
+        Date.UTC(
+          localDate.getFullYear(),
+          localDate.getMonth(),
+          localDate.getDate(),
+        ),
+      );
+      return createAttendance({
+        course: courseId,
+        date: utcDate.toISOString(),
+        attendance: data,
+      });
     },
     onSuccess: () => {
       setIsSubmitting(false);
       setIsEditing(false);
       setLocalAttendance([]);
       toast.success(
-        `Attendance ${existingAttendanceId ? "updated" : "saved"} successfully!`,
+        existingAttendanceId ? "Attendance updated!" : "Attendance saved!",
       );
       queryClient.invalidateQueries({
         queryKey: ["attendance", courseId, selectedDate],
@@ -131,13 +299,14 @@ export const Attendance = () => {
     },
     onError: (err) => {
       setIsSubmitting(false);
-      toast.error(err.response?.data?.message || "Something went wrong");
+      toast.error(err.response?.data?.message ?? "Something went wrong");
     },
   });
 
   const handleEdit = () => {
-    const base = existingAttendanceId ? serverAttendance : initialAttendance;
-    setLocalAttendance(base);
+    setLocalAttendance(
+      existingAttendanceId ? serverAttendance : initialAttendance,
+    );
     setIsEditing(true);
   };
 
@@ -155,10 +324,10 @@ export const Attendance = () => {
     );
   };
 
-  const handleSelectAll = (isChecked) => {
+  const handleSelectAll = (checked) => {
     if (!canEdit || !isEditing) return;
     setLocalAttendance((prev) =>
-      prev.map((r) => ({ ...r, isPresent: isChecked })),
+      prev.map((r) => ({ ...r, isPresent: checked })),
     );
   };
 
@@ -176,13 +345,21 @@ export const Attendance = () => {
     );
   };
 
-  const presentCount = attendanceData.filter((r) => r.isPresent).length;
-  const totalStudents = attendanceData.length;
+  const changeDate = (days) => {
+    const next = stepDate(selectedDate, days);
+    if (isFutureDateLocal(next)) return;
+    setSelectedDate(next);
+    setIsEditing(false);
+    setLocalAttendance([]);
+  };
 
   if (courseLoading || classLoading) {
     return (
-      <div className="flex items-center justify-center min-h-100">
-        <ImSpinner8 size={35} className="animate-spin text-green-600" />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center gap-3">
+          <ImSpinner8 size={32} className="animate-spin text-green-600" />
+          <p className="text-zinc-500 text-sm">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -207,89 +384,133 @@ export const Attendance = () => {
     );
   }
 
+  const allSelected = presentCount === totalStudents && totalStudents > 0;
+
+  const statusInfo = (() => {
+    if (isFutureDate)
+      return {
+        variant: "info",
+        msg: "Cannot mark attendance for future dates.",
+      };
+    if (!isTodayDate && existingAttendanceId)
+      return { variant: "info", msg: "Viewing past attendance — read-only." };
+    if (!isTodayDate && !existingAttendanceId)
+      return {
+        variant: "warning",
+        msg: "No attendance record found for this date.",
+      };
+    if (isTodayDate && !existingAttendanceId && !isEditing)
+      return {
+        variant: "info",
+        msg: "Attendance not marked yet. Click 'Take Attendance' to begin.",
+      };
+    if (isTodayDate && existingAttendanceId && !isEditing)
+      return { variant: "success", msg: "Today's attendance has been marked." };
+    if (isTodayDate && existingAttendanceId && isEditing)
+      return { variant: "warning", msg: "Editing today's attendance record." };
+    return null;
+  })();
+
   return (
     <Container>
-      <div className="flex items-center gap-1 mb-4">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/teacher"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/teacher">
           Teacher
         </Link>
-        <LuChevronRight />
+        <LuChevronRight size={14} />
         <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
+          className="hover:text-zinc-900 transition-colors"
           to="/teacher/manage-attendance"
         >
           Attendance
         </Link>
-        <LuChevronRight />
-        <span className="text-zinc-900">{courseData?.data?.name}</span>
+        <LuChevronRight size={14} />
+        <span className="text-zinc-900 font-medium">
+          {courseData?.data?.name}
+        </span>
       </div>
 
-      <div className="mb-6">
-        <Heading>Mark Attendance</Heading>
-        <p className="text-base text-zinc-600 mt-1">
-          {courseData?.data?.name} &mdash; {classData?.data?.name}
-        </p>
-      </div>
-
-      {(existingAttendanceId || isEditing) && (
-        <div className="flex items-center gap-6 mb-4 p-4 bg-zinc-50 border border-zinc-200 rounded-[10px]">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-zinc-900">{totalStudents}</p>
-            <p className="text-sm text-zinc-500">Total</p>
-          </div>
-          <div className="w-px h-10 bg-zinc-200" />
-          <div className="text-center">
-            <p className="text-2xl font-bold text-green-600">{presentCount}</p>
-            <p className="text-sm text-zinc-500">Present</p>
-          </div>
-          <div className="w-px h-10 bg-zinc-200" />
-          <div className="text-center">
-            <p className="text-2xl font-bold text-red-500">
-              {totalStudents - presentCount}
+      <div className="bg-white border border-zinc-200 rounded-[14px] p-6 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-900 leading-tight">
+              {courseData?.data?.name}
+            </h1>
+            <p className="text-zinc-500 text-sm mt-1 flex items-center gap-1.5">
+              <LuUsers size={13} />
+              {classData?.data?.name} &mdash; {totalStudents} student
+              {totalStudents !== 1 ? "s" : ""}
             </p>
-            <p className="text-sm text-zinc-500">Absent</p>
           </div>
-          {totalStudents > 0 && (
-            <>
-              <div className="w-px h-10 bg-zinc-200" />
-              <div className="text-center">
-                <p className="text-2xl font-bold text-zinc-900">
-                  {Math.round((presentCount / totalStudents) * 100)}%
-                </p>
-                <p className="text-sm text-zinc-500">Attendance</p>
-              </div>
-            </>
-          )}
-        </div>
-      )}
 
-      <div className="mb-4">
-        <AlertStatus
-          existingAttendanceId={existingAttendanceId}
-          selectedDate={selectedDate}
-          isEditing={isEditing}
-        />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <ProgressRing percent={percent} />
+              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-zinc-700">
+                {percent}%
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-zinc-400">Present rate</span>
+              <span className="text-sm font-semibold text-zinc-700">
+                {presentCount} / {totalStudents}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 mt-5 flex-wrap">
+          <StatPill label="Total" value={totalStudents} color="#3f3f46" />
+          <StatPill label="Present" value={presentCount} color="#16a34a" />
+          <StatPill
+            label="Absent"
+            value={totalStudents - presentCount}
+            color="#dc2626"
+          />
+        </div>
       </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <Input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => {
-            setSelectedDate(e.target.value);
-            setIsEditing(false);
-            setLocalAttendance([]);
-          }}
-          max={format(new Date(), "yyyy-MM-dd")}
-          className="w-auto"
-        />
+      <div className="bg-white border border-zinc-200 rounded-[14px] px-5 py-4 mb-5 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => changeDate(-1)}
+            className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 transition-colors cursor-pointer"
+          >
+            <LuChevronLeft size={18} />
+          </button>
+
+          <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-200 rounded-[10px] px-3 py-2">
+            <LuCalendar size={15} className="text-zinc-400" />
+            <input
+              type="date"
+              value={selectedDate}
+              max={format(new Date(), "yyyy-MM-dd")}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setIsEditing(false);
+                setLocalAttendance([]);
+              }}
+              className="text-sm font-medium text-zinc-800 bg-transparent border-none outline-none cursor-pointer"
+            />
+          </div>
+
+          <button
+            onClick={() => changeDate(1)}
+            disabled={isTodayDate}
+            className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          >
+            <LuChevronRightIcon size={18} />
+          </button>
+        </div>
+
+        <p className="text-sm text-zinc-500 hidden md:block">
+          {formatDisplayDate(selectedDate)}
+        </p>
 
         <div className="flex items-center gap-2">
           {canEdit && !isEditing && (
-            <Button onClick={handleEdit}>
+            <Button onClick={handleEdit} className="flex items-center gap-2">
+              <LuPencil size={15} />
               {existingAttendanceId ? "Edit Attendance" : "Take Attendance"}
             </Button>
           )}
@@ -308,32 +529,136 @@ export const Attendance = () => {
                 disabled={isSubmitting}
                 className="flex items-center gap-2"
               >
-                {isSubmitting && (
-                  <ImSpinner8 className="animate-spin text-lg" />
+                {isSubmitting ? (
+                  <ImSpinner8 className="animate-spin" size={15} />
+                ) : (
+                  <LuSave size={15} />
                 )}
-                {isSubmitting ? "Saving..." : "Save Attendance"}
+                {isSubmitting ? "Saving..." : "Save"}
               </Button>
             </>
           )}
         </div>
       </div>
 
-      {attendanceLoading ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <ImSpinner8 size={35} className="animate-spin text-green-600" />
-          <p className="mt-2 text-zinc-600">Loading attendance...</p>
+      {statusInfo && !isEditing && (
+        <div className="mb-5">
+          <Alert variant={statusInfo.variant}>{statusInfo.msg}</Alert>
         </div>
-      ) : (
-        <Table
-          canEdit={canEdit}
-          isEditing={isEditing}
-          attendanceData={attendanceData}
-          handleAttendanceChange={handleAttendanceChange}
-          handleSelectAll={handleSelectAll}
-          presentCount={presentCount}
-          totalStudents={totalStudents}
-        />
       )}
+
+      <div className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100">
+          <div className="flex items-center gap-3">
+            {isEditing && canEdit && (
+              <>
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <div
+                    onClick={() => handleSelectAll(!allSelected)}
+                    className={`
+                      w-5 h-5 rounded-[5px] border-2 flex items-center justify-center transition-all duration-150 cursor-pointer
+                      ${allSelected ? "bg-green-600 border-green-600" : "bg-white border-zinc-300"}
+                    `}
+                  >
+                    {allSelected && (
+                      <LuCheck
+                        size={11}
+                        className="text-white"
+                        strokeWidth={3}
+                      />
+                    )}
+                  </div>
+                  <span className="text-sm text-zinc-600 font-medium">
+                    {allSelected ? "Deselect all" : "Select all"}
+                  </span>
+                </label>
+                <span className="text-xs text-zinc-400">
+                  {presentCount} selected
+                </span>
+              </>
+            )}
+
+            {!isEditing && (
+              <span className="text-sm font-medium text-zinc-700">
+                Students
+              </span>
+            )}
+          </div>
+
+          {isEditing && canEdit && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleSelectAll(true)}
+                className="text-xs px-3 py-1.5 rounded-lg bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors cursor-pointer font-medium"
+              >
+                All Present
+              </button>
+              <button
+                onClick={() => handleSelectAll(false)}
+                className="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors cursor-pointer font-medium"
+              >
+                All Absent
+              </button>
+            </div>
+          )}
+        </div>
+
+        {attendanceLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <ImSpinner8 size={32} className="animate-spin text-green-600" />
+            <p className="mt-3 text-zinc-500 text-sm">Loading attendance...</p>
+          </div>
+        ) : (
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-zinc-50 border-b border-zinc-100">
+                <th className="px-5 py-3 text-left w-14">
+                  <span className="sr-only">Status</span>
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider w-12">
+                  #
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider hidden sm:table-cell">
+                  Email
+                </th>
+                <th className="px-5 py-3 text-right text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {attendanceData.map((record, index) => (
+                <StudentRow
+                  key={record.student}
+                  record={record}
+                  index={index}
+                  isEditing={isEditing}
+                  canEdit={canEdit}
+                  onChange={handleAttendanceChange}
+                />
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {!attendanceLoading && attendanceData.length > 0 && (
+          <div className="px-5 py-3 border-t border-zinc-100 bg-zinc-50 flex items-center justify-between">
+            <span className="text-xs text-zinc-400">
+              {totalStudents} student{totalStudents !== 1 ? "s" : ""}
+            </span>
+            <span className="text-xs text-zinc-500 font-medium">
+              <span className="text-green-600">{presentCount} present</span>
+              {" · "}
+              <span className="text-red-500">
+                {totalStudents - presentCount} absent
+              </span>
+            </span>
+          </div>
+        )}
+      </div>
     </Container>
   );
 };
