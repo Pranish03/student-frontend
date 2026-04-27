@@ -1,10 +1,8 @@
 import { RequireAuth } from "../components/auth/RequireAuth";
 import { StudentLayout } from "../layouts/StudentLayout.jsx";
 import { ManageCourses } from "../pages/student/manage-courses";
-import { ManageAssignments } from "../pages/student/manage-assigments";
-import { ManageNotes } from "../pages/student/manage-notes";
+import { CourseDetail } from "../pages/student/manage-courses/course";
 import { ManageNotices } from "../pages/student/manage-notices";
-
 import { Account } from "../pages/shared/account";
 import { StudentDashboard } from "../pages/student/dashboard";
 
@@ -17,10 +15,8 @@ export const StudentRoutes = {
       children: [
         { element: <StudentDashboard />, index: true },
         { element: <ManageCourses />, path: "manage-courses" },
-        { element: <ManageAssignments />, path: "manage-assignments" },
-        { element: <ManageNotes />, path: "manage-notes" },
+        { element: <CourseDetail />, path: "manage-courses/:id" },
         { element: <ManageNotices />, path: "manage-notices" },
-
         { element: <Account />, path: "account" },
       ],
     },
