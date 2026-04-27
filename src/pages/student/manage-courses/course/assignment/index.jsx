@@ -70,7 +70,7 @@ const DeadlineBadge = ({ deadline }) => {
   );
 };
 
-const AssignmentCard = ({ assignment, courseId }) => {
+const AssignmentCard = ({ assignment }) => {
   const { user } = useAuth();
   const [showDialog, setShowDialog] = useState(false);
 
@@ -125,7 +125,6 @@ const AssignmentCard = ({ assignment, courseId }) => {
           </div>
 
           <div className="flex-1 min-w-0">
-            {/* Title + download */}
             <div className="flex items-start justify-between gap-2">
               <div>
                 <p className="font-semibold text-zinc-900 text-sm leading-snug">
@@ -232,7 +231,6 @@ const AssignmentCard = ({ assignment, courseId }) => {
           <SubmitDialog
             assignment={assignment}
             existingSubmission={submissionData ?? null}
-            courseId={courseId}
             close={() => setShowDialog(false)}
           />
         )}

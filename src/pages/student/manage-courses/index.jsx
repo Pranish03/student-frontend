@@ -9,8 +9,8 @@ import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
 
-const fetchStudentClass = async (classId) => {
-  const { data } = await axios.get(`/classes/${classId}`);
+const fetchStudentClass = async () => {
+  const { data } = await axios.get(`/classes/my`);
   return data;
 };
 
@@ -60,9 +60,8 @@ export const ManageCourses = () => {
   const classId = user?.class?._id ?? user?.class;
 
   const { data: classData, isLoading } = useQuery({
-    queryKey: ["student-class", classId],
-    queryFn: () => fetchStudentClass(classId),
-    enabled: !!classId,
+    queryKey: ["student-class"],
+    queryFn: fetchStudentClass,
     staleTime: 5 * 60 * 1000,
   });
 

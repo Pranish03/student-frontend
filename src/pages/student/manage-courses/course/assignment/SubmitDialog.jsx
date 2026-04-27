@@ -60,8 +60,13 @@ export const SubmitDialog = ({
             ? "Assignment resubmitted successfully!"
             : "Assignment submitted successfully!"),
       );
+      // Invalidate the per-assignment submission query used in AssignmentCard
       queryClient.invalidateQueries({
-        queryKey: ["student-submissions", courseId],
+        queryKey: ["student-submission", assignment._id],
+      });
+      // Also invalidate the broader assignments list for the course
+      queryClient.invalidateQueries({
+        queryKey: ["student-assignments", courseId],
       });
       close();
     },
