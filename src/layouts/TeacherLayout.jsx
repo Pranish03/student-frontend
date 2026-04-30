@@ -71,22 +71,11 @@ export const TeacherLayout = () => {
             <div>
               <NavButton to="/teacher/manage-resources">
                 <span className="flex items-center gap-3">
-                  <LuClipboardPenLine size={20} />
+                  <LuFiles size={20} />
                   Resources
                 </span>
               </NavButton>
             </div>
-
-            <CollapsibleMenu
-              icon={LuFiles}
-              size={21}
-              label="Resources"
-              defaultOpen={true}
-            >
-              <NavButton to="/teacher/manage-notes">Notes</NavButton>
-              <NavButton to="/teacher/manage-assignment">Assignment</NavButton>
-            </CollapsibleMenu>
-
             <div>
               <NavButton to="/teacher/manage-notices">
                 <span className="flex items-center gap-3">
