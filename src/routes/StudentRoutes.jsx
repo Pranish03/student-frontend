@@ -6,6 +6,7 @@ import { ManageNotices } from "../pages/student/manage-notices";
 import { Account } from "../pages/shared/account";
 import { StudentDashboard } from "../pages/student/dashboard";
 import { StudentAttendance } from "../pages/student/attendance/index.jsx";
+import { StudentSchedule } from "../pages/student/schedule/index.jsx";
 
 export const StudentRoutes = {
   path: "/student",
@@ -17,6 +18,7 @@ export const StudentRoutes = {
         { element: <StudentDashboard />, index: true },
         { element: <ManageCourses />, path: "manage-courses" },
         { element: <StudentAttendance />, path: "attendance" },
+        { element: <StudentSchedule />, path: "schedule" },
         { element: <CourseDetail />, path: "manage-courses/:id" },
         { element: <ManageNotices />, path: "manage-notices" },
         { element: <Account />, path: "account" },
