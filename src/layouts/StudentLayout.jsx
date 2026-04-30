@@ -66,6 +66,7 @@ export const StudentLayout = () => {
               defaultOpen={true}
             >
               <NavButton to="/student/manage-courses">Courses</NavButton>
+              <NavButton to="/student/attendance">Attendance</NavButton>
             </CollapsibleMenu>
 
             <div>
