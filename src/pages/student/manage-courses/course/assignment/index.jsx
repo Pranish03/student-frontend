@@ -70,7 +70,7 @@ const DeadlineBadge = ({ deadline }) => {
   );
 };
 
-const AssignmentCard = ({ assignment }) => {
+const AssignmentCard = ({ assignment, courseId }) => {
   const { user } = useAuth();
   const [showDialog, setShowDialog] = useState(false);
 
@@ -151,7 +151,7 @@ const AssignmentCard = ({ assignment }) => {
                 />
               ) : hasSubmission ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-full shrink-0">
-                  <LuCricleCheck size={12} />
+                  <LuCircleCheck size={12} />
                   Submitted
                 </span>
               ) : (
@@ -231,6 +231,7 @@ const AssignmentCard = ({ assignment }) => {
           <SubmitDialog
             assignment={assignment}
             existingSubmission={submissionData ?? null}
+            courseId={courseId}
             close={() => setShowDialog(false)}
           />
         )}
