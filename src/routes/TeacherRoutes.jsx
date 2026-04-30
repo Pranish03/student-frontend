@@ -10,6 +10,8 @@ import { TeacherDashboard } from "../pages/teacher/dashboard";
 import { Attendance } from "../pages/teacher/manage-attendance/Attendance";
 import { Notes } from "../pages/teacher/manage-notes/Notes/index.jsx";
 import { Assignment } from "../pages/teacher/manage-assignment/Assignment/index.jsx";
+import { ManageResources } from "../pages/teacher/manage-resources/index.jsx";
+import { CourseResources } from "../pages/teacher/manage-resources/Course/index.jsx";
 
 export const TeacherRoutes = {
   path: "/teacher",
@@ -22,6 +24,8 @@ export const TeacherRoutes = {
         { element: <ManageAttendance />, path: "manage-attendance" },
         { element: <Attendance />, path: "manage-attendance/:id" },
         { element: <ManageNotes />, path: "manage-notes" },
+        { element: <ManageResources />, path: "manage-resources" },
+        { element: <CourseResources />, path: "manage-resources/:id" },
         { element: <Notes />, path: "manage-notes/:id" },
         { element: <ManageAssignment />, path: "manage-assignment" },
         { element: <Assignment />, path: "manage-assignment/:id" },
