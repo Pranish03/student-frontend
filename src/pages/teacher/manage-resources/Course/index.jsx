@@ -47,7 +47,6 @@ export const CourseResources = () => {
 
   return (
     <Container>
-      {/* Breadcrumb */}
       <div className="flex items-center gap-1 mb-6 text-sm flex-wrap">
         <Link className="text-zinc-500 hover:text-zinc-900" to="/teacher">
           Teacher
@@ -65,7 +64,6 @@ export const CourseResources = () => {
         </span>
       </div>
 
-      {/* Course header */}
       <div className="bg-white border border-zinc-200 rounded-[14px] p-6 mb-6">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
@@ -93,7 +91,6 @@ export const CourseResources = () => {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="bg-zinc-100 p-1 mb-6 rounded-[14px] w-min border border-zinc-200">
         <nav className="flex gap-1">
           {TABS.map((tab) => {
@@ -121,7 +118,6 @@ export const CourseResources = () => {
         </nav>
       </div>
 
-      {/* Tab content */}
       <div className="min-h-60">
         {activeTab === "notes" && <Notes courseId={courseId} />}
         {activeTab === "assignments" && <Assignments courseId={courseId} />}

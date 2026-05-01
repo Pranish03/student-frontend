@@ -11,6 +11,7 @@ import {
   LuMessageCircleMore,
   LuFiles,
   LuClipboardPenLine,
+  LuGraduationCap,
 } from "react-icons/lu";
 import { useAuth } from "../hooks/useAuth";
 import { CollapsibleMenu } from "../components/CollapsibleMenu";
@@ -60,22 +61,17 @@ export const TeacherLayout = () => {
                 </span>
               </NavButton>
             </div>
-            <div>
-              <NavButton to="/teacher/manage-attendance">
-                <span className="flex items-center gap-3">
-                  <LuClipboardPenLine size={20} />
-                  Attendance
-                </span>
-              </NavButton>
-            </div>
-            <div>
-              <NavButton to="/teacher/manage-resources">
-                <span className="flex items-center gap-3">
-                  <LuFiles size={20} />
-                  Resources
-                </span>
-              </NavButton>
-            </div>
+
+            <CollapsibleMenu
+              icon={LuGraduationCap}
+              size={21}
+              label="Classes"
+              defaultOpen={true}
+            >
+              <NavButton to="/teacher/manage-attendance">Attendance</NavButton>
+              <NavButton to="/teacher/manage-resources">Resources</NavButton>
+            </CollapsibleMenu>
+
             <div>
               <NavButton to="/teacher/manage-notices">
                 <span className="flex items-center gap-3">
