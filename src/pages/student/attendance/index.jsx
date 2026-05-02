@@ -11,16 +11,6 @@ import {
 } from "react-icons/lu";
 import { ImSpinner8 } from "react-icons/im";
 import { DateTime } from "luxon";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
 import { axios } from "../../../lib/axios";
 import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
@@ -97,21 +87,6 @@ const CourseAttendanceCard = ({ course }) => {
 
   const attendance = data?.data;
 
-  // Build monthly chart data from records
-  const chartData = (() => {
-    if (!attendance?.records?.length) return [];
-
-    const monthly = {};
-    attendance.records.forEach((r) => {
-      const month = DateTime.fromISO(r.date).toFormat("MMM yyyy");
-      if (!monthly[month]) monthly[month] = { month, present: 0, absent: 0 };
-      if (r.isPresent) monthly[month].present++;
-      else monthly[month].absent++;
-    });
-
-    return Object.values(monthly).reverse();
-  })();
-
   const allRecords = attendance?.records ?? [];
   const totalPages = Math.ceil(allRecords.length / RECORDS_PER_PAGE);
   const paginatedRecords = allRecords.slice(
@@ -130,7 +105,6 @@ const CourseAttendanceCard = ({ course }) => {
 
   return (
     <div className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden">
-      {/* Header */}
       <button
         onClick={() => setExpanded((p) => !p)}
         className="w-full flex items-center justify-between p-5 hover:bg-zinc-50 transition-colors cursor-pointer"
@@ -173,7 +147,6 @@ const CourseAttendanceCard = ({ course }) => {
         )}
       </button>
 
-      {/* Expanded Content */}
       {expanded && (
         <div className="border-t border-zinc-100 p-5 space-y-6">
           {isLoading ? (
@@ -190,29 +163,6 @@ const CourseAttendanceCard = ({ course }) => {
             </div>
           ) : (
             <>
-              {/* Summary Cards */}
-              <div className="grid grid-cols-3 gap-3">
-                <StatCard
-                  label="Total Classes"
-                  value={summary.totalClasses}
-                  color="text-zinc-700"
-                  bg="bg-zinc-50 border-zinc-200"
-                />
-                <StatCard
-                  label="Present"
-                  value={summary.present}
-                  color="text-green-600"
-                  bg="bg-green-50 border-green-200"
-                />
-                <StatCard
-                  label="Absent"
-                  value={summary.absent}
-                  color="text-red-500"
-                  bg="bg-red-50 border-red-200"
-                />
-              </div>
-
-              {/* Status Banner */}
               <div
                 className={`p-3 rounded-[10px] flex items-center gap-2 text-sm font-medium border
                   ${
@@ -231,60 +181,6 @@ const CourseAttendanceCard = ({ course }) => {
                     : `Critical — ${percentage}% attendance. You are at risk`}
               </div>
 
-              {/* Bar Chart */}
-              {chartData.length > 0 && (
-                <div>
-                  <p className="text-sm font-semibold text-zinc-700 mb-3">
-                    Monthly Attendance
-                  </p>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <BarChart
-                      data={chartData}
-                      margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-                      barGap={4}
-                    >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="#f4f4f5"
-                        vertical={false}
-                      />
-                      <XAxis
-                        dataKey="month"
-                        tick={{ fontSize: 11, fill: "#71717a" }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 11, fill: "#71717a" }}
-                        axisLine={false}
-                        tickLine={false}
-                        allowDecimals={false}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          borderRadius: 8,
-                          border: "1px solid #e4e4e7",
-                          fontSize: 12,
-                        }}
-                      />
-                      <Bar
-                        dataKey="present"
-                        name="Present"
-                        fill="#16a34a"
-                        radius={[4, 4, 0, 0]}
-                      />
-                      <Bar
-                        dataKey="absent"
-                        name="Absent"
-                        fill="#f87171"
-                        radius={[4, 4, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-
-              {/* Records Table */}
               {allRecords.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-zinc-700 mb-3 flex items-center gap-2">
@@ -349,7 +245,6 @@ const CourseAttendanceCard = ({ course }) => {
                     </table>
                   </div>
 
-                  {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-between mt-3 text-sm text-zinc-500">
                       <span>
@@ -396,15 +291,12 @@ export const StudentAttendance = () => {
 
   return (
     <Container>
-      <div className="flex items-center gap-1 mb-4 text-sm">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/student"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/student">
           Student
         </Link>
-        <LuChevronRight size={14} className="text-zinc-400" />
-        <span className="text-zinc-900 font-medium">Attendance</span>
+        <LuChevronRight size={14} />
+        <span className="text-zinc-900 font-medium">Attendence</span>
       </div>
 
       <div className="mb-8">

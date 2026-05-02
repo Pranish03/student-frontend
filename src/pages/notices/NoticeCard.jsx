@@ -17,8 +17,7 @@ export const NoticeCard = ({ notice, actions }) => {
   const badge = ROLE_BADGE[notice.targetRole] ?? ROLE_BADGE.all;
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-[10px] p-5 flex flex-col gap-3 hover:border-zinc-300 transition-colors">
-      {/* Header */}
+    <div className="bg-white border border-zinc-200 rounded-[10px] p-5 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-semibold text-zinc-900 text-base leading-snug flex-1">
           {notice.title}
@@ -30,19 +29,16 @@ export const NoticeCard = ({ notice, actions }) => {
           >
             {badge.label}
           </span>
-          {/* Action slot (ellipsis menu passed in from parent) */}
           {actions}
         </div>
       </div>
 
-      {/* Description */}
       {notice.description && (
         <p className="text-sm text-zinc-600 leading-relaxed line-clamp-3">
           {notice.description}
         </p>
       )}
 
-      {/* Attachment */}
       {notice.file && (
         <a
           href={notice.file}
@@ -55,7 +51,6 @@ export const NoticeCard = ({ notice, actions }) => {
         </a>
       )}
 
-      {/* Footer */}
       <div className="flex items-center gap-4 text-xs text-zinc-400 pt-1 border-t border-zinc-100 mt-auto">
         <span className="flex items-center gap-1">
           <LuUser size={12} />

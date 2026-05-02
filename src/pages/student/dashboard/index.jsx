@@ -381,10 +381,9 @@ export const StudentDashboard = () => {
 
   return (
     <Container>
-      {/* ── Greeting ── */}
       <div className="mb-8">
         <Heading className="mb-1">
-          {greet()}, {user?.name?.split(" ")[0]} 👋
+          {greet()}, {user?.name?.split(" ")[0]}
         </Heading>
         <p className="text-zinc-500 text-base">
           {DateTime.now().toFormat("cccc, dd LLLL yyyy")}
@@ -394,43 +393,35 @@ export const StudentDashboard = () => {
         </p>
       </div>
 
-      {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           icon={<LuBookOpen size={18} className="text-blue-600" />}
           label="Courses"
           value={courses.length}
           bg="bg-blue-50"
-          to="/student/manage-courses"
         />
         <StatCard
           icon={<LuClipboardList size={18} className="text-orange-500" />}
           label="Today's classes"
           value={todayClasses.length}
           bg="bg-orange-50"
-          to="/student/manage-schedule"
         />
         <StatCard
           icon={<LuCalendar size={18} className="text-violet-600" />}
           label="Academic year"
           value={classInfo?.academicYear ?? "—"}
           bg="bg-violet-50"
-          to="/student"
         />
         <StatCard
           icon={<LuBell size={18} className="text-green-600" />}
           label="Notices"
           value={noticesData?.data?.length ?? 0}
           bg="bg-green-50"
-          to="/student/manage-notices"
         />
       </div>
 
-      {/* ── Main grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left col — Today + Assignments */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Today's schedule */}
           <Section
             title="Today's classes"
             icon={<LuClock size={16} className="text-green-600" />}
@@ -468,7 +459,6 @@ export const StudentDashboard = () => {
                               : "bg-zinc-50/60 border-dashed border-zinc-200 opacity-50"
                         }`}
                     >
-                      {/* Time column */}
                       <div className="shrink-0 w-16 text-center">
                         <p
                           className={`text-xs font-semibold ${current ? "text-green-100" : "text-zinc-500"}`}
@@ -482,12 +472,10 @@ export const StudentDashboard = () => {
                         </p>
                       </div>
 
-                      {/* Divider */}
                       <div
                         className={`w-px self-stretch ${current ? "bg-green-400" : "bg-zinc-200"}`}
                       />
 
-                      {/* Content */}
                       {entry ? (
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -533,7 +521,6 @@ export const StudentDashboard = () => {
             )}
           </Section>
 
-          {/* Pending assignments */}
           <Section
             title="Pending assignments"
             icon={<LuClipboardList size={16} className="text-orange-500" />}
@@ -566,7 +553,6 @@ export const StudentDashboard = () => {
             )}
           </Section>
 
-          {/* Recent notices */}
           <Section
             title="Recent notices"
             icon={<LuBell size={16} className="text-amber-500" />}
@@ -621,21 +607,16 @@ export const StudentDashboard = () => {
   );
 };
 
-// ── Helper components ─────────────────────────────────────────────────────────
-
-const StatCard = ({ icon, label, value, bg, to }) => (
-  <Link
-    to={to}
-    className="group bg-white border border-zinc-200 rounded-[12px] p-4 hover:border-zinc-300 hover:shadow-sm transition-all block"
-  >
+const StatCard = ({ icon, label, value, bg }) => (
+  <div className="group bg-white border border-zinc-200 rounded-xl p-4 block">
     <div
-      className={`w-9 h-9 rounded-[8px] ${bg} flex items-center justify-center mb-3`}
+      className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center mb-3`}
     >
       {icon}
     </div>
     <p className="text-2xl font-bold text-zinc-900">{value}</p>
     <p className="text-sm text-zinc-500 mt-0.5">{label}</p>
-  </Link>
+  </div>
 );
 
 const Section = ({ title, icon, action, children }) => (
