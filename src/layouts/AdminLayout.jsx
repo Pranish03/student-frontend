@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Avatar from "react-avatar";
 import {
   LuUsers,
