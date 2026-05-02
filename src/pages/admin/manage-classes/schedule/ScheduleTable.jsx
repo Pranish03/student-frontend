@@ -1,6 +1,65 @@
-import { LuClock, LuTrash2, LuLoader, LuPencil } from "react-icons/lu";
+import {
+  LuClock,
+  LuTrash2,
+  LuLoader,
+  LuPencil,
+  LuMapPin,
+} from "react-icons/lu";
+import { BsFileEarmarkCodeFill } from "react-icons/bs";
 import { daysOfWeek } from "../../../../schemas/scheduleSchema";
 import { Button } from "../../../../components/Button";
+
+const TIME_SLOTS = [
+  { label: "First Period", start: "06:30", end: "08:00" },
+  { label: "Break", start: "08:00", end: "08:30" },
+  { label: "Second Period", start: "08:30", end: "10:00" },
+  { label: "Third Period", start: "10:00", end: "11:30" },
+];
+
+const DAY_COLORS = {
+  Sunday: {
+    bg: "bg-rose-50",
+    border: "border-rose-200",
+    text: "text-rose-700",
+    dot: "bg-rose-400",
+  },
+  Monday: {
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    text: "text-blue-700",
+    dot: "bg-blue-400",
+  },
+  Tuesday: {
+    bg: "bg-violet-50",
+    border: "border-violet-200",
+    text: "text-violet-700",
+    dot: "bg-violet-400",
+  },
+  Wednesday: {
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    text: "text-amber-700",
+    dot: "bg-amber-400",
+  },
+  Thursday: {
+    bg: "bg-green-50",
+    border: "border-green-200",
+    text: "text-green-700",
+    dot: "bg-green-400",
+  },
+  Friday: {
+    bg: "bg-cyan-50",
+    border: "border-cyan-200",
+    text: "text-cyan-700",
+    dot: "bg-cyan-400",
+  },
+  Saturday: {
+    bg: "bg-orange-50",
+    border: "border-orange-200",
+    text: "text-orange-700",
+    dot: "bg-orange-400",
+  },
+};
 
 export const ScheduleTable = ({
   scheduleData,
@@ -45,145 +104,187 @@ export const ScheduleTable = ({
     );
   }
 
-  const timeSlots = [
-    "06:30 - 08:00",
-    "08:00 - 08:30",
-    "08:30 - 10:00",
-    "10:00 - 11:30",
-  ];
-
-  const breakSlots = ["08:00 - 08:30"];
-
-  const breakLabels = {
-    "08:00 - 08:30": "Break Time",
-  };
-
-  const scheduleMatrix = daysOfWeek.reduce((acc, day) => {
-    acc[day] = timeSlots.reduce((timeAcc, timeSlot) => {
-      if (breakSlots.includes(timeSlot)) {
-        timeAcc[timeSlot] = "break";
-        return timeAcc;
-      }
-
+  const matrix = {};
+  for (const day of daysOfWeek) {
+    matrix[day] = {};
+    for (const slot of TIME_SLOTS) {
+      if (slot.label === "Break") continue;
+      const key = `${slot.start}-${slot.end}`;
       const entry = scheduleData?.timeTable?.find(
-        (e) => e.day === day && `${e.startTime} - ${e.endTime}` === timeSlot,
+        (e) =>
+          e.day === day && e.startTime === slot.start && e.endTime === slot.end,
       );
-      timeAcc[timeSlot] = entry || null;
-      return timeAcc;
-    }, {});
-    return acc;
-  }, {});
+      matrix[day][key] = entry ?? null;
+    }
+  }
 
-  const daysWithEntries = daysOfWeek.filter((day) => {
-    return timeSlots.some((timeSlot) => {
-      const entry = scheduleMatrix[day][timeSlot];
-      return entry !== null && entry !== "break";
-    });
-  });
+  const activeDays = daysOfWeek.filter((day) =>
+    TIME_SLOTS.filter((s) => s.label !== "Break").some(
+      (slot) => matrix[day][`${slot.start}-${slot.end}`],
+    ),
+  );
 
-  if (daysWithEntries.length === 0) {
+  if (activeDays.length === 0) {
     return (
       <div className="text-center py-12 rounded-[10px]">
         <LuClock className="w-12 h-12 text-zinc-400 mx-auto mb-2" />
-        <h3 className="text-lg font-semibold text-zinc-900">
-          No Schedule Created
-        </h3>
+        <h3 className="text-lg font-semibold text-zinc-900">No Entries Yet</h3>
         <p className="text-zinc-600 mb-4">
-          This class doesn't have a schedule yet.
+          Add entries to start building the schedule.
         </p>
       </div>
     );
   }
 
   return (
-    <div>
-      <table className="w-full min-w-200 mt-8">
+    <div className="overflow-x-auto">
+      <table className="w-full border-separate border-spacing-1 min-w-200">
         <thead>
           <tr>
-            <th />
-            {timeSlots.map((timeSlot) => (
-              <th key={timeSlot} className="min-w-50" />
+            <th className="w-28 min-w-28" />
+            {TIME_SLOTS.map((slot) => (
+              <th key={slot.label} className="text-center pb-3 min-w-44">
+                <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  {slot.label}
+                </p>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  {slot.start} – {slot.end}
+                </p>
+              </th>
             ))}
           </tr>
         </thead>
-        <tbody>
-          {daysWithEntries.map((day, dayIndex) => (
-            <tr key={day}>
-              <td className="px-6 py-2.5 text-base font-mono font-semibold text-zinc-900 bg-zinc-50/50">
-                {day.slice(0, 3).toUpperCase()}
-              </td>
-              {timeSlots.map((timeSlot) => {
-                const entry = scheduleMatrix[day][timeSlot];
 
-                if (entry === "break") {
-                  if (dayIndex === 0) {
-                    return (
-                      <td
-                        key={`${day}-${timeSlot}`}
-                        rowSpan={daysWithEntries.length}
-                        className="bg-amber-100 align-middle rounded-[10px]"
-                      >
-                        <div className="flex items-center justify-center h-full min-h-25">
-                          <div className="flex flex-col items-center justify-center text-amber-600">
-                            <p className="text-base font-medium">
-                              {breakLabels[timeSlot]}
+        <tbody>
+          {activeDays.map((day, dayIndex) => {
+            const colors = DAY_COLORS[day];
+
+            return (
+              <tr key={day}>
+                <td className="pr-2 py-1">
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 rounded-[10px] bg-zinc-100`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full shrink-0 ${colors.dot}`}
+                    />
+                    <span className="text-sm font-semibold text-zinc-700">
+                      {day.slice(0, 3).toUpperCase()}
+                    </span>
+                  </div>
+                </td>
+
+                {TIME_SLOTS.map((slot) => {
+                  if (slot.label === "Break") {
+                    if (dayIndex === 0) {
+                      return (
+                        <td
+                          key={slot.label}
+                          rowSpan={activeDays.length}
+                          className="py-1"
+                        >
+                          <div className="h-full min-h-16 flex flex-col items-center justify-center bg-amber-50 border border-amber-200 rounded-[10px] px-3 py-3">
+                            <LuClock
+                              size={14}
+                              className="text-amber-500 mb-1"
+                            />
+                            <p className="text-xs font-semibold text-amber-600">
+                              Break
                             </p>
-                            <p className="text-sm font-medium">{timeSlot}</p>
+                            <p className="text-xs text-amber-500">
+                              {slot.start} – {slot.end}
+                            </p>
                           </div>
-                        </div>
-                      </td>
-                    );
-                  } else {
+                        </td>
+                      );
+                    }
                     return null;
                   }
-                }
 
-                return (
-                  <td key={`${day}-${timeSlot}`} className="p-1.5">
-                    {entry && (
-                      <div className="group relative">
-                        <div className="bg-green-50 border border-green-200 rounded-[10px] py-2.5 px-3">
-                          <div className="flex items-center justify-between">
-                            <p className="font-medium text-zinc-900 text-base">
-                              {entry.course?.name || "Course"}
-                            </p>
-                            <p className="text-sm font-semibold text-white bg-green-600 px-3 rounded-full">
-                              {entry.room}
-                            </p>
-                          </div>
-                          <p className="text-sm text-zinc-800">{timeSlot}</p>
-                          {entry.teacher && (
-                            <p className="text-sm text-zinc-500">
-                              {entry.teacher.name || entry.teacher}
-                            </p>
-                          )}
+                  const key = `${slot.start}-${slot.end}`;
+                  const entry = matrix[day][key];
 
-                          <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={() => onEditEntry(entry)}
-                              className="p-1.5 bg-white text-zinc-800 cursor-pointer hover:text-green-600 hover:border-green-200 hover:bg-green-50 rounded-lg shadow transition-all"
-                              title="Edit entry"
-                            >
-                              <LuPencil size={18} />
-                            </button>
-                            <button
-                              onClick={() => onDeleteEntry(entry)}
-                              className="p-1.5 bg-white text-zinc-800 cursor-pointer hover:text-red-600 hover:border-red-200 hover:bg-red-50 rounded-lg shadow transition-all"
-                              title="Delete entry"
-                            >
-                              <LuTrash2 size={18} />
-                            </button>
+                  return (
+                    <td key={slot.label} className="py-1">
+                      {entry ? (
+                        <div className="group relative">
+                          <div
+                            className={`rounded-[10px] border px-3 py-2.5 min-h-16 transition-all
+                              ${colors.bg} ${colors.border}`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <p
+                                className={`font-semibold text-sm leading-snug ${colors.text}`}
+                              >
+                                {entry.course?.name ?? "Course"}
+                              </p>
+                              {entry.room && entry.room !== "TBD" && (
+                                <span
+                                  className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full bg-white/70 ${colors.text}`}
+                                >
+                                  {entry.room}
+                                </span>
+                              )}
+                            </div>
+
+                            {entry.course?.code && (
+                              <span
+                                className={`inline-flex items-center gap-1 text-xs mt-1 font-medium px-1.5 py-0.5 rounded-full bg-white/70 ${colors.text}`}
+                              >
+                                <BsFileEarmarkCodeFill size={9} />
+                                {entry.course.code}
+                              </span>
+                            )}
+
+                            {entry.teacher && (
+                              <p
+                                className={`flex items-center gap-1 text-xs mt-1 ${colors.text} opacity-80`}
+                              >
+                                {entry.teacher.name ?? entry.teacher}
+                              </p>
+                            )}
+
+                            <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => onEditEntry(entry)}
+                                className="p-1.5 bg-white text-zinc-700 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded-lg shadow transition-all"
+                                title="Edit entry"
+                              >
+                                <LuPencil size={14} />
+                              </button>
+                              <button
+                                onClick={() => onDeleteEntry(entry)}
+                                className="p-1.5 bg-white text-zinc-700 cursor-pointer hover:text-red-600 hover:bg-red-50 rounded-lg shadow transition-all"
+                                title="Delete entry"
+                              >
+                                <LuTrash2 size={14} />
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+                      ) : (
+                        <div className="min-h-16 rounded-[10px] border border-dashed border-zinc-200 bg-zinc-50/40" />
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+
+      <div className="flex items-center gap-4 mt-5 flex-wrap">
+        <p className="text-xs text-zinc-400 font-medium">Legend:</p>
+        <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+          <span className="w-3 h-3 rounded-sm bg-amber-100 border border-amber-200" />{" "}
+          Break
+        </span>
+        <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+          <span className="w-3 h-3 rounded-full border border-dashed border-zinc-300" />{" "}
+          Free slot
+        </span>
+      </div>
     </div>
   );
 };

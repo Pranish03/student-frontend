@@ -130,7 +130,7 @@ export const ManageClass = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`
-                  flex items-center gap-2 px-3 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer
+                  flex items-center gap-2 px-3 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer text-sm
                   ${
                     isActive
                       ? "text-green-600 bg-white border-zinc-200 shadow"

@@ -9,6 +9,7 @@ import {
   createAttendance,
   updateAttendance,
 } from "../../../../api/attendence";
+import { fetchScheduleByClass } from "../../../../api/manageSchedule";
 import { format } from "date-fns";
 import {
   LuChevronRight,
@@ -18,9 +19,12 @@ import {
   LuCheck,
   LuX,
   LuCalendar,
-  LuUsers,
   LuSave,
+  LuCalendarX,
+  LuClock,
+  LuMapPin,
 } from "react-icons/lu";
+import { BsFileEarmarkCodeFill } from "react-icons/bs";
 import { ImSpinner8 } from "react-icons/im";
 import { Container } from "../../../../components/ui/Container";
 import { Button } from "../../../../components/Button";
@@ -32,7 +36,16 @@ import {
 } from "../../../../utils/formatDate";
 import { Heading } from "../../../../components/ui/Heading";
 import { Paragraph } from "../../../../components/ui/Paragraph";
-import { BsFileEarmarkCodeFill } from "react-icons/bs";
+
+const DAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const stepDate = (dateStr, days) => {
   const d = parseLocalDate(dateStr);
@@ -50,13 +63,13 @@ const formatDisplayDate = (dateStr) => {
   });
 };
 
+// ── Progress ring ─────────────────────────────────────────────────────────────
 const ProgressRing = ({ percent, size = 72, stroke = 6 }) => {
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (percent / 100) * circ;
   const color =
     percent >= 75 ? "#16a34a" : percent >= 50 ? "#d97706" : "#dc2626";
-
   return (
     <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
       <circle
@@ -92,17 +105,15 @@ const StatPill = ({ label, value, color }) => (
   </div>
 );
 
+// ── Student row ───────────────────────────────────────────────────────────────
 const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
   const present = record.isPresent;
-
   return (
     <tr
-      className={`
-        border-b border-zinc-100 last:border-0 transition-colors duration-150
+      className={`border-b border-zinc-100 last:border-0 transition-colors duration-150
         ${isEditing && canEdit ? "cursor-pointer hover:bg-zinc-50/80" : ""}
         ${isEditing && present ? "bg-green-50/40" : ""}
-        ${isEditing && !present ? "bg-red-50/20" : ""}
-      `}
+        ${isEditing && !present ? "bg-red-50/20" : ""}`}
       onClick={() => {
         if (isEditing && canEdit) onChange(record.student, !present);
       }}
@@ -110,14 +121,8 @@ const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
       <td className="px-5 py-3.5 w-14">
         {isEditing && canEdit ? (
           <div
-            className={`
-              w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-150
-              ${
-                present
-                  ? "bg-green-600 border-green-600"
-                  : "bg-white border-zinc-300"
-              }
-            `}
+            className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-150
+            ${present ? "bg-green-600 border-green-600" : "bg-white border-zinc-300"}`}
           >
             {present && (
               <LuCheck size={13} className="text-white" strokeWidth={3} />
@@ -125,77 +130,48 @@ const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
           </div>
         ) : (
           <div
-            className={`
-              w-2.5 h-2.5 rounded-full mx-auto
-              ${present ? "bg-green-500" : "bg-red-400"}
-            `}
+            className={`w-2.5 h-2.5 rounded-full mx-auto ${present ? "bg-green-500" : "bg-red-400"}`}
           />
         )}
       </td>
-
       <td className="px-4 py-3.5 text-sm text-zinc-400 font-mono w-12">
         {index + 1}
       </td>
-
       <td className="px-4 py-3.5">
         <span className="font-medium text-zinc-900 text-sm">
           {record.studentName}
         </span>
       </td>
-
       <td className="px-4 py-3.5 text-sm text-zinc-500 hidden sm:table-cell">
         {record.studentEmail}
       </td>
-
       <td className="px-5 py-3.5 text-right">
-        {isEditing && canEdit ? (
-          <span
-            className={`
-              inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border
-              ${
-                present
-                  ? "bg-green-50 text-green-700 border-green-200"
-                  : "bg-zinc-100 text-zinc-500 border-zinc-200"
-              }
-            `}
-          >
-            {present ? (
-              <>
-                <LuCheck size={11} strokeWidth={3} /> Present
-              </>
-            ) : (
-              <>
-                <LuX size={11} strokeWidth={3} /> Absent
-              </>
-            )}
-          </span>
-        ) : (
-          <span
-            className={`
-              inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border
-              ${
-                present
-                  ? "bg-green-50 text-green-700 border-green-200"
-                  : "bg-red-50 text-red-600 border-red-200"
-              }
-            `}
-          >
-            {present ? (
-              <>
-                <LuCheck size={11} strokeWidth={3} /> Present
-              </>
-            ) : (
-              <>
-                <LuX size={11} strokeWidth={3} /> Absent
-              </>
-            )}
-          </span>
-        )}
+        <span
+          className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border
+          ${
+            present
+              ? "bg-green-50 text-green-700 border-green-200"
+              : isEditing && canEdit
+                ? "bg-zinc-100 text-zinc-500 border-zinc-200"
+                : "bg-red-50 text-red-600 border-red-200"
+          }`}
+        >
+          {present ? (
+            <>
+              <LuCheck size={11} strokeWidth={3} /> Present
+            </>
+          ) : (
+            <>
+              <LuX size={11} strokeWidth={3} /> Absent
+            </>
+          )}
+        </span>
       </td>
     </tr>
   );
 };
 
+// ── Main component ────────────────────────────────────────────────────────────
 export const Attendance = () => {
   const { id: courseId } = useParams();
   const queryClient = useQueryClient();
@@ -211,6 +187,7 @@ export const Attendance = () => {
   const isTodayDate = isTodayLocal(selectedDate);
   const canEdit = isTodayDate && !isFutureDate;
 
+  // ── Data fetching ────────────────────────────────────────────────────────
   const { data: courseData, isLoading: courseLoading } = useCourse(courseId);
   const classId = courseData?.data?.class;
 
@@ -224,6 +201,12 @@ export const Attendance = () => {
     enabled: !!classId,
   });
 
+  const { data: scheduleData, isLoading: scheduleLoading } = useQuery({
+    queryKey: ["schedule", classId],
+    queryFn: () => fetchScheduleByClass(classId),
+    enabled: !!classId,
+  });
+
   const { data: attendanceQueryData, isLoading: attendanceLoading } = useQuery({
     queryKey: ["attendance", courseId, selectedDate],
     queryFn: () => fetchAttendanceByCourseAndDate(courseId, selectedDate),
@@ -232,6 +215,21 @@ export const Attendance = () => {
     throwOnError: false,
   });
 
+  // ── Schedule check ───────────────────────────────────────────────────────
+  // Find which day-of-week the selected date falls on, then look up the
+  // schedule to see if this course has a class on that day.
+  const selectedDayName = DAYS[parseLocalDate(selectedDate).getDay()];
+
+  const scheduledEntry =
+    scheduleData?.data?.timeTable?.find(
+      (e) =>
+        e.day === selectedDayName &&
+        (e.course?._id ?? e.course)?.toString() === courseId,
+    ) ?? null;
+
+  const hasClassToday = !!scheduledEntry;
+
+  // ── Derived attendance state ─────────────────────────────────────────────
   const isNotFound =
     !attendanceQueryData?.data || attendanceQueryData?.data?.length === 0;
 
@@ -267,6 +265,7 @@ export const Attendance = () => {
   const presentCount = attendanceData.filter((r) => r.isPresent).length;
   const totalStudents = attendanceData.length;
 
+  // ── Mutation ─────────────────────────────────────────────────────────────
   const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingAttendanceId) {
@@ -303,6 +302,7 @@ export const Attendance = () => {
     },
   });
 
+  // ── Handlers ─────────────────────────────────────────────────────────────
   const handleEdit = () => {
     setLocalAttendance(
       existingAttendanceId ? serverAttendance : initialAttendance,
@@ -353,7 +353,8 @@ export const Attendance = () => {
     setLocalAttendance([]);
   };
 
-  if (courseLoading || classLoading) {
+  // ── Loading / error guards ────────────────────────────────────────────────
+  if (courseLoading || classLoading || scheduleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-3">
@@ -446,16 +447,14 @@ export const Attendance = () => {
         </Paragraph>
       </div>
 
-      <div className="bg-whitep-6 mb-5">
-        <div className="flex items-center gap-3 mt-5 flex-wrap">
-          <StatPill label="Total" value={totalStudents} color="#3f3f46" />
-          <StatPill label="Present" value={presentCount} color="#16a34a" />
-          <StatPill
-            label="Absent"
-            value={totalStudents - presentCount}
-            color="#dc2626"
-          />
-        </div>
+      <div className="flex items-center gap-3 mb-5 flex-wrap">
+        <StatPill label="Total" value={totalStudents} color="#3f3f46" />
+        <StatPill label="Present" value={presentCount} color="#16a34a" />
+        <StatPill
+          label="Absent"
+          value={totalStudents - presentCount}
+          color="#dc2626"
+        />
       </div>
 
       <div className="bg-white border border-zinc-200 rounded-[14px] px-5 py-4 mb-5 flex items-center justify-between gap-4 flex-wrap">
@@ -496,13 +495,12 @@ export const Attendance = () => {
         </p>
 
         <div className="flex items-center gap-2">
-          {canEdit && !isEditing && (
+          {canEdit && hasClassToday && !isEditing && (
             <Button onClick={handleEdit} className="flex items-center gap-2">
               <LuPencil size={15} />
               {existingAttendanceId ? "Edit Attendance" : "Take Attendance"}
             </Button>
           )}
-
           {canEdit && isEditing && (
             <>
               <Button
@@ -529,7 +527,38 @@ export const Attendance = () => {
         </div>
       </div>
 
-      {statusInfo && !isEditing && (
+      {!hasClassToday && !isFutureDate && (
+        <div className="mb-5 flex items-start gap-3 p-4 bg-zinc-50 border border-zinc-200 rounded-[10px]">
+          <LuCalendarX size={20} className="text-zinc-400 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-zinc-700">
+              No class scheduled on {selectedDayName}
+            </p>
+            <p className="text-xs text-zinc-500 mt-0.5">
+              {courseData?.data?.name} has no timetable entry for{" "}
+              {selectedDayName}s. Attendance can only be taken on days when a
+              class is scheduled.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {hasClassToday && scheduledEntry && !isEditing && (
+        <div className="mb-5 flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-[10px]">
+          <LuClock size={16} className="text-green-600 shrink-0" />
+          <p className="text-sm text-green-700">
+            <span className="font-semibold">{selectedDayName}</span> —{" "}
+            {scheduledEntry.startTime} to {scheduledEntry.endTime}
+            {scheduledEntry.room && scheduledEntry.room !== "TBD" && (
+              <span className="inline-flex items-center gap-1 ml-2 text-green-600">
+                <LuMapPin size={12} /> {scheduledEntry.room}
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {statusInfo && !isEditing && hasClassToday && (
         <div className="mb-5">
           <Alert variant={statusInfo.variant}>{statusInfo.msg}</Alert>
         </div>
@@ -538,15 +567,13 @@ export const Attendance = () => {
       <div className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden">
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100">
           <div className="flex items-center gap-3">
-            {isEditing && canEdit && (
+            {isEditing && canEdit ? (
               <>
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <div
                     onClick={() => handleSelectAll(!allSelected)}
-                    className={`
-                      w-5 h-5 rounded-[5px] border-2 flex items-center justify-center transition-all duration-150 cursor-pointer
-                      ${allSelected ? "bg-green-600 border-green-600" : "bg-white border-zinc-300"}
-                    `}
+                    className={`w-5 h-5 rounded-[5px] border-2 flex items-center justify-center transition-all duration-150 cursor-pointer
+                      ${allSelected ? "bg-green-600 border-green-600" : "bg-white border-zinc-300"}`}
                   >
                     {allSelected && (
                       <LuCheck
@@ -564,9 +591,7 @@ export const Attendance = () => {
                   {presentCount} selected
                 </span>
               </>
-            )}
-
-            {!isEditing && (
+            ) : (
               <span className="text-sm font-medium text-zinc-700">
                 Students
               </span>
