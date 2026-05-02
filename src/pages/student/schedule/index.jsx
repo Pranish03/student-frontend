@@ -7,7 +7,6 @@ import { axios } from "../../../lib/axios";
 import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
-import { useState } from "react";
 
 const fetchStudentClass = async () => {
   const { data } = await axios.get("/classes/my");
@@ -97,8 +96,6 @@ const isCurrentSlot = (day, startTime, endTime) => {
 
 const isToday = (day) => DAYS[new Date().getDay()] === day;
 
-// ─── Grid View ───────────────────────────────────────────────────────────────
-
 const GridView = ({ scheduleMatrix, activeDays }) => {
   return (
     <div className="overflow-x-auto">
@@ -156,7 +153,6 @@ const GridView = ({ scheduleMatrix, activeDays }) => {
                   const isBreak = slot.label === "Break";
 
                   if (isBreak) {
-                    // Break cell spans all days via rowSpan on first day
                     if (dayIndex === 0) {
                       return (
                         <td
@@ -250,150 +246,7 @@ const GridView = ({ scheduleMatrix, activeDays }) => {
   );
 };
 
-// ─── List View ────────────────────────────────────────────────────────────────
-
-const ListView = ({ scheduleMatrix, activeDays }) => {
-  return (
-    <div className="space-y-4">
-      {activeDays.map((day) => {
-        const colors = DAY_COLORS[day];
-        const today = isToday(day);
-
-        const dayEntries = TIME_SLOTS.filter((s) => s.label !== "Break")
-          .map((slot) => ({
-            slot,
-            entry: scheduleMatrix[day]?.[`${slot.start}-${slot.end}`],
-          }))
-          .filter((x) => x.entry);
-
-        if (!dayEntries.length) return null;
-
-        return (
-          <div
-            key={day}
-            className={`rounded-[14px] border overflow-hidden ${
-              today
-                ? "border-green-300 shadow-sm shadow-green-100"
-                : "border-zinc-200"
-            }`}
-          >
-            {/* Day Header */}
-            <div
-              className={`flex items-center gap-3 px-5 py-3 ${
-                today ? "bg-green-600" : "bg-zinc-50 border-b border-zinc-100"
-              }`}
-            >
-              <span
-                className={`w-2.5 h-2.5 rounded-full ${today ? "bg-white" : colors.dot}`}
-              />
-              <h3
-                className={`font-semibold text-base ${
-                  today ? "text-white" : "text-zinc-800"
-                }`}
-              >
-                {day}
-              </h3>
-              {today && (
-                <span className="text-xs bg-white/20 text-white px-2 py-0.5 rounded-full font-medium">
-                  Today
-                </span>
-              )}
-              <span
-                className={`ml-auto text-xs font-medium ${
-                  today ? "text-green-100" : "text-zinc-400"
-                }`}
-              >
-                {dayEntries.length} class{dayEntries.length !== 1 ? "es" : ""}
-              </span>
-            </div>
-
-            {/* Entries */}
-            <div className="divide-y divide-zinc-100">
-              {dayEntries.map(({ slot, entry }) => {
-                const current = isCurrentSlot(day, slot.start, slot.end);
-
-                return (
-                  <div
-                    key={slot.label}
-                    className={`flex items-center gap-4 px-5 py-3.5 ${
-                      current ? "bg-green-50" : "bg-white"
-                    }`}
-                  >
-                    {/* Time */}
-                    <div className="shrink-0 text-center w-20">
-                      <p
-                        className={`text-xs font-semibold ${current ? "text-green-600" : "text-zinc-500"}`}
-                      >
-                        {slot.start}
-                      </p>
-                      <div
-                        className={`h-px w-full my-0.5 ${current ? "bg-green-300" : "bg-zinc-200"}`}
-                      />
-                      <p
-                        className={`text-xs font-semibold ${current ? "text-green-600" : "text-zinc-500"}`}
-                      >
-                        {slot.end}
-                      </p>
-                    </div>
-
-                    {/* Color bar */}
-                    <div
-                      className={`w-1 self-stretch rounded-full shrink-0 ${
-                        current ? "bg-green-500" : colors.dot
-                      }`}
-                    />
-
-                    {/* Course info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-zinc-900 text-sm">
-                          {entry.course?.name}
-                        </p>
-                        {current && (
-                          <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 border border-green-200 px-2 py-0.5 rounded-full font-medium">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                            Now
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3 mt-1 flex-wrap">
-                        {entry.course?.code && (
-                          <span
-                            className={`inline-flex items-center gap-1 text-xs font-medium ${colors.text}`}
-                          >
-                            <BsFileEarmarkCodeFill size={10} />
-                            {entry.course.code}
-                          </span>
-                        )}
-                        {entry.room && entry.room !== "TBD" && (
-                          <span className="inline-flex items-center gap-1 text-xs text-zinc-400">
-                            <LuMapPin size={10} />
-                            {entry.room}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Period label */}
-                    <span className="shrink-0 text-xs text-zinc-400 font-medium hidden sm:block">
-                      {slot.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
 export const StudentSchedule = () => {
-  const [view, setView] = useState("grid");
-
   const { data: classData, isLoading: classLoading } = useQuery({
     queryKey: ["student-class"],
     queryFn: fetchStudentClass,
@@ -413,7 +266,6 @@ export const StudentSchedule = () => {
   const schedule = scheduleData?.data;
   const isLoading = classLoading || scheduleLoading;
 
-  // Build schedule matrix: { day: { "start-end": entry } }
   const scheduleMatrix = (() => {
     if (!schedule?.timeTable) return {};
     const matrix = {};
@@ -424,7 +276,6 @@ export const StudentSchedule = () => {
     return matrix;
   })();
 
-  // Only show days that have at least one entry
   const activeDays = DAYS.filter((day) =>
     TIME_SLOTS.filter((s) => s.label !== "Break").some(
       (slot) => scheduleMatrix[day]?.[`${slot.start}-${slot.end}`],
@@ -435,58 +286,23 @@ export const StudentSchedule = () => {
 
   return (
     <Container>
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-1 mb-4 text-sm">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/student"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/student">
           Student
         </Link>
-        <LuChevronRight size={14} className="text-zinc-400" />
+        <LuChevronRight size={14} />
         <span className="text-zinc-900 font-medium">Schedule</span>
       </div>
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
-        <div>
-          <Heading className="mb-1">Class Schedule</Heading>
-          <Paragraph>
-            {isLoading
-              ? "Loading..."
-              : classInfo
-                ? `${classInfo.name} · ${classInfo.department} · ${classInfo.academicYear}`
-                : "No class assigned"}
-          </Paragraph>
-        </div>
-
-        {/* View Toggle */}
-        {schedule && (
-          <div className="bg-zinc-100 p-1 rounded-xl border border-zinc-200 flex gap-1">
-            <button
-              onClick={() => setView("grid")}
-              className={`px-3 py-1.5 rounded-[9px] text-sm font-medium transition-all cursor-pointer
-                ${
-                  view === "grid"
-                    ? "bg-white text-green-600 shadow border border-zinc-200"
-                    : "text-zinc-600 hover:text-zinc-900"
-                }`}
-            >
-              Grid
-            </button>
-            <button
-              onClick={() => setView("list")}
-              className={`px-3 py-1.5 rounded-[9px] text-sm font-medium transition-all cursor-pointer
-                ${
-                  view === "list"
-                    ? "bg-white text-green-600 shadow border border-zinc-200"
-                    : "text-zinc-600 hover:text-zinc-900"
-                }`}
-            >
-              List
-            </button>
-          </div>
-        )}
+      <div className="mb-8">
+        <Heading className="mb-1">Class Schedule</Heading>
+        <Paragraph>
+          {isLoading
+            ? "Loading..."
+            : classInfo
+              ? `${classInfo.name} · ${classInfo.department} · ${classInfo.academicYear}`
+              : "No class assigned"}
+        </Paragraph>
       </div>
 
       {isLoading ? (
@@ -514,7 +330,6 @@ export const StudentSchedule = () => {
         </div>
       ) : (
         <>
-          {/* Stats bar */}
           <div className="flex items-center gap-4 mb-5 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-zinc-500 bg-zinc-50 border border-zinc-200 rounded-[10px] px-3 py-2">
               <LuClock size={14} className="text-green-600" />
@@ -536,31 +351,22 @@ export const StudentSchedule = () => {
             </div>
           </div>
 
-          {/* Schedule */}
-          {view === "grid" ? (
-            <GridView scheduleMatrix={scheduleMatrix} activeDays={activeDays} />
-          ) : (
-            <ListView scheduleMatrix={scheduleMatrix} activeDays={activeDays} />
-          )}
+          <GridView scheduleMatrix={scheduleMatrix} activeDays={activeDays} />
 
-          {/* Legend */}
-          {view === "grid" && (
-            <div className="flex items-center gap-4 mt-5 flex-wrap">
-              <p className="text-xs text-zinc-400 font-medium">Legend:</p>
-              <span className="flex items-center gap-1.5 text-xs text-zinc-500">
-                <span className="w-3 h-3 rounded-sm bg-green-600" /> Current
-                class
-              </span>
-              <span className="flex items-center gap-1.5 text-xs text-zinc-500">
-                <span className="w-3 h-3 rounded-sm bg-amber-100 border border-amber-200" />{" "}
-                Break
-              </span>
-              <span className="flex items-center gap-1.5 text-xs text-zinc-500">
-                <span className="w-3 h-3 rounded-sm border-2 border-dashed border-zinc-300" />{" "}
-                Free slot
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-4 mt-5 flex-wrap">
+            <p className="text-xs text-zinc-400 font-medium">Legend:</p>
+            <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+              <span className="w-3 h-3 rounded-sm bg-green-600" /> Current class
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+              <span className="w-3 h-3 rounded-sm bg-amber-100 border border-amber-200" />{" "}
+              Break
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+              <span className="w-3 h-3 rounded-sm border-2 border-dashed border-zinc-300" />{" "}
+              Free slot
+            </span>
+          </div>
         </>
       )}
     </Container>
