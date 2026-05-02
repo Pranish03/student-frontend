@@ -1,10 +1,15 @@
 import { axios } from "../lib/axios";
 
 export const fetchCourseResources = async ({ courseId, type }) => {
-  const { data } = await axios.get(
-    `/resources/course/${courseId}?type=${type}`,
-  );
-  return data;
+  try {
+    const { data } = await axios.get(
+      `/resources/course/${courseId}?type=${type}`,
+    );
+    return data;
+  } catch (err) {
+    if (err.response?.status === 404) return { resources: [] };
+    throw err;
+  }
 };
 
 export const createResource = async (data) => {

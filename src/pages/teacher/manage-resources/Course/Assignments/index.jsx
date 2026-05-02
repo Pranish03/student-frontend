@@ -1,14 +1,25 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { DateTime } from "luxon";
-import { LuEllipsis, LuPaperclip } from "react-icons/lu";
+import {
+  LuPaperclip,
+  LuInbox,
+  LuClipboardList,
+  LuClock,
+  LuCalendar,
+  LuDownload,
+  LuUsers,
+  LuChevronDown,
+  LuChevronUp,
+  LuEllipsis,
+  LuCircleCheck,
+  LuCircleAlert,
+} from "react-icons/lu";
 import { IoAddCircle } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { axios } from "../../../../../lib/axios";
-import { Table } from "../../../../../components/table/Table";
 import { Button } from "../../../../../components/Button";
-import { filterSpecificColumns } from "../../../../../utils/tableFilters";
 import { AddAssignmentDialog } from "./AddAssignmentDialog";
 import { EditAssignmentDialog } from "./EditAssignmentDialog";
 import { DeleteAssignmentDialog } from "./DeleteAssignmentDialog";
@@ -25,109 +36,242 @@ const fetchAssignments = async (courseId) => {
   }
 };
 
-export const Assignments = ({ courseId }) => {
-  const [selectedAssignment, setSelectedAssignment] = useState(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [editingAssignment, setEditingAssignment] = useState(null);
-  const [deletingAssignment, setDeletingAssignment] = useState(null);
+const fetchSubmissions = async (assignmentId) => {
+  try {
+    const { data } = await axios.get(`/submissions/assignment/${assignmentId}`);
+    return data?.data || [];
+  } catch (err) {
+    if (err.response?.status === 404) return [];
+    throw err;
+  }
+};
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["assignment", courseId],
-    queryFn: () => fetchAssignments(courseId),
-    staleTime: 2 * 60 * 1000,
+const DeadlineBadge = ({ deadline }) => {
+  if (!deadline) return null;
+  const dt = DateTime.fromISO(deadline);
+  const now = DateTime.now();
+  const diff = dt.diff(now, "days").days;
+  const formatted = dt.toFormat("dd LLL yyyy");
+
+  let cls = "bg-zinc-50 text-zinc-500 border-zinc-200";
+  let Icon = LuCalendar;
+  let label = formatted;
+
+  if (diff < 0) {
+    cls = "bg-red-50 text-red-500 border-red-200";
+    Icon = LuCircleAlert;
+    label = `Expired · ${formatted}`;
+  } else if (diff <= 1) {
+    cls = "bg-red-50 text-red-500 border-red-200";
+    Icon = LuClock;
+    label = `Due today · ${formatted}`;
+  } else if (diff <= 3) {
+    cls = "bg-amber-50 text-amber-600 border-amber-200";
+    Icon = LuClock;
+    label = `${Math.ceil(diff)}d left · ${formatted}`;
+  } else {
+    cls = "bg-green-50 text-green-600 border-green-200";
+    label = formatted;
+  }
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 text-xs font-medium border px-2.5 py-1 rounded-full ${cls}`}
+    >
+      <Icon size={11} />
+      {label}
+    </span>
+  );
+};
+
+const SubmissionItem = ({ submission, studentName, studentEmail }) => {
+  return (
+    <div className="flex items-center justify-between py-3 border-b border-zinc-100 last:border-0">
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-zinc-900 truncate">
+          {studentName}
+        </p>
+        <p className="text-xs text-zinc-400 truncate">{studentEmail}</p>
+        <p className="text-xs text-zinc-500 mt-0.5">
+          Submitted {DateTime.fromISO(submission.createdAt).toRelative()}
+        </p>
+      </div>
+      {submission.file && (
+        <a
+          href={submission.file}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2.5 py-1.5 rounded-lg hover:bg-green-100 transition-colors shrink-0 ml-3"
+        >
+          <LuDownload size={12} />
+          View
+        </a>
+      )}
+    </div>
+  );
+};
+
+const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const [showSubmissions, setShowSubmissions] = useState(false);
+
+  const { data: submissions, isLoading: submissionsLoading } = useQuery({
+    queryKey: ["submissions", assignment._id],
+    queryFn: () => fetchSubmissions(assignment._id),
+    enabled: showSubmissions,
+    staleTime: 30 * 1000,
   });
 
-  const handleActionClick = (e, assignment) => {
+  const submissionCount = submissions?.length || 0;
+
+  const isExpired =
+    assignment.deadline &&
+    DateTime.fromISO(assignment.deadline) < DateTime.now();
+
+  const handleDropdownClick = (e) => {
     e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX - 125 + rect.width,
+      left: rect.left + window.scrollX - 110 + rect.width,
     });
-    setSelectedAssignment((prev) =>
-      prev?._id === assignment._id ? null : assignment,
-    );
+    setShowDropdown(true);
   };
 
-  const closeDropdown = () => setSelectedAssignment(null);
-
-  const columns = [
-    { header: "SN", cell: (info) => info.row.index + 1 },
-    {
-      header: "Title",
-      accessorKey: "title",
-      cell: (info) => (
-        <a
-          href={info.row.original.file}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 text-green-700 hover:underline"
-        >
-          <LuPaperclip size={14} />
-          {info.getValue()}
-        </a>
-      ),
-    },
-    {
-      header: "Deadline",
-      accessorKey: "deadline",
-      cell: (info) =>
-        info.getValue() ? (
-          DateTime.fromISO(info.getValue()).toFormat("dd LLL yyyy")
-        ) : (
-          <span className="text-zinc-400 italic">No deadline</span>
-        ),
-    },
-    {
-      header: "Created At",
-      accessorKey: "createdAt",
-      cell: (info) => DateTime.fromISO(info.getValue()).toRelative(),
-    },
-    {
-      header: "Updated At",
-      accessorKey: "updatedAt",
-      cell: (info) => DateTime.fromISO(info.getValue()).toRelative(),
-    },
-    {
-      header: "Action",
-      cell: (info) => (
-        <button
-          onClick={(e) => handleActionClick(e, info.row.original)}
-          className="p-1.5 hover:bg-zinc-100 rounded-[10px] cursor-pointer"
-        >
-          <LuEllipsis size={18} />
-        </button>
-      ),
-    },
-  ];
-
-  const rows = data?.resources ?? [];
+  const closeDropdown = () => setShowDropdown(false);
 
   return (
     <>
-      <div className="float-end mb-4">
-        <Button
-          className="flex items-center gap-2"
-          onClick={() => setShowAddDialog(true)}
-        >
-          <IoAddCircle size={22} />
-          Add Assignment
-        </Button>
+      <div className="bg-white border border-zinc-200 rounded-[10px] overflow-hidden hover:border-zinc-300 transition-all duration-150">
+        {/* Header */}
+        <div className="p-4">
+          <div className="flex items-start gap-3">
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                isExpired
+                  ? "bg-red-50 border border-red-200"
+                  : "bg-orange-50 border border-orange-200"
+              }`}
+            >
+              <LuClipboardList
+                size={17}
+                className={isExpired ? "text-red-500" : "text-orange-500"}
+              />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1">
+                  <p className="font-semibold text-zinc-900 text-sm leading-snug">
+                    {assignment.title}
+                  </p>
+                  {assignment.file && (
+                    <a
+                      href={assignment.file}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-green-600 hover:underline mt-0.5"
+                    >
+                      <LuPaperclip size={11} />
+                      View assignment file
+                    </a>
+                  )}
+                </div>
+
+                <button
+                  onClick={handleDropdownClick}
+                  className="p-1.5 hover:bg-zinc-100 rounded-lg text-zinc-500 hover:text-zinc-700 transition-colors shrink-0"
+                >
+                  <LuEllipsis size={16} />
+                </button>
+              </div>
+
+              {assignment.description && (
+                <p className="text-xs text-zinc-500 mt-1.5 line-clamp-2">
+                  {assignment.description}
+                </p>
+              )}
+
+              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                <DeadlineBadge deadline={assignment.deadline} />
+                <span className="text-xs text-zinc-400">
+                  Posted {DateTime.fromISO(assignment.createdAt).toRelative()}
+                </span>
+              </div>
+
+              {/* Submissions summary */}
+              <button
+                onClick={() => setShowSubmissions(!showSubmissions)}
+                className="mt-3 flex items-center gap-2 text-xs font-medium text-zinc-600 hover:text-green-600 transition-colors group"
+              >
+                <div className="flex items-center gap-1.5 bg-zinc-100 rounded-full px-2.5 py-1 group-hover:bg-green-50 transition-colors">
+                  <LuUsers size={12} />
+                  <span>
+                    {submissionCount} submission
+                    {submissionCount !== 1 ? "s" : ""}
+                  </span>
+                  {showSubmissions ? (
+                    <LuChevronUp size={12} />
+                  ) : (
+                    <LuChevronDown size={12} />
+                  )}
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Submissions panel */}
+        <AnimatePresence>
+          {showSubmissions && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="border-t border-zinc-100 bg-zinc-50/50"
+            >
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-medium text-zinc-700">
+                    Student Submissions
+                  </p>
+                  <span className="text-xs text-zinc-400">
+                    {submissionCount} total
+                  </span>
+                </div>
+
+                {submissionsLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="w-6 h-6 border-2 border-zinc-200 border-t-green-600 rounded-full animate-spin" />
+                  </div>
+                ) : submissions?.length === 0 ? (
+                  <div className="text-center py-8">
+                    <LuInbox size={32} className="text-zinc-300 mx-auto mb-2" />
+                    <p className="text-sm text-zinc-500">No submissions yet</p>
+                  </div>
+                ) : (
+                  <div className="max-h-80 overflow-y-auto">
+                    {submissions.map((submission) => (
+                      <SubmissionItem
+                        key={submission._id}
+                        submission={submission}
+                        studentName={submission.student?.name || "Unknown"}
+                        studentEmail={submission.student?.email || ""}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <Table
-        data={rows}
-        columns={columns}
-        globalFilterFn={filterSpecificColumns("title")}
-        isLoading={isLoading}
-      />
-
-      {/* Dropdown */}
+      {/* Dropdown Menu */}
       <AnimatePresence>
-        {selectedAssignment && (
+        {showDropdown && (
           <>
             <motion.div
               className="fixed inset-0 z-40"
@@ -149,9 +293,8 @@ export const Assignments = ({ courseId }) => {
                 variant="ghost"
                 className="text-left text-zinc-900"
                 onClick={() => {
-                  setEditingAssignment(selectedAssignment);
                   closeDropdown();
-                  setShowEditDialog(true);
+                  onEdit(assignment);
                 }}
               >
                 Edit Assignment
@@ -160,9 +303,8 @@ export const Assignments = ({ courseId }) => {
                 variant="ghost-danger"
                 className="text-left"
                 onClick={() => {
-                  setDeletingAssignment(selectedAssignment);
                   closeDropdown();
-                  setShowDeleteDialog(true);
+                  onDelete(assignment);
                 }}
               >
                 Delete Assignment
@@ -171,7 +313,113 @@ export const Assignments = ({ courseId }) => {
           </>
         )}
       </AnimatePresence>
+    </>
+  );
+};
 
+export const Assignments = ({ courseId }) => {
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState(null);
+  const [deletingAssignment, setDeletingAssignment] = useState(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["assignment", courseId],
+    queryFn: () => fetchAssignments(courseId),
+    staleTime: 2 * 60 * 1000,
+  });
+
+  const assignments = data?.resources ?? [];
+
+  const handleEditClick = (assignment) => {
+    setEditingAssignment(assignment);
+    setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = (assignment) => {
+    setDeletingAssignment(assignment);
+    setShowDeleteDialog(true);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-8 h-8 border-3 border-zinc-200 border-t-green-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const pending = assignments.filter(
+    (a) => !a.deadline || DateTime.fromISO(a.deadline) >= DateTime.now(),
+  );
+  const expired = assignments.filter(
+    (a) => a.deadline && DateTime.fromISO(a.deadline) < DateTime.now(),
+  );
+
+  return (
+    <>
+      <div className="flex justify-end mb-4">
+        <Button
+          className="flex items-center gap-2"
+          onClick={() => setShowAddDialog(true)}
+        >
+          <IoAddCircle size={22} />
+          Add Assignment
+        </Button>
+      </div>
+
+      {assignments.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <LuInbox size={52} className="text-zinc-300 mb-3" />
+          <p className="text-zinc-500 font-semibold">No assignments yet</p>
+          <p className="text-zinc-400 text-sm mt-1">
+            Create your first assignment for this course
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {pending.length > 0 && (
+            <section>
+              <p className="text-sm font-medium text-zinc-600 mb-3">
+                Active · {pending.length}
+              </p>
+              <div className="space-y-3">
+                {pending.map((assignment) => (
+                  <AssignmentCard
+                    key={assignment._id}
+                    assignment={assignment}
+                    courseId={courseId}
+                    onEdit={handleEditClick}
+                    onDelete={handleDeleteClick}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {expired.length > 0 && (
+            <section>
+              <p className="text-sm font-medium text-zinc-400 mb-3">
+                Expired · {expired.length}
+              </p>
+              <div className="space-y-3 opacity-75">
+                {expired.map((assignment) => (
+                  <AssignmentCard
+                    key={assignment._id}
+                    assignment={assignment}
+                    courseId={courseId}
+                    onEdit={handleEditClick}
+                    onDelete={handleDeleteClick}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      )}
+
+      {/* Dialogs */}
       <AnimatePresence>
         {showAddDialog && (
           <AddAssignmentDialog
