@@ -3,7 +3,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ToastContainer } from "react-toastify";
 import { Toaster } from "sonner";
 import { AuthProvider } from "./context/auth/AuthProvider.jsx";
 import { AppRoutes } from "./routes/AppRoutes.jsx";
@@ -22,8 +21,7 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <ToastContainer position="top-center" autoClose={3000} />
-          <Toaster position="top-right" />
+          <Toaster position="top-center" />
           <AppRoutes />
         </BrowserRouter>
       </AuthProvider>

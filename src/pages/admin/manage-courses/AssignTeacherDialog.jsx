@@ -10,7 +10,7 @@ import { IoSearch, IoClose } from "react-icons/io5";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchAllTeachers } from "../../../api/manageUsers";
 import { assignTeacher } from "../../../api/manageCourses";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { assignTeacherSchema } from "../../../schemas/courseSchema";
 

@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { LuChevronRight, LuEllipsis, LuInbox } from "react-icons/lu";
 import { IoAddCircle } from "react-icons/io5";
 import { ImSpinner8 } from "react-icons/im";
-
 import { fetchAllNotices } from "../../../api/notices";
 import { Button } from "../../../components/Button";
 import { Container } from "../../../components/ui/Container";

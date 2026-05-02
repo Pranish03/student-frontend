@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Dialog } from "../../../components/Dialog";
 import { Button } from "../../../components/Button";

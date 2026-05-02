@@ -8,7 +8,7 @@ import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { assignCourses } from "../../../../api/manageClasses";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ImSpinner8 } from "react-icons/im";
 import { BsFileEarmarkCodeFill } from "react-icons/bs";
 import { IoSearch, IoClose } from "react-icons/io5";

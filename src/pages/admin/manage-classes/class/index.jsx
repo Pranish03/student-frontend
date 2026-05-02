@@ -9,7 +9,6 @@ import {
   LuClock,
 } from "react-icons/lu";
 import { FaPenNib } from "react-icons/fa";
-
 import { Link, useParams } from "react-router-dom";
 import { fetchClass } from "../../../../api/manageClasses";
 import { Button } from "../../../../components/Button";

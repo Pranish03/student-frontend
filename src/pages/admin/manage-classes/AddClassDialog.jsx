@@ -3,7 +3,7 @@ import { Button } from "../../../components/Button";
 import { Input } from "../../../components/Input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClass } from "../../../api/manageClasses";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ImSpinner8 } from "react-icons/im";
 import { Dialog } from "../../../components/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
