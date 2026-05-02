@@ -8,6 +8,7 @@ import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Label } from "../../components/form/Label";
 import { Select } from "../../components/form/Select";
+import { FileInput } from "../../components/form/FileInput";
 import { createNoticeSchema } from "../../schemas/noticeSchema";
 import { createNotice } from "../../api/notices";
 
@@ -18,6 +19,7 @@ export const AddNoticeDialog = ({ close }) => {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -64,7 +66,6 @@ export const AddNoticeDialog = ({ close }) => {
           </div>
         )}
 
-        {/* Title */}
         <div className="mb-5">
           <Label htmlFor="title" errors={errors?.title} required>
             Title
@@ -82,7 +83,6 @@ export const AddNoticeDialog = ({ close }) => {
           )}
         </div>
 
-        {/* Target Audience */}
         <div className="mb-5">
           <Label htmlFor="targetRole">Audience</Label>
           <Select id="targetRole" {...register("targetRole")}>
@@ -92,7 +92,6 @@ export const AddNoticeDialog = ({ close }) => {
           </Select>
         </div>
 
-        {/* Description */}
         <div className="mb-5">
           <Label htmlFor="description">Description</Label>
           <textarea
@@ -111,19 +110,14 @@ export const AddNoticeDialog = ({ close }) => {
           />
         </div>
 
-        {/* File */}
         <div className="mb-7">
           <Label htmlFor="file">Attachment (PDF / DOCX / PPTX)</Label>
-          <input
-            id="file"
-            type="file"
-            accept=".pdf,.doc,.docx,.ppt,.pptx"
+          <FileInput
+            onChange={(files) => {
+              setValue("file", files || [], { shouldValidate: true });
+            }}
+            error={errors?.file}
             disabled={mutation?.isPending}
-            className="block w-full text-sm text-zinc-600
-              file:mr-4 file:py-1.5 file:px-3 file:rounded-[10px] file:border-0
-              file:text-sm file:font-medium file:bg-zinc-100 file:text-zinc-700
-              hover:file:bg-zinc-200 cursor-pointer"
-            {...register("file")}
           />
         </div>
 

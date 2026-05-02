@@ -9,6 +9,7 @@ import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Label } from "../../components/form/Label";
 import { Select } from "../../components/form/Select";
+import { FileInput } from "../../components/form/FileInput";
 import { updateNoticeSchema } from "../../schemas/noticeSchema";
 import { editNotice } from "../../api/notices";
 
@@ -19,6 +20,7 @@ export const EditNoticeDialog = ({ notice, close }) => {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -121,7 +123,11 @@ export const EditNoticeDialog = ({ notice, close }) => {
         </div>
 
         <div className="mb-7">
-          <Label htmlFor="file">Replace Attachment</Label>
+          <Label htmlFor="file">
+            {notice?.file
+              ? "Replace Attachment"
+              : "Attachment (PDF / DOCX / PPTX)"}
+          </Label>
           {notice?.file && (
             <p className="text-sm text-zinc-500 mb-2">
               Current:{" "}
@@ -135,16 +141,12 @@ export const EditNoticeDialog = ({ notice, close }) => {
               </a>
             </p>
           )}
-          <input
-            id="file"
-            type="file"
-            accept=".pdf,.doc,.docx,.ppt,.pptx"
+          <FileInput
+            onChange={(files) => {
+              setValue("file", files || [], { shouldValidate: true });
+            }}
+            error={errors?.file}
             disabled={mutation?.isPending}
-            className="block w-full text-sm text-zinc-600
-              file:mr-4 file:py-1.5 file:px-3 file:rounded-[10px] file:border-0
-              file:text-sm file:font-medium file:bg-zinc-100 file:text-zinc-700
-              hover:file:bg-zinc-200 cursor-pointer"
-            {...register("file")}
           />
         </div>
 
