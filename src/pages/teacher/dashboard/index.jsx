@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -10,11 +11,8 @@ import {
   LuBell,
   LuChevronRight,
   LuCheck,
-  LuX,
   LuCalendar,
-  LuFileText,
   LuTrendingUp,
-  LuCircleAlert,
   LuMapPin,
 } from "react-icons/lu";
 import { BsFileEarmarkCodeFill } from "react-icons/bs";
@@ -105,38 +103,57 @@ const getTodayClasses = (schedule, teacherCourseIds) => {
     .sort((a, b) => a.startTime.localeCompare(b.startTime));
 };
 
-const LiveClock = () => {
-  const [time, setTime] = useState(new Date());
+const AnimatedNumber = ({ value }) => {
+  const [display, setDisplay] = useState(0);
+
   useEffect(() => {
-    const t = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <span className="tabular-nums">
-      {time.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })}
-    </span>
-  );
+    if (!value) return;
+    let start = null;
+    const duration = 900;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.floor(eased * value));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [value]);
+
+  return <>{display.toLocaleString()}</>;
 };
 
-const StatCard = ({ icon, label, value, sub, color }) => (
-  <div className="group block bg-white border border-zinc-200 rounded-[14px] p-5">
-    <div
-      className={`w-10 h-10 rounded-[10px] ${color} flex items-center justify-center mb-4`}
-    >
-      {icon}
+const StatCard = ({ title, value, icon: Icon, sub, isLoading }) => (
+  <div className="bg-white border border-zinc-300 rounded-[10px] p-6">
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-sm text-zinc-500 mb-1">{title}</p>
+        <p className="text-3xl font-bold text-zinc-900">
+          {isLoading ? (
+            <span className="inline-block w-12 h-8 bg-zinc-100 rounded animate-pulse" />
+          ) : (
+            <AnimatedNumber value={value} />
+          )}
+        </p>
+        {sub && !isLoading && (
+          <p className="text-xs text-zinc-500 mt-1">{sub}</p>
+        )}
+      </div>
+      <div className="p-3 bg-green-50 rounded-lg">
+        <Icon className="w-6 h-6 text-green-600" />
+      </div>
     </div>
-    <p className="text-3xl font-bold text-zinc-900 tabular-nums">{value}</p>
-    <p className="text-sm text-zinc-500 mt-0.5 font-medium">{label}</p>
-    {sub && <p className="text-xs text-zinc-400 mt-1">{sub}</p>}
+    {!isLoading && (
+      <div className="mt-3 flex items-center gap-1 text-xs">
+        <LuTrendingUp className="w-3 h-3 text-green-600" />
+        <span className="text-green-600 font-medium">{sub}</span>
+      </div>
+    )}
   </div>
 );
 
 const Section = ({ title, icon, action, children }) => (
-  <div className="bg-white border border-zinc-200 rounded-[14px] p-5">
+  <div className="bg-white border border-zinc-200 rounded-[10px] p-5">
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
         {icon}
@@ -223,7 +240,6 @@ const TodayClasses = ({ courses }) => {
                     : "bg-zinc-50/60 border-dashed border-zinc-200 opacity-40"
               }`}
           >
-            {/* Time */}
             <div className="shrink-0 w-16 text-center">
               <p
                 className={`text-xs font-semibold ${current ? "text-green-100" : "text-zinc-500"}`}
@@ -462,7 +478,6 @@ const AttendanceOverview = ({ courses }) => {
 
         const studentCount = summary.summary?.length ?? 0;
         const totalClasses = summary.totalClasses ?? 0;
-
         const avgStudentPct =
           studentCount > 0
             ? Math.round(
@@ -562,32 +577,30 @@ const RecentNotices = ({ notices }) => {
 };
 
 const CourseChip = ({ course }) => (
-  <div>
-    <Link
-      to={`/teacher/manage-resources/${course._id}`}
-      className="group flex items-center gap-3 bg-white border border-zinc-200 rounded-xl p-4"
-    >
-      <div className="w-9 h-9 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
-        <LuBookOpen size={16} className="text-green-600" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-zinc-900 truncate">
-          {course.name}
-        </p>
-        <p className="text-xs text-zinc-400 flex items-center gap-1 mt-0.5">
-          <BsFileEarmarkCodeFill size={9} />
-          {course.code}
-          {course.class?.name && (
-            <span className="ml-1">· {course.class.name}</span>
-          )}
-        </p>
-      </div>
-      <LuChevronRight
-        size={14}
-        className="text-zinc-300 group-hover:text-green-500 transition-colors shrink-0"
-      />
-    </Link>
-  </div>
+  <Link
+    to={`/teacher/manage-resources/${course._id}`}
+    className="group flex items-center gap-3 bg-white border border-zinc-200 rounded-[10px] p-4"
+  >
+    <div className="w-9 h-9 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
+      <LuBookOpen size={16} className="text-green-600" />
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="text-sm font-semibold text-zinc-900 truncate">
+        {course.name}
+      </p>
+      <p className="text-xs text-zinc-400 flex items-center gap-1 mt-0.5">
+        <BsFileEarmarkCodeFill size={9} />
+        {course.code}
+        {course.class?.name && (
+          <span className="ml-1">· {course.class.name}</span>
+        )}
+      </p>
+    </div>
+    <LuChevronRight
+      size={14}
+      className="text-zinc-300 group-hover:text-green-500 transition-colors shrink-0"
+    />
+  </Link>
 );
 
 export const TeacherDashboard = () => {
@@ -628,47 +641,43 @@ export const TeacherDashboard = () => {
   return (
     <Container>
       <div className="mb-8">
-        <div className="flex items-start justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-zinc-900 mb-1">
-              {greet()}, {user?.name?.split(" ")[0]}
-            </h1>
-            <p className="text-zinc-500 text-base flex items-center gap-2">
-              <LuCalendar size={14} className="text-zinc-400" />
-              {today}
-            </p>
-          </div>
-        </div>
+        <h1 className="text-3xl font-bold text-zinc-900 mb-1">
+          {greet()}, {user?.name?.split(" ")[0]}
+        </h1>
+        <p className="text-zinc-500 text-base flex items-center gap-2">
+          <LuCalendar size={14} className="text-zinc-400" />
+          {today}
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
-          icon={<LuBookOpen size={18} className="text-green-600" />}
-          label="Courses"
+          title="Total Courses"
           value={courses.length}
-          color="bg-green-50"
-          delay={0.05}
+          icon={LuBookOpen}
+          sub={`${courses.length} assigned`}
+          isLoading={coursesLoading}
         />
         <StatCard
-          icon={<LuUsers size={18} className="text-blue-600" />}
-          label="Classes"
+          title="Total Classes"
           value={uniqueClasses.length}
-          color="bg-blue-50"
-          delay={0.1}
+          icon={LuUsers}
+          sub={`${uniqueClasses.length} active`}
+          isLoading={coursesLoading}
         />
         <StatCard
-          icon={<LuClipboardList size={18} className="text-orange-500" />}
-          label="Today's classes"
-          value={DAYS[new Date().getDay()]}
-          color="bg-orange-50"
-          delay={0.15}
+          title="Today"
+          value={DAYS[new Date().getDay()].length}
+          icon={LuClock}
+          sub={DAYS[new Date().getDay()]}
+          isLoading={coursesLoading}
         />
         <StatCard
-          icon={<LuBell size={18} className="text-amber-600" />}
-          label="Notices"
+          title="Notices"
           value={notices.length}
-          color="bg-amber-50"
-          delay={0.2}
+          icon={LuBell}
+          sub="announcements"
+          isLoading={coursesLoading}
         />
       </div>
 
@@ -697,7 +706,6 @@ export const TeacherDashboard = () => {
             title="Today's Classes"
             icon={<LuClock size={15} className="text-green-600" />}
             action={{ label: "Full schedule", to: "/teacher/schedule" }}
-            delay={0.35}
           >
             {courses.length === 0 ? (
               <EmptyMsg>No courses assigned yet</EmptyMsg>
@@ -713,7 +721,6 @@ export const TeacherDashboard = () => {
               label: "Manage resources",
               to: "/teacher/manage-resources",
             }}
-            delay={0.4}
           >
             {courses.length === 0 ? (
               <EmptyMsg>No courses assigned yet</EmptyMsg>
@@ -728,7 +735,6 @@ export const TeacherDashboard = () => {
             title="Attendance Overview"
             icon={<LuTrendingUp size={15} className="text-blue-600" />}
             action={{ label: "Manage", to: "/teacher/manage-attendance" }}
-            delay={0.45}
           >
             {courses.length === 0 ? (
               <EmptyMsg>No courses assigned yet</EmptyMsg>
@@ -741,7 +747,6 @@ export const TeacherDashboard = () => {
             title="Recent Notices"
             icon={<LuBell size={15} className="text-amber-500" />}
             action={{ label: "All notices", to: "/teacher/manage-notices" }}
-            delay={0.5}
           >
             <RecentNotices notices={notices} />
           </Section>
