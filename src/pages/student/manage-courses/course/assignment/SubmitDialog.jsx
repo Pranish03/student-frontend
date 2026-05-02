@@ -1,18 +1,13 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  LuUpload,
-  LuCheck,
-  LuClock,
-  LuCircleAlert,
-  LuRefreshCw,
-} from "react-icons/lu";
+import { LuUpload, LuClock, LuCircleAlert, LuRefreshCw } from "react-icons/lu";
 import { ImSpinner8 } from "react-icons/im";
 import { DateTime } from "luxon";
 import { axios } from "../../../../../lib/axios";
 import { Dialog } from "../../../../../components/Dialog";
 import { Button } from "../../../../../components/Button";
+import { FileInput } from "../../../../../components/form/FileInput";
 
 const submitAssignment = async ({ assignmentId, file }) => {
   const formData = new FormData();
@@ -33,12 +28,6 @@ const resubmitAssignment = async ({ submissionId, file }) => {
   return data;
 };
 
-const ALLOWED_TYPES = [
-  "application/pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-];
-
 export const SubmitDialog = ({
   assignment,
   existingSubmission,
@@ -47,7 +36,6 @@ export const SubmitDialog = ({
 }) => {
   const queryClient = useQueryClient();
   const [file, setFile] = useState(null);
-  const [dragOver, setDragOver] = useState(false);
 
   const isResubmit = !!existingSubmission;
 
@@ -60,11 +48,9 @@ export const SubmitDialog = ({
             ? "Assignment resubmitted successfully!"
             : "Assignment submitted successfully!"),
       );
-      // Invalidate the per-assignment submission query used in AssignmentCard
       queryClient.invalidateQueries({
         queryKey: ["student-submission", assignment._id],
       });
-      // Also invalidate the broader assignments list for the course
       queryClient.invalidateQueries({
         queryKey: ["student-assignments", courseId],
       });
@@ -77,25 +63,6 @@ export const SubmitDialog = ({
       );
     },
   });
-
-  const handleFile = (f) => {
-    if (!f) return;
-    if (!ALLOWED_TYPES.includes(f.type)) {
-      toast.error("Only PDF, DOCX, or PPTX files are allowed");
-      return;
-    }
-    if (f.size > 10 * 1024 * 1024) {
-      toast.error("File size must be under 10 MB");
-      return;
-    }
-    setFile(f);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    handleFile(e.dataTransfer.files[0]);
-  };
 
   const handleSubmit = () => {
     if (!file) return;
@@ -159,68 +126,10 @@ export const SubmitDialog = ({
           </div>
         )}
 
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragOver(true);
-          }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={handleDrop}
-          onClick={() =>
-            !mutation.isPending &&
-            document.getElementById("submit-file-input").click()
-          }
-          className={`
-            relative border-2 border-dashed rounded-[10px] p-8 text-center cursor-pointer transition-all duration-150
-            ${dragOver ? "border-green-500 bg-green-50" : "border-zinc-300 hover:border-green-400 hover:bg-zinc-50"}
-            ${mutation.isPending ? "opacity-60 pointer-events-none" : ""}
-          `}
-        >
-          <input
-            id="submit-file-input"
-            type="file"
-            accept=".pdf,.doc,.docx,.ppt,.pptx"
-            className="hidden"
-            disabled={mutation.isPending}
-            onChange={(e) => handleFile(e.target.files[0])}
-          />
-
-          {file ? (
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                <LuCheck size={20} className="text-green-600" />
-              </div>
-              <p className="font-medium text-zinc-900 text-sm break-all">
-                {file.name}
-              </p>
-              <p className="text-xs text-zinc-500">
-                {(file.size / 1024 / 1024).toFixed(2)} MB
-              </p>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFile(null);
-                }}
-                className="text-xs text-red-500 hover:underline mt-1"
-              >
-                Remove file
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center">
-                <LuUpload size={20} className="text-zinc-500" />
-              </div>
-              <p className="font-medium text-zinc-700 text-sm">
-                Drag & drop or click to upload
-              </p>
-              <p className="text-xs text-zinc-400">
-                PDF, DOCX, or PPTX · Max 10 MB
-              </p>
-            </div>
-          )}
-        </div>
+        <FileInput
+          onChange={(files) => setFile(files?.[0] ?? null)}
+          disabled={mutation.isPending}
+        />
 
         <div className="flex items-center gap-3 justify-end pt-1">
           <Button
