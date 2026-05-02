@@ -63,7 +63,6 @@ const formatDisplayDate = (dateStr) => {
   });
 };
 
-// ── Progress ring ─────────────────────────────────────────────────────────────
 const ProgressRing = ({ percent, size = 72, stroke = 6 }) => {
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
@@ -105,7 +104,6 @@ const StatPill = ({ label, value, color }) => (
   </div>
 );
 
-// ── Student row ───────────────────────────────────────────────────────────────
 const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
   const present = record.isPresent;
   return (
@@ -171,7 +169,6 @@ const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
   );
 };
 
-// ── Main component ────────────────────────────────────────────────────────────
 export const Attendance = () => {
   const { id: courseId } = useParams();
   const queryClient = useQueryClient();
@@ -187,7 +184,6 @@ export const Attendance = () => {
   const isTodayDate = isTodayLocal(selectedDate);
   const canEdit = isTodayDate && !isFutureDate;
 
-  // ── Data fetching ────────────────────────────────────────────────────────
   const { data: courseData, isLoading: courseLoading } = useCourse(courseId);
   const classId = courseData?.data?.class;
 
@@ -215,9 +211,6 @@ export const Attendance = () => {
     throwOnError: false,
   });
 
-  // ── Schedule check ───────────────────────────────────────────────────────
-  // Find which day-of-week the selected date falls on, then look up the
-  // schedule to see if this course has a class on that day.
   const selectedDayName = DAYS[parseLocalDate(selectedDate).getDay()];
 
   const scheduledEntry =
@@ -229,7 +222,6 @@ export const Attendance = () => {
 
   const hasClassToday = !!scheduledEntry;
 
-  // ── Derived attendance state ─────────────────────────────────────────────
   const isNotFound =
     !attendanceQueryData?.data || attendanceQueryData?.data?.length === 0;
 
@@ -265,7 +257,6 @@ export const Attendance = () => {
   const presentCount = attendanceData.filter((r) => r.isPresent).length;
   const totalStudents = attendanceData.length;
 
-  // ── Mutation ─────────────────────────────────────────────────────────────
   const mutation = useMutation({
     mutationFn: async (data) => {
       if (existingAttendanceId) {
@@ -302,7 +293,6 @@ export const Attendance = () => {
     },
   });
 
-  // ── Handlers ─────────────────────────────────────────────────────────────
   const handleEdit = () => {
     setLocalAttendance(
       existingAttendanceId ? serverAttendance : initialAttendance,
@@ -353,7 +343,6 @@ export const Attendance = () => {
     setLocalAttendance([]);
   };
 
-  // ── Loading / error guards ────────────────────────────────────────────────
   if (courseLoading || classLoading || scheduleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

@@ -7,6 +7,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { axios } from "../../../lib/axios";
 import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
+import { Button } from "../../../components/Button";
 import { Paragraph } from "../../../components/ui/Paragraph";
 
 const fetchStudentClass = async () => {
@@ -14,46 +15,51 @@ const fetchStudentClass = async () => {
   return data;
 };
 
-const CourseCard = ({ course, index }) => {
+const CourseCard = ({ course, classInfo, index }) => {
   return (
-    <Link
-      to={`/student/manage-courses/${course._id}`}
-      className="group block bg-white border border-zinc-200 rounded-[14px] p-6"
+    <div
+      className="bg-white rounded-[10px] overflow-hidden border border-zinc-300 flex flex-col"
       style={{ animationDelay: `${index * 60}ms` }}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-11 h-11 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center transition-colors">
-          <LuBookOpen size={20} className="text-green-600" />
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-4">
+          <h3 className="text-xl font-semibold text-zinc-800 leading-tight pr-2">
+            {course.name}
+          </h3>
+          {course.code && (
+            <span className="flex items-center gap-1 text-sm font-medium text-green-700 bg-green-100 px-2.5 py-1 rounded-[10px] whitespace-nowrap shrink-0">
+              <BsFileEarmarkCodeFill size={13} />
+              {course.code}
+            </span>
+          )}
         </div>
-        {course.code && (
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
-            <BsFileEarmarkCodeFill size={11} />
-            {course.code}
-          </span>
-        )}
+
+        <div className="space-y-2 mb-4 flex-1">
+          <InfoRow label="Teacher" value={course.teacher?.name} />
+          <InfoRow
+            label="Department"
+            value={course.class?.department ?? classInfo?.department}
+          />
+          <InfoRow
+            label="Academic Year"
+            value={course.class?.academicYear ?? classInfo?.academicYear}
+          />
+        </div>
+
+        <Link to={`/student/manage-courses/${course._id}`}>
+          <Button className="w-full">View Course</Button>
+        </Link>
       </div>
-
-      <h3 className="font-semibold text-zinc-900 text-base mb-1transition-colors leading-snug">
-        {course.name}
-      </h3>
-
-      {course.teacher && (
-        <p className="text-sm text-zinc-500 flex items-center gap-1.5 mt-2">
-          <LuUsers size={13} className="shrink-0" />
-          {course.teacher.name || course.teacher}
-        </p>
-      )}
-
-      <div className="mt-4 pt-4 border-t border-zinc-100 flex items-center justify-between">
-        <span className="text-xs text-zinc-400">View notes & assignments</span>
-        <LuChevronRight
-          size={15}
-          className="text-zinc-400 group-hover:text-green-600 group-hover:translate-x-0.5 transition-all"
-        />
-      </div>
-    </Link>
+    </div>
   );
 };
+
+const InfoRow = ({ label, value }) => (
+  <p className="text-sm text-zinc-500">
+    <span className="font-medium text-zinc-700">{label}: </span>
+    {value ?? <i className="text-zinc-400">Not assigned</i>}
+  </p>
+);
 
 export const ManageCourses = () => {
   const { user } = useAuth();
@@ -112,7 +118,12 @@ export const ManageCourses = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {courses.map((course, i) => (
-            <CourseCard key={course._id} course={course} index={i} />
+            <CourseCard
+              key={course._id}
+              course={course}
+              classInfo={classData?.data}
+              index={i}
+            />
           ))}
         </div>
       )}

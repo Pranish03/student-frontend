@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -8,9 +10,8 @@ import {
   LuCalendar,
   LuChevronRight,
   LuCheck,
-  LuX,
-  LuCircleAlert,
   LuBell,
+  LuTrendingUp,
 } from "react-icons/lu";
 import { ImSpinner8 } from "react-icons/im";
 import { BsFileEarmarkCodeFill } from "react-icons/bs";
@@ -88,7 +89,55 @@ const getTodayClasses = (schedule) => {
     .sort((a, b) => a.startTime.localeCompare(b.startTime));
 };
 
-// ── Mini attendance ring ──────────────────────────────────────────────────────
+const AnimatedNumber = ({ value }) => {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!value) return;
+    let start = null;
+    const duration = 900;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.floor(eased * value));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [value]);
+
+  return <>{display.toLocaleString()}</>;
+};
+
+const StatCard = ({ title, value, icon: Icon, sub, isLoading }) => (
+  <div className="bg-white border border-zinc-300 rounded-[10px] p-6">
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-sm text-zinc-500 mb-1">{title}</p>
+        <p className="text-3xl font-bold text-zinc-900">
+          {isLoading ? (
+            <span className="inline-block w-12 h-8 bg-zinc-100 rounded animate-pulse" />
+          ) : (
+            <AnimatedNumber value={value} />
+          )}
+        </p>
+        {sub && !isLoading && (
+          <p className="text-xs text-zinc-500 mt-1">{sub}</p>
+        )}
+      </div>
+      <div className="p-3 bg-green-50 rounded-lg">
+        <Icon className="w-6 h-6 text-green-600" />
+      </div>
+    </div>
+    {!isLoading && (
+      <div className="mt-3 flex items-center gap-1 text-xs">
+        <LuTrendingUp className="w-3 h-3 text-green-600" />
+        <span className="text-green-600 font-medium">{sub}</span>
+      </div>
+    )}
+  </div>
+);
+
 const Ring = ({ pct, size = 36, stroke = 4 }) => {
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
@@ -122,7 +171,6 @@ const Ring = ({ pct, size = 36, stroke = 4 }) => {
   );
 };
 
-// ── Attendance summary across all courses ─────────────────────────────────────
 const AttendanceSummary = ({ courses }) => {
   const queries = courses.map((c) =>
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -159,14 +207,12 @@ const AttendanceSummary = ({ courses }) => {
     );
   }
 
-  // Overall average
   const avg = Math.round(
     withData.reduce((s, r) => s + r.pct, 0) / withData.length,
   );
 
   return (
     <div>
-      {/* Overall */}
       <div className="flex items-center gap-3 mb-4 p-3 bg-zinc-50 border border-zinc-200 rounded-[10px]">
         <div className="relative">
           <Ring pct={avg} size={48} stroke={5} />
@@ -190,7 +236,6 @@ const AttendanceSummary = ({ courses }) => {
         </div>
       </div>
 
-      {/* Per-course rows */}
       <div className="space-y-2">
         {rows.map(({ course, att, pct }) => (
           <div key={course._id} className="flex items-center gap-3">
@@ -234,7 +279,6 @@ const AttendanceSummary = ({ courses }) => {
   );
 };
 
-// ── Pending assignments across all courses ────────────────────────────────────
 const PendingAssignments = ({ courses }) => {
   const queries = courses.map((c) =>
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -333,7 +377,6 @@ const PendingAssignments = ({ courses }) => {
   );
 };
 
-// ── Main Dashboard ────────────────────────────────────────────────────────────
 export const StudentDashboard = () => {
   const { user } = useAuth();
 
@@ -393,30 +436,34 @@ export const StudentDashboard = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
-          icon={<LuBookOpen size={18} className="text-blue-600" />}
-          label="Courses"
+          title="Total Courses"
           value={courses.length}
-          bg="bg-blue-50"
+          icon={LuBookOpen}
+          sub={`${courses.length} enrolled`}
+          isLoading={classLoading}
         />
         <StatCard
-          icon={<LuClipboardList size={18} className="text-orange-500" />}
-          label="Today's classes"
+          title="Today's Classes"
           value={todayClasses.length}
-          bg="bg-orange-50"
+          icon={LuClock}
+          sub={todayClasses.length > 0 ? "scheduled today" : "no classes today"}
+          isLoading={classLoading}
         />
         <StatCard
-          icon={<LuCalendar size={18} className="text-violet-600" />}
-          label="Academic year"
-          value={classInfo?.academicYear ?? "—"}
-          bg="bg-violet-50"
+          title="Academic Year"
+          value={classInfo?.academicYear ?? 0}
+          icon={LuCalendar}
+          sub={classInfo?.department ?? "—"}
+          isLoading={classLoading}
         />
         <StatCard
-          icon={<LuBell size={18} className="text-green-600" />}
-          label="Notices"
+          title="Notices"
           value={noticesData?.data?.length ?? 0}
-          bg="bg-green-50"
+          icon={LuBell}
+          sub="unread announcements"
+          isLoading={classLoading}
         />
       </div>
 
@@ -425,7 +472,7 @@ export const StudentDashboard = () => {
           <Section
             title="Today's classes"
             icon={<LuClock size={16} className="text-green-600" />}
-            action={{ label: "Full schedule", to: "/student/manage-schedule" }}
+            action={{ label: "Full schedule", to: "/student/schedule" }}
           >
             {!classId ? (
               <EmptyMsg>Not enrolled in any class</EmptyMsg>
@@ -536,13 +583,11 @@ export const StudentDashboard = () => {
           </Section>
         </div>
 
-        {/* Right col — Attendance + Notices */}
         <div className="space-y-6">
-          {/* Attendance */}
           <Section
             title="Attendance"
             icon={<LuCheck size={16} className="text-green-600" />}
-            action={{ label: "Details", to: "/student/manage-attendance" }}
+            action={{ label: "Details", to: "/student/attendance" }}
           >
             {!classId ? (
               <EmptyMsg>Not enrolled in any class</EmptyMsg>
@@ -607,20 +652,8 @@ export const StudentDashboard = () => {
   );
 };
 
-const StatCard = ({ icon, label, value, bg }) => (
-  <div className="group bg-white border border-zinc-200 rounded-xl p-4 block">
-    <div
-      className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center mb-3`}
-    >
-      {icon}
-    </div>
-    <p className="text-2xl font-bold text-zinc-900">{value}</p>
-    <p className="text-sm text-zinc-500 mt-0.5">{label}</p>
-  </div>
-);
-
 const Section = ({ title, icon, action, children }) => (
-  <div className="bg-white border border-zinc-200 rounded-[14px] p-5">
+  <div className="bg-white border border-zinc-200 rounded-[10px] p-5">
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-base font-semibold text-zinc-900 flex items-center gap-2">
         {icon}
