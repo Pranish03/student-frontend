@@ -18,11 +18,11 @@ const CourseCard = ({ course, index }) => {
   return (
     <Link
       to={`/student/manage-courses/${course._id}`}
-      className="group block bg-white border border-zinc-200 rounded-[14px] p-6 hover:border-green-300 hover:shadow-md transition-all duration-200"
+      className="group block bg-white border border-zinc-200 rounded-[14px] p-6"
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className="w-11 h-11 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+        <div className="w-11 h-11 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center transition-colors">
           <LuBookOpen size={20} className="text-green-600" />
         </div>
         {course.code && (
@@ -33,7 +33,7 @@ const CourseCard = ({ course, index }) => {
         )}
       </div>
 
-      <h3 className="font-semibold text-zinc-900 text-base mb-1 group-hover:text-green-700 transition-colors leading-snug">
+      <h3 className="font-semibold text-zinc-900 text-base mb-1transition-colors leading-snug">
         {course.name}
       </h3>
 
@@ -69,14 +69,11 @@ export const ManageCourses = () => {
 
   return (
     <Container>
-      <div className="flex items-center gap-1 mb-4 text-sm">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/student"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/student">
           Student
         </Link>
-        <LuChevronRight size={14} className="text-zinc-400" />
+        <LuChevronRight size={14} />
         <span className="text-zinc-900 font-medium">Courses</span>
       </div>
 

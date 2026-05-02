@@ -101,7 +101,7 @@ const AssignmentCard = ({ assignment, courseId }) => {
 
   return (
     <>
-      <div className="bg-white border border-zinc-200 rounded-[10px] p-5 hover:border-zinc-300 hover:shadow-sm transition-all duration-150">
+      <div className="bg-white border border-zinc-200 rounded-[10px] p-5">
         <div className="flex items-start gap-3">
           <div
             className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
