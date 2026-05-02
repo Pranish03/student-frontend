@@ -68,6 +68,7 @@ export const TeacherLayout = () => {
               label="Classes"
               defaultOpen={true}
             >
+              <NavButton to="/teacher/schedule">Schedule</NavButton>
               <NavButton to="/teacher/manage-attendance">Attendance</NavButton>
               <NavButton to="/teacher/manage-resources">Resources</NavButton>
             </CollapsibleMenu>

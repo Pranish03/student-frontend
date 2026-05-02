@@ -8,6 +8,7 @@ import { TeacherDashboard } from "../pages/teacher/dashboard";
 import { Attendance } from "../pages/teacher/manage-attendance/Attendance";
 import { ManageResources } from "../pages/teacher/manage-resources/index.jsx";
 import { CourseResources } from "../pages/teacher/manage-resources/Course/index.jsx";
+import { TeacherSchedule } from "../pages/teacher/schedule/index.jsx";
 
 export const TeacherRoutes = {
   path: "/teacher",
@@ -17,6 +18,7 @@ export const TeacherRoutes = {
       element: <TeacherLayout />,
       children: [
         { element: <TeacherDashboard />, index: true },
+        { element: <TeacherSchedule />, path: "schedule" },
         { element: <ManageAttendance />, path: "manage-attendance" },
         { element: <Attendance />, path: "manage-attendance/:id" },
         { element: <ManageResources />, path: "manage-resources" },
