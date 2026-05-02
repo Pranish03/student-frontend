@@ -130,9 +130,7 @@ export const ManageClasses = () => {
 
         <div className="mb-8">
           <Heading className="mb-1">Classes</Heading>
-          <Paragraph>
-            Total {data?.data?.length || 0} classes
-          </Paragraph>
+          <Paragraph>Total {data?.data?.length || 0} classes</Paragraph>
         </div>
 
         <div className="float-end">
@@ -141,7 +139,7 @@ export const ManageClasses = () => {
             onClick={() => setShowAddDialog(true)}
           >
             <IoAddCircle size={22} />
-            Add Course
+            Add Class
           </Button>
         </div>
 

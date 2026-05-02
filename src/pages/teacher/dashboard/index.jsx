@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
-import { motion } from "framer-motion";
 import {
   LuBookOpen,
   LuUsers,
@@ -23,8 +22,6 @@ import { ImSpinner8 } from "react-icons/im";
 import { useAuth } from "../../../hooks/useAuth";
 import { axios } from "../../../lib/axios";
 import { Container } from "../../../components/ui/Container";
-
-// ── Data fetching ──────────────────────────────────────────────────────────────
 
 const fetchTeacherCourses = async (teacherId) => {
   const { data } = await axios.get(`/courses?teacher=${teacherId}`);
@@ -56,15 +53,6 @@ const fetchCourseResources = async (courseId, type) => {
   }
 };
 
-const fetchSubmissions = async (assignmentId) => {
-  try {
-    const { data } = await axios.get(`/submissions/assignment/${assignmentId}`);
-    return data;
-  } catch {
-    return { data: [] };
-  }
-};
-
 const fetchAttendanceByCourse = async (courseId) => {
   try {
     const { data } = await axios.get(`/attendances/${courseId}/summary`);
@@ -73,8 +61,6 @@ const fetchAttendanceByCourse = async (courseId) => {
     return { data: null };
   }
 };
-
-// ── Constants ──────────────────────────────────────────────────────────────────
 
 const DAYS = [
   "Sunday",
@@ -91,8 +77,6 @@ const TIME_SLOTS = [
   { label: "Second Period", start: "08:30", end: "10:00" },
   { label: "Third Period", start: "10:00", end: "11:30" },
 ];
-
-// ── Helpers ────────────────────────────────────────────────────────────────────
 
 const greet = () => {
   const h = new Date().getHours();
@@ -121,8 +105,6 @@ const getTodayClasses = (schedule, teacherCourseIds) => {
     .sort((a, b) => a.startTime.localeCompare(b.startTime));
 };
 
-// ── Live Clock ─────────────────────────────────────────────────────────────────
-
 const LiveClock = () => {
   const [time, setTime] = useState(new Date());
   useEffect(() => {
@@ -140,39 +122,21 @@ const LiveClock = () => {
   );
 };
 
-// ── Stat Card ──────────────────────────────────────────────────────────────────
-
-const StatCard = ({ icon, label, value, sub, to, color, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 16 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay }}
-  >
-    <Link
-      to={to}
-      className="group block bg-white border border-zinc-200 rounded-[14px] p-5 hover:border-zinc-300 hover:shadow-sm transition-all duration-200"
+const StatCard = ({ icon, label, value, sub, color }) => (
+  <div className="group block bg-white border border-zinc-200 rounded-[14px] p-5">
+    <div
+      className={`w-10 h-10 rounded-[10px] ${color} flex items-center justify-center mb-4`}
     >
-      <div
-        className={`w-10 h-10 rounded-[10px] ${color} flex items-center justify-center mb-4`}
-      >
-        {icon}
-      </div>
-      <p className="text-3xl font-bold text-zinc-900 tabular-nums">{value}</p>
-      <p className="text-sm text-zinc-500 mt-0.5 font-medium">{label}</p>
-      {sub && <p className="text-xs text-zinc-400 mt-1">{sub}</p>}
-    </Link>
-  </motion.div>
+      {icon}
+    </div>
+    <p className="text-3xl font-bold text-zinc-900 tabular-nums">{value}</p>
+    <p className="text-sm text-zinc-500 mt-0.5 font-medium">{label}</p>
+    {sub && <p className="text-xs text-zinc-400 mt-1">{sub}</p>}
+  </div>
 );
 
-// ── Section wrapper ────────────────────────────────────────────────────────────
-
-const Section = ({ title, icon, action, children, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay }}
-    className="bg-white border border-zinc-200 rounded-[14px] p-5"
-  >
+const Section = ({ title, icon, action, children }) => (
+  <div className="bg-white border border-zinc-200 rounded-[14px] p-5">
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
         {icon}
@@ -189,14 +153,12 @@ const Section = ({ title, icon, action, children, delay = 0 }) => (
       )}
     </div>
     {children}
-  </motion.div>
+  </div>
 );
 
 const EmptyMsg = ({ children }) => (
   <p className="text-sm text-zinc-400 italic text-center py-6">{children}</p>
 );
-
-// ── Today's Classes panel ─────────────────────────────────────────────────────
 
 const TodayClasses = ({ courses }) => {
   const teacherCourseIds = courses.map((c) => c._id);
@@ -320,8 +282,6 @@ const TodayClasses = ({ courses }) => {
   );
 };
 
-// ── Pending Submissions panel ──────────────────────────────────────────────────
-
 const PendingSubmissions = ({ courses }) => {
   const assignmentQueries = courses.map((c) =>
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -420,8 +380,6 @@ const PendingSubmissions = ({ courses }) => {
   );
 };
 
-// ── Attendance Overview panel ──────────────────────────────────────────────────
-
 const Ring = ({ pct, size = 44, stroke = 5 }) => {
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
@@ -483,21 +441,6 @@ const AttendanceOverview = ({ courses }) => {
 
   if (!withData.length) return <EmptyMsg>No attendance recorded yet</EmptyMsg>;
 
-  // Overall avg across all courses
-  const avgPct = Math.round(
-    withData.reduce((s, r) => {
-      const totalClasses = r.summary?.totalClasses ?? 0;
-      const presentAll =
-        r.summary?.summary?.reduce((a, s) => a + s.present, 0) ?? 0;
-      const totalPresent =
-        totalClasses > 0
-          ? (presentAll / (r.summary?.summary?.length || 1) / totalClasses) *
-            100
-          : 0;
-      return s + totalPresent;
-    }, 0) / withData.length,
-  );
-
   return (
     <div className="space-y-3">
       {rows.map(({ course, summary }) => {
@@ -520,7 +463,6 @@ const AttendanceOverview = ({ courses }) => {
         const studentCount = summary.summary?.length ?? 0;
         const totalClasses = summary.totalClasses ?? 0;
 
-        // Average attendance % across all students
         const avgStudentPct =
           studentCount > 0
             ? Math.round(
@@ -569,8 +511,6 @@ const AttendanceOverview = ({ courses }) => {
     </div>
   );
 };
-
-// ── Recent Notices ─────────────────────────────────────────────────────────────
 
 const RecentNotices = ({ notices }) => {
   if (!notices.length) return <EmptyMsg>No notices yet</EmptyMsg>;
@@ -621,23 +561,17 @@ const RecentNotices = ({ notices }) => {
   );
 };
 
-// ── My Courses row ─────────────────────────────────────────────────────────────
-
-const CourseChip = ({ course, index }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.2, delay: 0.4 + index * 0.05 }}
-  >
+const CourseChip = ({ course }) => (
+  <div>
     <Link
       to={`/teacher/manage-resources/${course._id}`}
-      className="group flex items-center gap-3 bg-white border border-zinc-200 rounded-[12px] p-4 hover:border-green-300 hover:shadow-sm transition-all duration-200"
+      className="group flex items-center gap-3 bg-white border border-zinc-200 rounded-xl p-4"
     >
-      <div className="w-9 h-9 rounded-[8px] bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
+      <div className="w-9 h-9 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
         <LuBookOpen size={16} className="text-green-600" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-zinc-900 truncate group-hover:text-green-700 transition-colors">
+        <p className="text-sm font-semibold text-zinc-900 truncate">
           {course.name}
         </p>
         <p className="text-xs text-zinc-400 flex items-center gap-1 mt-0.5">
@@ -653,10 +587,8 @@ const CourseChip = ({ course, index }) => (
         className="text-zinc-300 group-hover:text-green-500 transition-colors shrink-0"
       />
     </Link>
-  </motion.div>
+  </div>
 );
-
-// ── Main Dashboard ─────────────────────────────────────────────────────────────
 
 export const TeacherDashboard = () => {
   const { user } = useAuth();
@@ -677,18 +609,11 @@ export const TeacherDashboard = () => {
   const courses = coursesData?.data ?? [];
   const notices = noticesData?.data ?? [];
 
-  // Unique classes
   const classMap = {};
   for (const c of courses) {
     if (c.class?._id) classMap[c.class._id] = c.class;
   }
   const uniqueClasses = Object.values(classMap);
-
-  // Count total students across all classes
-  const totalStudents = uniqueClasses.reduce(
-    (s, cls) => s + (cls.capacity ?? 0),
-    0,
-  );
 
   const today = DateTime.now().toFormat("cccc, dd LLLL yyyy");
 
@@ -702,40 +627,26 @@ export const TeacherDashboard = () => {
 
   return (
     <Container>
-      {/* ── Header ── */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="mb-8"
-      >
+      <div className="mb-8">
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-3xl font-bold text-zinc-900 mb-1">
-              {greet()}, {user?.name?.split(" ")[0]} 👋
+              {greet()}, {user?.name?.split(" ")[0]}
             </h1>
             <p className="text-zinc-500 text-base flex items-center gap-2">
               <LuCalendar size={14} className="text-zinc-400" />
               {today}
             </p>
           </div>
-          <div className="bg-white border border-zinc-200 rounded-[12px] px-5 py-3 text-right">
-            <p className="text-2xl font-bold text-zinc-900 tabular-nums">
-              <LiveClock />
-            </p>
-            <p className="text-xs text-zinc-400 mt-0.5">Local time</p>
-          </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           icon={<LuBookOpen size={18} className="text-green-600" />}
           label="Courses"
           value={courses.length}
           color="bg-green-50"
-          to="/teacher/manage-resources"
           delay={0.05}
         />
         <StatCard
@@ -743,7 +654,6 @@ export const TeacherDashboard = () => {
           label="Classes"
           value={uniqueClasses.length}
           color="bg-blue-50"
-          to="/teacher/manage-attendance"
           delay={0.1}
         />
         <StatCard
@@ -751,7 +661,6 @@ export const TeacherDashboard = () => {
           label="Today's classes"
           value={DAYS[new Date().getDay()]}
           color="bg-orange-50"
-          to="/teacher/schedule"
           delay={0.15}
         />
         <StatCard
@@ -759,21 +668,14 @@ export const TeacherDashboard = () => {
           label="Notices"
           value={notices.length}
           color="bg-amber-50"
-          to="/teacher/manage-notices"
           delay={0.2}
         />
       </div>
 
-      {/* ── My Courses ── */}
       {courses.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-zinc-700">My Courses</h2>
+            <h2 className="text-sm font-semibold text-zinc-700">Resources</h2>
             <Link
               to="/teacher/manage-resources"
               className="text-xs text-green-600 hover:underline font-medium flex items-center gap-0.5"
@@ -782,18 +684,15 @@ export const TeacherDashboard = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {courses.map((c, i) => (
-              <CourseChip key={c._id} course={c} index={i} />
+            {courses.map((c) => (
+              <CourseChip key={c._id} course={c} />
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
-      {/* ── Main grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left col */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Today's schedule */}
           <Section
             title="Today's Classes"
             icon={<LuClock size={15} className="text-green-600" />}
@@ -807,7 +706,6 @@ export const TeacherDashboard = () => {
             )}
           </Section>
 
-          {/* Active assignments */}
           <Section
             title="Active Assignments"
             icon={<LuClipboardList size={15} className="text-orange-500" />}
@@ -825,9 +723,7 @@ export const TeacherDashboard = () => {
           </Section>
         </div>
 
-        {/* Right col */}
         <div className="space-y-6">
-          {/* Attendance overview */}
           <Section
             title="Attendance Overview"
             icon={<LuTrendingUp size={15} className="text-blue-600" />}
@@ -841,7 +737,6 @@ export const TeacherDashboard = () => {
             )}
           </Section>
 
-          {/* Recent notices */}
           <Section
             title="Recent Notices"
             icon={<LuBell size={15} className="text-amber-500" />}
@@ -852,20 +747,6 @@ export const TeacherDashboard = () => {
           </Section>
         </div>
       </div>
-
-      {/* ── Footer ── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="mt-8 flex items-center justify-between text-xs text-zinc-400"
-      >
-        <span>Last refreshed: {DateTime.now().toFormat("hh:mm a")}</span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          System online
-        </span>
-      </motion.div>
     </Container>
   );
 };

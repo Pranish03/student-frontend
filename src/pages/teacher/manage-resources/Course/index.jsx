@@ -100,7 +100,7 @@ export const CourseResources = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer whitespace-nowrap text-sm
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer whitespace-nowrap text-sm border-0
                   ${
                     isActive
                       ? "text-green-600 bg-white border border-zinc-200 shadow"

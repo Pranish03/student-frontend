@@ -30,6 +30,8 @@ import {
   isTodayLocal,
   parseLocalDate,
 } from "../../../../utils/formatDate";
+import { Heading } from "../../../../components/ui/Heading";
+import { Paragraph } from "../../../../components/ui/Paragraph";
 
 const stepDate = (dateStr, days) => {
   const d = parseLocalDate(dateStr);
@@ -104,7 +106,6 @@ const StudentRow = ({ record, index, isEditing, canEdit, onChange }) => {
         if (isEditing && canEdit) onChange(record.student, !present);
       }}
     >
-      {/* Checkbox / status indicator */}
       <td className="px-5 py-3.5 w-14">
         {isEditing && canEdit ? (
           <div
@@ -264,8 +265,6 @@ export const Attendance = () => {
 
   const presentCount = attendanceData.filter((r) => r.isPresent).length;
   const totalStudents = attendanceData.length;
-  const percent =
-    totalStudents > 0 ? Math.round((presentCount / totalStudents) * 100) : 0;
 
   const mutation = useMutation({
     mutationFn: async (data) => {
@@ -430,35 +429,15 @@ export const Attendance = () => {
         </span>
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-[14px] p-6 mb-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-zinc-900 leading-tight">
-              {courseData?.data?.name}
-            </h1>
-            <p className="text-zinc-500 text-sm mt-1 flex items-center gap-1.5">
-              <LuUsers size={13} />
-              {classData?.data?.name} &mdash; {totalStudents} student
-              {totalStudents !== 1 ? "s" : ""}
-            </p>
-          </div>
+      <div className="mb-8">
+        <Heading className="mb-1">{courseData?.data?.name}</Heading>
+        <Paragraph>
+          {classData?.data?.name} &mdash; {totalStudents} student
+          {totalStudents !== 1 ? "s" : ""}
+        </Paragraph>
+      </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <ProgressRing percent={percent} />
-              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-zinc-700">
-                {percent}%
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-zinc-400">Present rate</span>
-              <span className="text-sm font-semibold text-zinc-700">
-                {presentCount} / {totalStudents}
-              </span>
-            </div>
-          </div>
-        </div>
-
+      <div className="bg-whitep-6 mb-5">
         <div className="flex items-center gap-3 mt-5 flex-wrap">
           <StatPill label="Total" value={totalStudents} color="#3f3f46" />
           <StatPill label="Present" value={presentCount} color="#16a34a" />

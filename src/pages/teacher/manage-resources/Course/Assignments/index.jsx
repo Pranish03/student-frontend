@@ -134,7 +134,7 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX - 110 + rect.width,
+      left: rect.left + window.scrollX - 180 + rect.width,
     });
     setShowDropdown(true);
   };
@@ -143,8 +143,7 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
 
   return (
     <>
-      <div className="bg-white border border-zinc-200 rounded-[10px] overflow-hidden hover:border-zinc-300 transition-all duration-150">
-        {/* Header */}
+      <div className="bg-white border border-zinc-200 rounded-[10px] overflow-hidden">
         <div className="p-4">
           <div className="flex items-start gap-3">
             <div
@@ -200,7 +199,6 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
                 </span>
               </div>
 
-              {/* Submissions summary */}
               <button
                 onClick={() => setShowSubmissions(!showSubmissions)}
                 className="mt-3 flex items-center gap-2 text-xs font-medium text-zinc-600 hover:text-green-600 transition-colors group"
@@ -222,7 +220,6 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
           </div>
         </div>
 
-        {/* Submissions panel */}
         <AnimatePresence>
           {showSubmissions && (
             <motion.div
@@ -269,7 +266,6 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
         </AnimatePresence>
       </div>
 
-      {/* Dropdown Menu */}
       <AnimatePresence>
         {showDropdown && (
           <>
@@ -419,7 +415,6 @@ export const Assignments = ({ courseId }) => {
         </div>
       )}
 
-      {/* Dialogs */}
       <AnimatePresence>
         {showAddDialog && (
           <AddAssignmentDialog

@@ -261,32 +261,10 @@ export const AdminDashboard = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <Heading>Admin Dashboard</Heading>
-            <span className="px-2 py-1 text-xs font-medium bg-green-50 text-green-600 rounded-full border border-green-200">
-              Live
-            </span>
           </div>
           <Paragraph>
             {greet()}, {user?.name}. Here's what's happening today.
           </Paragraph>
-        </div>
-        <div className="flex items-center gap-2">
-          {dataUpdatedAt > 0 && (
-            <span className="text-xs text-zinc-400">
-              Updated {DateTime.fromMillis(dataUpdatedAt).toRelative()}
-            </span>
-          )}
-          <button
-            onClick={() => {
-              setRefreshKey((k) => k + 1);
-              refetch();
-            }}
-            className="p-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
-            title="Refresh"
-          >
-            <LuRefreshCw
-              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
-            />
-          </button>
         </div>
       </div>
 
@@ -522,17 +500,6 @@ export const AdminDashboard = () => {
             </Link>
           )}
         </SectionCard>
-      </div>
-
-      <div className="mt-6 flex items-center justify-between text-xs text-zinc-400">
-        <span>
-          Last updated:{" "}
-          {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleString() : "—"}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
-          System online
-        </span>
       </div>
     </Container>
   );

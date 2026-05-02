@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import {
   LuChevronRight,
   LuClock,
@@ -195,7 +193,7 @@ const ClassScheduleGrid = ({ schedule, teacherCourseIds }) => {
                   </div>
                 </td>
 
-                {TIME_SLOTS.map((slot, slotIndex) => {
+                {TIME_SLOTS.map((slot) => {
                   const isBreak = slot.label === "Break";
 
                   if (isBreak) {
@@ -321,7 +319,7 @@ const ClassScheduleGrid = ({ schedule, teacherCourseIds }) => {
   );
 };
 
-const ClassScheduleCard = ({ classInfo, teacherCourseIds, index }) => {
+const ClassScheduleCard = ({ classInfo, teacherCourseIds }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["schedule", classInfo._id],
     queryFn: () => fetchScheduleByClass(classInfo._id),
@@ -338,12 +336,7 @@ const ClassScheduleCard = ({ classInfo, teacherCourseIds, index }) => {
   const totalClasses = schedule?.timeTable?.length ?? 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: index * 0.08 }}
-      className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden"
-    >
+    <div className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
@@ -403,7 +396,7 @@ const ClassScheduleCard = ({ classInfo, teacherCourseIds, index }) => {
           />
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

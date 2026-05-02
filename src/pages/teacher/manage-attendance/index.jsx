@@ -35,17 +35,12 @@ export const ManageAttendance = () => {
 
   return (
     <Container>
-      <div className="flex items-center gap-1 mb-4">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/teacher"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/teacher">
           Teacher
         </Link>
-
-        <LuChevronRight />
-
-        <span className="text-zinc-900">Attendence</span>
+        <LuChevronRight size={14} />
+        <span className="text-zinc-900 font-medium">Attendance</span>
       </div>
 
       <div className="mb-8">

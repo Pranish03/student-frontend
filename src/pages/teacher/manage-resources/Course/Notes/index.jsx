@@ -37,7 +37,7 @@ const NoteCard = ({ note, index, onEdit, onDelete }) => {
   return (
     <>
       <div
-        className="bg-white border border-zinc-200 rounded-[10px] p-4 hover:border-zinc-300 hover:shadow-sm transition-all duration-150"
+        className="bg-white border border-zinc-200 rounded-[10px] p-4"
         style={{ animationDelay: `${index * 40}ms` }}
       >
         <div className="flex items-start gap-3">
