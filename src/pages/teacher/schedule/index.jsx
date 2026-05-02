@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -7,6 +8,7 @@ import {
   LuMapPin,
   LuCalendar,
   LuBuilding,
+  LuTrendingUp,
 } from "react-icons/lu";
 import { BsFileEarmarkCodeFill } from "react-icons/bs";
 import { ImSpinner8 } from "react-icons/im";
@@ -15,6 +17,7 @@ import { axios } from "../../../lib/axios";
 import { Container } from "../../../components/ui/Container";
 import { Heading } from "../../../components/ui/Heading";
 import { Paragraph } from "../../../components/ui/Paragraph";
+import { useEffect, useState } from "react";
 
 const fetchTeacherCourses = async (teacherId) => {
   const { data } = await axios.get(`/courses?teacher=${teacherId}`);
@@ -336,7 +339,7 @@ const ClassScheduleCard = ({ classInfo, teacherCourseIds }) => {
   const totalClasses = schedule?.timeTable?.length ?? 0;
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden">
+    <div className="bg-white border border-zinc-200 rounded-[10px] overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
@@ -451,23 +454,28 @@ export const TeacherSchedule = () => {
       {!coursesLoading && courses.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
           <StatCard
-            label="Courses teaching"
+            title="Total Courses"
             value={courses.length}
-            icon={
-              <BsFileEarmarkCodeFill size={16} className="text-green-600" />
-            }
+            icon={BsFileEarmarkCodeFill}
+            sub={`${courses.length} ${courses.length > 1 ? "Courses" : "Course"} Teaching`}
             bg="bg-green-50"
           />
           <StatCard
-            label="Classes assigned"
+            title="Total Classes"
             value={uniqueClasses.length}
-            icon={<LuBuilding size={16} className="text-blue-600" />}
+            icon={LuBuilding}
+            sub={`${uniqueClasses.length} ${uniqueClasses.length > 1 ? "Classes" : "class"} Teaching`}
             bg="bg-blue-50"
           />
           <StatCard
-            label="Today"
+            title="Today"
             value={DAYS[new Date().getDay()]}
-            icon={<LuCalendar size={16} className="text-amber-600" />}
+            icon={LuCalendar}
+            sub={new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}
             bg="bg-amber-50"
           />
         </div>
@@ -514,14 +522,25 @@ export const TeacherSchedule = () => {
   );
 };
 
-const StatCard = ({ label, value, icon, bg }) => (
-  <div className="bg-white border border-zinc-200 rounded-xl p-4">
-    <div
-      className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center mb-3`}
-    >
-      {icon}
+const StatCard = ({ title, value, icon: Icon, sub, isLoading }) => (
+  <div className="bg-white border border-zinc-300 rounded-[10px] p-6">
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-sm text-zinc-500 mb-1">{title}</p>
+        <p className="text-3xl font-bold text-zinc-900">{value}</p>
+        {sub && !isLoading && (
+          <p className="text-xs text-zinc-500 mt-1">{sub}</p>
+        )}
+      </div>
+      <div className="p-3 bg-green-50 rounded-lg">
+        <Icon className="w-6 h-6 text-green-600" />
+      </div>
     </div>
-    <p className="text-xl font-bold text-zinc-900">{value}</p>
-    <p className="text-xs text-zinc-500 mt-0.5">{label}</p>
+    {!isLoading && (
+      <div className="mt-3 flex items-center gap-1 text-xs">
+        <LuTrendingUp className="w-3 h-3 text-green-600" />
+        <span className="text-green-600 font-medium">{sub}</span>
+      </div>
+    )}
   </div>
 );
