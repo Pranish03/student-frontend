@@ -53,15 +53,12 @@ export const ManageResources = () => {
 
   return (
     <Container>
-      <div className="flex items-center gap-1 mb-4">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/teacher"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/teacher">
           Teacher
         </Link>
-        <LuChevronRight />
-        <span className="text-zinc-900">Resources</span>
+        <LuChevronRight size={14} />
+        <span className="text-zinc-900 font-medium">Resources</span>
       </div>
 
       <div className="mb-8">
@@ -138,7 +135,6 @@ const CourseCard = ({ course }) => {
           <InfoRow label="Academic Year" value={course.class?.academicYear} />
         </div>
 
-        {/* Resource counts */}
         <div className="flex items-center gap-3 mb-4">
           <div className="flex items-center gap-1.5 text-sm text-zinc-500">
             <LuFileText size={14} className="text-blue-500" />

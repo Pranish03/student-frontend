@@ -13,6 +13,7 @@ import { Container } from "../../../../components/ui/Container";
 import { Heading } from "../../../../components/ui/Heading";
 import { Notes } from "./Notes";
 import { Assignments } from "./Assignments";
+import { Paragraph } from "../../../../components/ui/Paragraph";
 
 const fetchCourse = async (id) => {
   const { data } = await axios.get(`/courses/${id}`);
@@ -64,31 +65,9 @@ export const CourseResources = () => {
         </span>
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-[14px] p-6 mb-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-[10px] bg-green-50 border border-green-100 flex items-center justify-center shrink-0">
-            <LuFileText size={22} className="text-green-600" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap mb-1">
-              <Heading className="text-2xl">{course?.name}</Heading>
-              {course?.code && (
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
-                  <BsFileEarmarkCodeFill size={11} />
-                  {course.code}
-                </span>
-              )}
-            </div>
-            {course?.class && (
-              <p className="text-sm text-zinc-500">
-                {course.class?.name}
-                {course.class?.department && ` · ${course.class.department}`}
-                {course.class?.academicYear &&
-                  ` · ${course.class.academicYear}`}
-              </p>
-            )}
-          </div>
-        </div>
+      <div className="mb-8">
+        <Heading className="mb-1">{course?.name}</Heading>
+        <Paragraph>Upload notes and assignments</Paragraph>
       </div>
 
       <div className="bg-zinc-100 p-1 mb-6 rounded-[14px] w-min border border-zinc-200">
