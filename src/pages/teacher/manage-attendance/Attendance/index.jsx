@@ -32,6 +32,7 @@ import {
 } from "../../../../utils/formatDate";
 import { Heading } from "../../../../components/ui/Heading";
 import { Paragraph } from "../../../../components/ui/Paragraph";
+import { BsFileEarmarkCodeFill } from "react-icons/bs";
 
 const stepDate = (dateStr, days) => {
   const d = parseLocalDate(dateStr);
@@ -430,7 +431,15 @@ export const Attendance = () => {
       </div>
 
       <div className="mb-8">
-        <Heading className="mb-1">{courseData?.data?.name}</Heading>
+        <div className="flex items-center gap-4">
+          <Heading className="mb-1">{courseData?.data?.name}</Heading>
+          {courseData?.data?.code && (
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
+              <BsFileEarmarkCodeFill size={11} />
+              {courseData?.data?.code}
+            </span>
+          )}
+        </div>
         <Paragraph>
           {classData?.data?.name} &mdash; {totalStudents} student
           {totalStudents !== 1 ? "s" : ""}

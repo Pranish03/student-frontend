@@ -21,6 +21,7 @@ import { AnimatePresence } from "framer-motion";
 import { EditClassDialog } from "../EditClassDialog";
 import { Container } from "../../../../components/ui/Container";
 import { Heading } from "../../../../components/ui/Heading";
+import { Paragraph } from "../../../../components/ui/Paragraph";
 
 export const ManageClass = () => {
   const { id } = useParams();
@@ -83,54 +84,39 @@ export const ManageClass = () => {
   return (
     <>
       <Container>
-        <div className="flex items-center gap-1 mb-6 text-[15px]">
-          <Link
-            className="text-zinc-500 hover:text-zinc-900 transition-colors"
-            to="/admin"
-          >
+        <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+          <Link className="hover:text-zinc-900 transition-colors" to="/admin">
             Admin
           </Link>
-          <LuChevronRight className="w-4 h-4 text-zinc-400" />
+          <LuChevronRight size={14} />
           <Link
-            className="text-zinc-500 hover:text-zinc-900 transition-colors"
+            className="hover:text-zinc-900 transition-colors"
             to="/admin/manage-classes"
           >
             Classes
           </Link>
-          <LuChevronRight className="w-4 h-4 text-zinc-400" />
+          <LuChevronRight size={14} />
           <span className="text-zinc-900 font-medium">{classData.name}</span>
         </div>
 
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <Heading className="mb-2">
-                {classData.name}
-              </Heading>
-              <div className="flex items-center gap-4 text-zinc-600">
-                <div className="flex items-center gap-1">
-                  <LuBuilding className="w-4 h-4" />
-                  <span>{classData.department}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <LuCalendar className="w-4 h-4" />
-                  <span>Academic Year: {classData.academicYear}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <LuUsers className="w-4 h-4" />
-                  <span>Capacity: {classData.capacity} students</span>
-                </div>
-              </div>
-            </div>
+          <Heading className="text-3xl font-bold text-zinc-900 mb-1">
+            {classData.name}
+          </Heading>
+          <Paragraph>
+            {classData.name} · {classData.department} · Capacity —{" "}
+            {classData.capacity}
+          </Paragraph>
+        </div>
 
-            <Button
-              onClick={() => setShowEditDialog(true)}
-              className="flex items-center gap-2"
-            >
-              <FaPenNib />
-              Edit Class
-            </Button>
-          </div>
+        <div className="float-end">
+          <Button
+            onClick={() => setShowEditDialog(true)}
+            className="flex items-center gap-2"
+          >
+            <FaPenNib />
+            Edit Class
+          </Button>
         </div>
 
         <div className="bg-zinc-100 p-1 mb-6 rounded-[14px] w-min border border-zinc-200">

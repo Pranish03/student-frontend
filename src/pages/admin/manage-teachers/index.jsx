@@ -108,23 +108,21 @@ export const ManageTeachers = () => {
   return (
     <>
       <Container>
-        <div className="flex items-center gap-1 mb-4">
-          <Link
-            className="text-zinc-500 hover:underline hover:text-zinc-900"
-            to="/admin"
-          >
-            admin
+        <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+          <Link className="hover:text-zinc-900 transition-colors" to="/admin">
+            Admin
           </Link>
-
-          <LuChevronRight />
-
-          <span className="text-zinc-900">teachers</span>
+          <LuChevronRight size={14} />
+          <span className="text-zinc-900 font-medium">Teachers</span>
         </div>
 
         <div className="mb-8">
-          <Heading className="mb-1">Teachers</Heading>
+          <Heading className="text-3xl font-bold text-zinc-900 mb-1">
+            Teachers
+          </Heading>
           <Paragraph>
-            {data?.data?.length || 0} total courses
+            Total {data?.data?.length || 0}{" "}
+            {data?.data?.length > 1 ? "teachers" : "teacher"} — manage teachers
           </Paragraph>
         </div>
 

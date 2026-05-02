@@ -54,7 +54,7 @@ export const ManageNotices = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX - 130 + rect.width,
+      left: rect.left + window.scrollX - 80 + rect.width,
     });
     setSelectedNotice((prev) => (prev?._id === notice._id ? null : notice));
   };
@@ -76,28 +76,25 @@ export const ManageNotices = () => {
   return (
     <>
       <Container>
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-1 mb-4">
-          <Link
-            className="text-zinc-500 hover:underline hover:text-zinc-900"
-            to="/admin"
-          >
+        <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+          <Link className="hover:text-zinc-900 transition-colors" to="/admin">
             Admin
           </Link>
-          <LuChevronRight />
-          <span className="text-zinc-900">Notices</span>
+          <LuChevronRight size={14} />
+          <span className="text-zinc-900 font-medium">Notices</span>
         </div>
 
-        {/* Page header */}
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <Heading className="mb-1">Notices</Heading>
-            <Paragraph>
-              {isLoading
-                ? "Loading..."
-                : `${notices.length} total notice${notices.length !== 1 ? "s" : ""}`}
-            </Paragraph>
-          </div>
+        <div className="mb-8">
+          <Heading className="text-3xl font-bold text-zinc-900 mb-1">
+            Notices
+          </Heading>
+          <Paragraph>
+            Total {notices?.length || 0}{" "}
+            {notices?.length > 1 ? "notices" : "notice"}
+          </Paragraph>
+        </div>
+
+        <div className="float-end">
           <Button
             className="flex items-center gap-2 mt-1 shrink-0"
             onClick={() => setShowAddDialog(true)}
