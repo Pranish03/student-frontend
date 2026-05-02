@@ -34,23 +34,38 @@ export const EnrollStudentDialog = ({ classData, close }) => {
     },
   });
 
-  const students = studentsData?.data || [];
-  const enrolledStudents = classData?.students || [];
-  const enrolledStudentIds = enrolledStudents.map((s) => s._id);
+  const allStudents = studentsData?.data || [];
+  const enrolledStudentIds = (classData?.students || []).map((s) => s._id);
 
-  const filteredStudents = students.filter(
-    (student) =>
-      !enrolledStudentIds.includes(student._id) &&
-      (student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.email?.toLowerCase().includes(searchTerm.toLowerCase())),
-  );
+  const availableStudents = allStudents.filter((student) => {
+    if (enrolledStudentIds.includes(student._id)) return false;
+
+    const studentClassId =
+      typeof student.class === "object" ? student.class?._id : student.class;
+    if (studentClassId) return false;
+
+    if (searchTerm) {
+      return (
+        student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return true;
+  });
+
+  const studentsInOtherClasses = allStudents.filter((student) => {
+    if (enrolledStudentIds.includes(student._id)) return false;
+    const studentClassId =
+      typeof student.class === "object" ? student.class?._id : student.class;
+    return !!studentClassId;
+  });
 
   const mutation = useMutation({
     mutationFn: enrollStudents,
     onSuccess: (data) => {
       toast.success(data?.message || "Student(s) enrolled successfully");
       queryClient.invalidateQueries();
-
       close();
     },
   });
@@ -67,17 +82,24 @@ export const EnrollStudentDialog = ({ classData, close }) => {
   };
 
   const handleSelectAll = () => {
-    if (selectedStudents.length === filteredStudents.length) {
+    if (selectedStudents.length === availableStudents.length) {
       setSelectedStudents([]);
       setValue("students", []);
     } else {
-      const allIds = filteredStudents.map((s) => s._id);
+      const allIds = availableStudents.map((s) => s._id);
       setSelectedStudents(allIds);
       setValue("students", allIds);
     }
   };
 
   const onSubmit = (data) => mutation.mutate({ data, id: classData?._id });
+
+  const noStudentsAtAll = allStudents.length === 0;
+  const allEnrolledElsewhere =
+    !noStudentsAtAll &&
+    availableStudents.length === 0 &&
+    studentsInOtherClasses.length > 0 &&
+    !searchTerm;
 
   return (
     <Dialog
@@ -119,14 +141,14 @@ export const EnrollStudentDialog = ({ classData, close }) => {
           )}
         </div>
 
-        {filteredStudents.length > 0 && (
+        {availableStudents.length > 0 && (
           <div className="flex items-center justify-between px-2 py-2 bg-zinc-50 rounded-[10px]">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={
-                  selectedStudents.length === filteredStudents.length &&
-                  filteredStudents.length > 0
+                  selectedStudents.length === availableStudents.length &&
+                  availableStudents.length > 0
                 }
                 onChange={handleSelectAll}
                 className="w-4 h-4 text-green-600 rounded border-zinc-300 focus:ring-green-500 accent-green-600"
@@ -153,30 +175,36 @@ export const EnrollStudentDialog = ({ classData, close }) => {
             <div className="flex justify-center items-center py-12">
               <ImSpinner8 className="animate-spin text-3xl text-zinc-400" />
             </div>
-          ) : filteredStudents.length === 0 ? (
+          ) : noStudentsAtAll ? (
             <div className="text-center py-12">
-              {students.length === 0 ? (
-                <>
-                  <p className="text-zinc-500">No students available</p>
-                  <p className="text-sm text-zinc-400 mt-1">
-                    Add students first to enroll them in classes
-                  </p>
-                </>
-              ) : (
-                <>
-                  {searchTerm ? (
-                    <p className="text-zinc-500">No available students found</p>
-                  ) : (
-                    <p className="text-zinc-500">
-                      All students are already enrolled in this class
-                    </p>
-                  )}
-                </>
-              )}
+              <p className="text-zinc-500">No students available</p>
+              <p className="text-sm text-zinc-400 mt-1">
+                Add students first to enroll them in classes
+              </p>
+            </div>
+          ) : allEnrolledElsewhere ? (
+            <div className="text-center py-12">
+              <p className="text-zinc-500">No available students</p>
+              <p className="text-sm text-zinc-400 mt-1">
+                All remaining students are already enrolled in another class
+              </p>
+            </div>
+          ) : availableStudents.length === 0 && searchTerm ? (
+            <div className="text-center py-12">
+              <p className="text-zinc-500">No students found</p>
+              <p className="text-sm text-zinc-400 mt-1">
+                Try adjusting your search
+              </p>
+            </div>
+          ) : availableStudents.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-zinc-500">
+                All students are already enrolled in this class
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredStudents.map((student) => (
+              {availableStudents.map((student) => (
                 <label
                   key={student._id}
                   className={`flex items-center border rounded-[10px] p-2.5 hover:bg-zinc-50 cursor-pointer transition-colors ${
@@ -213,6 +241,16 @@ export const EnrollStudentDialog = ({ classData, close }) => {
             </div>
           )}
         </div>
+
+        {studentsInOtherClasses.length > 0 && !searchTerm && (
+          <p className="text-xs text-zinc-400 bg-zinc-50 border border-zinc-200 rounded-[10px] px-3 py-2">
+            {studentsInOtherClasses.length} student
+            {studentsInOtherClasses.length !== 1 ? "s are" : " is"} not shown
+            because{" "}
+            {studentsInOtherClasses.length !== 1 ? "they are" : "they are"}{" "}
+            already enrolled in another class.
+          </p>
+        )}
 
         {errors.students && (
           <p className="text-red-600 text-sm mt-1">{errors.students.message}</p>
