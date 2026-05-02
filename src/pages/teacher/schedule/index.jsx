@@ -431,14 +431,11 @@ export const TeacherSchedule = () => {
 
   return (
     <Container>
-      <div className="flex items-center gap-1 mb-4 text-sm">
-        <Link
-          className="text-zinc-500 hover:underline hover:text-zinc-900"
-          to="/teacher"
-        >
+      <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+        <Link className="hover:text-zinc-900 transition-colors" to="/teacher">
           Teacher
         </Link>
-        <LuChevronRight size={14} className="text-zinc-400" />
+        <LuChevronRight size={14} />
         <span className="text-zinc-900 font-medium">Schedule</span>
       </div>
 

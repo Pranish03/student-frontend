@@ -43,7 +43,7 @@ export const ManageNotices = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     setDropdownPosition({
       top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX - 130 + rect.width,
+      left: rect.left + window.scrollX - 90 + rect.width,
     });
     setSelectedNotice((prev) => (prev?._id === notice._id ? null : notice));
   };
@@ -62,22 +62,18 @@ export const ManageNotices = () => {
     setShowDeleteDialog(true);
   };
 
-  // Can the logged-in teacher act on this notice?
   const canModify = (notice) =>
     notice.postedBy?._id === user?._id || notice.postedBy === user?._id;
 
   return (
     <>
       <Container>
-        <div className="flex items-center gap-1 mb-4">
-          <Link
-            className="text-zinc-500 hover:underline hover:text-zinc-900"
-            to="/teacher"
-          >
+        <div className="flex items-center gap-1 mb-6 text-sm text-zinc-500">
+          <Link className="hover:text-zinc-900 transition-colors" to="/teacher">
             Teacher
           </Link>
-          <LuChevronRight />
-          <span className="text-zinc-900">Notices</span>
+          <LuChevronRight size={14} />
+          <span className="text-zinc-900 font-medium">Notices</span>
         </div>
 
         <div className="flex items-start justify-between mb-8">
