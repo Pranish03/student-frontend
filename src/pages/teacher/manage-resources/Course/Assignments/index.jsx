@@ -119,11 +119,10 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
   const { data: submissions, isLoading: submissionsLoading } = useQuery({
     queryKey: ["submissions", assignment._id],
     queryFn: () => fetchSubmissions(assignment._id),
-    enabled: showSubmissions,
     staleTime: 30 * 1000,
   });
 
-  const submissionCount = submissions?.length || 0;
+  const submissionCount = submissions?.length ?? 0;
 
   const isExpired =
     assignment.deadline &&
@@ -205,10 +204,14 @@ const AssignmentCard = ({ assignment, courseId, onEdit, onDelete }) => {
               >
                 <div className="flex items-center gap-1.5 bg-zinc-100 rounded-full px-2.5 py-1 group-hover:bg-green-50 transition-colors">
                   <LuUsers size={12} />
-                  <span>
-                    {submissionCount} submission
-                    {submissionCount !== 1 ? "s" : ""}
-                  </span>
+                  {submissionsLoading ? (
+                    <span>Loading...</span>
+                  ) : (
+                    <span>
+                      {submissionCount} submission
+                      {submissionCount !== 1 ? "s" : ""}
+                    </span>
+                  )}
                   {showSubmissions ? (
                     <LuChevronUp size={12} />
                   ) : (

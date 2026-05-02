@@ -20,6 +20,18 @@ const fetchCourse = async (id) => {
   return data;
 };
 
+const fetchResources = async (courseId, type) => {
+  try {
+    const { data } = await axios.get(
+      `/resources/course/${courseId}?type=${type}`,
+    );
+    return data;
+  } catch (err) {
+    if (err.response?.status === 404) return { resources: [] };
+    throw err;
+  }
+};
+
 const TABS = [
   { id: "notes", label: "Notes", icon: LuFileText },
   { id: "assignments", label: "Assignments", icon: LuClipboardList },
@@ -36,7 +48,28 @@ export const CourseResources = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: notesData } = useQuery({
+    queryKey: ["notes", courseId],
+    queryFn: () => fetchResources(courseId, "note"),
+    enabled: !!courseId,
+    staleTime: 2 * 60 * 1000,
+  });
+
+  const { data: assignmentsData } = useQuery({
+    queryKey: ["assignment", courseId],
+    queryFn: () => fetchResources(courseId, "assignment"),
+    enabled: !!courseId,
+    staleTime: 2 * 60 * 1000,
+  });
+
   const course = courseData?.data;
+  const noteCount = notesData?.resources?.length ?? 0;
+  const assignmentCount = assignmentsData?.resources?.length ?? 0;
+
+  const tabCounts = {
+    notes: noteCount,
+    assignments: assignmentCount,
+  };
 
   if (isLoading) {
     return (
@@ -83,11 +116,12 @@ export const CourseResources = () => {
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+            const count = tabCounts[tab.id];
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer whitespace-nowrap text-sm border-0
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-[10px] font-medium transition-all cursor-pointer whitespace-nowrap text-sm border-0
                   ${
                     isActive
                       ? "text-green-600 bg-white border border-zinc-200 shadow"
@@ -99,6 +133,11 @@ export const CourseResources = () => {
                   className={isActive ? "text-green-600" : "text-zinc-400"}
                 />
                 {tab.label}
+                {count > 0 && (
+                  <span className="ml-1 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                    {count}
+                  </span>
+                )}
               </button>
             );
           })}
