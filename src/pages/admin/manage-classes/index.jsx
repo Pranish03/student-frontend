@@ -235,6 +235,7 @@ export const ManageClasses = () => {
             Classes
           </Heading>
           <Paragraph>
+            Total{" "}
             {isLoading
               ? "Loading..."
               : `${classes.length} ${classes.length !== 1 ? "classes" : "class"} — manage classes`}
